@@ -12,10 +12,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       volumes:
-        - ${{ github.workspace }}:/repo/sc-inspector-data
+        - ${{ github.workspace }}/sc-inspector-data:/repo/sc-inspector-data
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          path: sc-inspector-data
       - name: test
         run: python /inspector/inspector.py
