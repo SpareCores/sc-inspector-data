@@ -4,6 +4,7 @@ on:
     - cron: "0 10 * * *"
   workflow_dispatch:
 jobs:
+
   container-test-job:
     runs-on: ubuntu-latest
     container:
@@ -13,5 +14,6 @@ jobs:
       volumes:
         - ${{ github.workspace }}:/repo/sc-inspector-data
     steps:
+      - uses: actions/checkout@v4
       - name: test
         run: ls -laR /repo
