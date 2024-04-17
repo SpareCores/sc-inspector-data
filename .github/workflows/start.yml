@@ -1,0 +1,16 @@
+name: Start instances for collecting data
+on:
+  schedule:
+    - cron: "0 10 * * *"
+jobs:
+  container-test-job:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/sparecores/sc-inspector:main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      volumes:
+        - ${{ github.workspace }}:/repo/sc-inspector-data
+    steps:
+      - name: test
+        run: ls -laR /repo
