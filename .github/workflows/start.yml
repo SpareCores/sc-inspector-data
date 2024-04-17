@@ -1,7 +1,7 @@
 name: Start instances for collecting data
 on:
-  schedule:
-    - cron: "0 10 * * *"
+#  schedule:
+#    - cron: "0 10 * * *"
   workflow_dispatch:
 jobs:
 
@@ -14,9 +14,15 @@ jobs:
       volumes:
         - ${{ github.workspace }}/sc-inspector-data:/repo/sc-inspector-data
     steps:
-      - uses: actions/checkout@v4
+      - name: checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           path: sc-inspector-data
+      - name: ssh access
+        uses: lhotari/action-upterm@v1
+        with:
+          limit-access-to-actor: true
+          limit-access-to-users: bra-fsn
       - name: test
         run: python /inspector/inspector.py
