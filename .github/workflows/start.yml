@@ -12,6 +12,7 @@ jobs:
       image: ghcr.io/sparecores/sc-inspector:main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        REPO_PATH: /repo/sc-inspector-data
       volumes:
         - ${{ github.workspace }}/sc-inspector-data:/repo/sc-inspector-data
     steps:
@@ -21,9 +22,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
           path: sc-inspector-data
-      - name: ls
-        run: ls -laR /repo/sc-inspector-data
       - name: inspector
-        run: python /inspector/inspector.py
-      - name: log
-        run: git -C /repo/sc-inspector-data remote show origin
+        run: python /inspector/inspector.py start --start-only aws m5.2xlarge
