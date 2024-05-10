@@ -6,7 +6,7 @@ on:
 permissions:
   contents: write
 jobs:
-  container-test-job:
+  start-instances:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/sparecores/sc-inspector:main
@@ -23,5 +23,11 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
           path: sc-inspector-data
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: ${{ secrets.SC_RUNNER_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: us-east-1
       - name: inspector
         run: python /inspector/inspector.py start --start-only aws t3.micro
