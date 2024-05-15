@@ -12,8 +12,7 @@ jobs:
     container:
       image: ghcr.io/sparecores/sc-inspector:main
       env:
-        GITHUB_TOKEN: ${{ secrets.INSPECTOR_TOKEN }}
-        PULUMI_BACKEND_URL: ${{ secrets.PULUMI_BACKEND_URL }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         REPO_PATH: /repo/sc-inspector-data
       volumes:
         - ${{ github.workspace }}/sc-inspector-data:/repo/sc-inspector-data
@@ -24,11 +23,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
           path: sc-inspector-data
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4.0.2
-        with:
-          role-to-assume: ${{ secrets.SC_RUNNER_ROLE_ARN }}
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: us-east-1
       - name: inspector
         run: python /inspector/inspector.py parse
