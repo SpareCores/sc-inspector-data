@@ -1,7 +1,7 @@
-name: Clean up resources created by the start job in the last 60 mins
+name: Daily cleanup
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "13 3 * * *"
   workflow_dispatch:
 permissions:
   contents: write
@@ -43,4 +43,4 @@ jobs:
           role-duration-seconds: 14400
           aws-region: us-east-1
       - name: inspector
-        run: python /inspector/inspector.py cleanup --lookback-mins 60
+        run: python /inspector/inspector.py cleanup
