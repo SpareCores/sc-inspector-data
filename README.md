@@ -7,7 +7,13 @@ vendor by its `vendor_id`, and using the `api_reference` for the server.
 
 # Collected data
 
-## Viewing PassMark output
+## PassMark
+
+### Benchmark numbers
+
+See [this forum entry](https://forums.passmark.com/performancetest/4599-formula-cpu-mark-memory-mark-and-disk-mark/page2#post54964).
+
+### Viewing PassMark output
 
 PassMark's [PerformanceTest](https://www.passmark.com/products/pt_linux/download.php) needs a terminal and prints its output with [ANSI escape codes](https://github.com/SpareCores/sc-inspector-data/blob/e49a5d4efe496e77ac8721e6b7910b138a2dff41/data/aws/r5.large/passmark/stderr#L1).
 
