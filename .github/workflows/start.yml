@@ -16,7 +16,6 @@ jobs:
     container:
       image: ghcr.io/sparecores/sc-inspector:main
       env:
-        GITHUB_TOKEN: ${{ secrets.INSPECTOR_TOKEN }}
         PULUMI_BACKEND_URL: ${{ secrets.PULUMI_BACKEND_URL }}
         BENCHMARK_SECRETS_PASSPHRASE: ${{ secrets.BENCHMARK_SECRETS_PASSPHRASE }}
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
@@ -34,10 +33,16 @@ jobs:
       volumes:
         - ${{ github.workspace }}/sc-inspector-data:/repo/sc-inspector-data
     steps:
+      - name: Generate GitHub App token
+        uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.CONTENT_RW_APP_ID }}
+          private-key: ${{ secrets.CONTENT_RW_APP_KEY }}
       - name: checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
           fetch-depth: 0
           path: sc-inspector-data
       - name: configure aws credentials
@@ -50,5 +55,7 @@ jobs:
           aws-region: us-east-1
       - name: inspector
         run: python /inspector/inspector.py start
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           #--start-only aws t3.nano --start-only aws c7a.4xlarge --start-only aws c7g.2xlarge
 #        --start-only aws c7i.48xlarge --start-only aws c7i.metal-48xl
