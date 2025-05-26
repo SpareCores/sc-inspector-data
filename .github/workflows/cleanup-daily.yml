@@ -15,7 +15,7 @@ jobs:
     container:
       image: ghcr.io/sparecores/sc-inspector:main
       env:
-        GITHUB_TOKEN: ${{ secrets.INSPECTOR_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
         PULUMI_BACKEND_URL: ${{ secrets.PULUMI_BACKEND_URL }}
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
@@ -34,7 +34,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ github.token }}
           fetch-depth: 0
           path: sc-inspector-data
       - name: configure aws credentials
