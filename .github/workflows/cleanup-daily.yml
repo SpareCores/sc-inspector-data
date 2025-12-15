@@ -46,8 +46,8 @@ jobs:
         with:
           role-to-assume: ${{ secrets.SC_RUNNER_ROLE_ARN }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          # 4 hours to avoid expiring tokens
-          role-duration-seconds: 14400
+          # 12 hours (maximum allowed by AWS) to avoid expiring tokens during long-running cleanup
+          role-duration-seconds: 43200
           aws-region: us-east-1
       - name: inspector
         run: python /inspector/inspector.py cleanup
