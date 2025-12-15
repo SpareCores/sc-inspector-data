@@ -10,8 +10,12 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
 #    runs-on: self-hosted
+    strategy:
+      matrix:
+        vendor: [aws, azure, gcp, hcloud, upcloud]
+      fail-fast: false
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.vendor }}
     container:
       image: ghcr.io/sparecores/sc-inspector:main
       env:
@@ -50,4 +54,4 @@ jobs:
           role-duration-seconds: 43200
           aws-region: us-east-1
       - name: inspector
-        run: python /inspector/inspector.py cleanup --lookback-mins 240
+        run: python /inspector/inspector.py cleanup --lookback-mins 240 --vendor ${{ matrix.vendor }}
