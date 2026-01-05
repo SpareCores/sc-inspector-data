@@ -25,5 +25,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
           path: sc-inspector-data
+      - name: restore file modification times
+        run: git restore-mtime
+        working-directory: sc-inspector-data
       - name: inspector
         run: python /inspector/inspector.py parse
