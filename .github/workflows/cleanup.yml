@@ -12,7 +12,7 @@ jobs:
 #    runs-on: self-hosted
     strategy:
       matrix:
-        vendor: [aws, azure, gcp, hcloud, upcloud, ovh]
+        vendor: [aws, azure, gcp, hcloud, upcloud, ovh, alicloud]
       fail-fast: false
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.vendor }}
@@ -53,5 +53,13 @@ jobs:
           # 12 hours (maximum allowed by AWS) to avoid expiring tokens during long-running cleanup
           role-duration-seconds: 43200
           aws-region: us-east-1
+      - name: Get Alibaba Cloud credentials
+        id: alibaba-cloud-credentials
+        uses: 'mozillazg/alibabacloud-oidc-auth@v1'
+        with:
+          role-arn-to-assume: '${{ secrets.ALIBABA_CLOUD_RAM_ROLE_ARN }}'
+          oidc-provider-arn: '${{ secrets.ALIBABA_CLOUD_RAM_OIDC_ARN }}'
+          export-environment-variables: 'true'
+          region: 'us-west-1'
       - name: inspector
         run: python /inspector/inspector.py cleanup --lookback-mins 240 --vendor ${{ matrix.vendor }}
