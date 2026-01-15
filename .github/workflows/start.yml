@@ -34,6 +34,7 @@ jobs:
         UPCLOUD_USERNAME: ${{ secrets.UPCLOUD_USERNAME }}
         UPCLOUD_PASSWORD: ${{ secrets.UPCLOUD_PASSWORD }}
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+        ALIBABA_CLOUD_RAM_OIDC_ARN: ${{ vars.ALIBABA_CLOUD_RAM_OIDC_ARN }}
         REPO_PATH: /repo/sc-inspector-data
       volumes:
         - ${{ github.workspace }}/sc-inspector-data:/repo/sc-inspector-data
@@ -51,6 +52,14 @@ jobs:
           # 12 hours (maximum allowed by AWS) to avoid expiring tokens during long-running operations
           role-duration-seconds: 43200
           aws-region: us-east-1
+      - name: Get Alibaba Cloud credentials
+        id: alibaba-cloud-credentials
+        uses: 'mozillazg/alibabacloud-oidc-auth@v1'
+        with:
+          role-arn-to-assume: '${{ vars.ALIBABA_CLOUD_RAM_ROLE_ARN }}'
+          oidc-provider-arn: '${{ vars.ALIBABA_CLOUD_RAM_OIDC_ARN }}'
+          export-environment-variables: 'true'
+          region: 'us-west-1'
       - name: inspector
         run: python /inspector/inspector.py start
         env:
