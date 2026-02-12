@@ -13,7 +13,16 @@ jobs:
 #    runs-on: self-hosted
     strategy:
       matrix:
-        vendor: [aws, gcp, azure, alicloud, hcloud, upcloud, ovh]
+        vendor: [
+          aws, 
+          gcp, 
+          # azure,  # we have no quota for new instances 
+          alicloud, 
+          hcloud, 
+          upcloud, 
+          ovh,
+          oci
+        ]
       fail-fast: false
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.vendor }}
