@@ -11,8 +11,12 @@ jobs:
   start-instances:
     runs-on: ubuntu-latest
 #    runs-on: self-hosted
+    strategy:
+      matrix:
+        vendor: [aws, gcp, azure, alicloud, hcloud, upcloud, ovh]
+      fail-fast: false
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.vendor }}
     container:
       image: ghcr.io/sparecores/sc-inspector:main
       env:
@@ -61,7 +65,7 @@ jobs:
           export-environment-variables: 'true'
           region: 'us-west-1'
       - name: inspector
-        run: python /inspector/inspector.py start
+        run: python /inspector/inspector.py start --vendor ${{ matrix.vendor }}
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
           #--start-only aws t3.nano --start-only aws c7a.4xlarge --start-only aws c7g.2xlarge
