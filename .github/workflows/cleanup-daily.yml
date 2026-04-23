@@ -40,13 +40,13 @@ jobs:
         - ${{ github.workspace }}/sc-inspector-data:/repo/sc-inspector-data
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
         with:
           token: ${{ github.token }}
           fetch-depth: 0
           path: sc-inspector-data
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4.0.2
+        uses: aws-actions/configure-aws-credentials@v6.1.0
         with:
           role-to-assume: ${{ secrets.SC_RUNNER_ROLE_ARN }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
@@ -55,7 +55,7 @@ jobs:
           aws-region: us-east-1
       - name: Get Alibaba Cloud credentials
         id: alibaba-cloud-credentials
-        uses: 'mozillazg/alibabacloud-oidc-auth@v1'
+        uses: 'mozillazg/alibabacloud-oidc-auth@v1.3.0'
         with:
           role-arn-to-assume: '${{ secrets.ALIBABA_CLOUD_RAM_ROLE_ARN }}'
           oidc-provider-arn: '${{ secrets.ALIBABA_CLOUD_RAM_OIDC_ARN }}'
