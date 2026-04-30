@@ -72,6 +72,11 @@ jobs:
           oidc-provider-arn: '${{ secrets.ALIBABA_CLOUD_RAM_OIDC_ARN }}'
           export-environment-variables: 'true'
           region: 'us-west-1'
+      - name: Get Sentinel API token from SSM
+        run: |
+          SENTINEL_API_TOKEN="$(aws ssm get-parameter --name "/sentinel/api-tokens/public-benchmarks" --with-decryption --region us-east-1 --query 'Parameter.Value' --output text)"
+          echo "::add-mask::$SENTINEL_API_TOKEN"
+          echo "SENTINEL_API_TOKEN=$SENTINEL_API_TOKEN" >> "$GITHUB_ENV"
       - name: inspector
         run: python /inspector/inspector.py start --vendor ${{ matrix.vendor }}
         env:
