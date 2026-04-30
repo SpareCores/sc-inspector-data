@@ -56,6 +56,9 @@ jobs:
         with:
           fetch-depth: 0
           path: sc-inspector-data
+      - name: Configure git auth for pushes
+        run: git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+        working-directory: sc-inspector-data
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v6.1.0
         with:
