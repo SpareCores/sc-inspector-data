@@ -10,9 +10,14 @@ vendor by its `vendor_id`, and using the `api_reference` for the server.
 ## Timing
 
 Each inspected instance may have a `timing/` directory (alongside task directories such as
-`dmidecode/`). Files are plain text with a single UTC timestamp per line, in ISO-8601 form
+`dmidecode/`). Orchestration state for the timing task lives in `timing/meta.json`. Per GitHub
+Actions run, timestamps are stored under `timing/<GITHUB_RUN_ID>/` so repeated starts of the same
+instance type keep separate histories.
+
+Files are plain text with a single UTC timestamp per line, in ISO-8601 form
 (`YYYY-MM-DDTHH:MM:SSZ`). They are written to separate files (not `meta.json`) so the GitHub
-Actions start workflow and the remote `inspect` run can commit independently.
+Actions start workflow and the remote `inspect` run can commit independently. The run id comes from
+the `GITHUB_RUN_ID` environment variable.
 
 | File | Stage | Written by |
 |------|--------|------------|
@@ -24,11 +29,32 @@ Actions start workflow and the remote `inspect` run can commit independently.
 | `inspector_end` | `inspector.py inspect` finishes (all tasks done) | Inspect container |
 | `machine_start` | Estimated OS boot time (`now − /proc/uptime`, second resolution) | Inspect container (`timing` task) |
 
-The `timing` task is gated with `RUN_NEW_TASKS_ON_SERVERS` so enabling it does not restart all
-machines. When it runs, it **always overwrites** `user_data_start`, `user_data_end`, and `machine_start`
-(re-importing `user_data_*` from the host mount at `/host-timing`). `inspector_start` /
-`inspector_end` are rewritten on each `inspect` run; `api_start` / `api_end` on each successful
-`start`.
+Example layout:
+
+```
+data/upcloud/STARTER-2xCPU-2GB/timing/
+  meta.json
+  12345678901/
+    api_start
+    api_end
+    user_data_start
+    user_data_end
+    inspector_start
+    inspector_end
+    machine_start
+  12345678902/
+    ...
+```
+
+The timing task uses two inspector task flags (see `sc-inspector`):
+
+- **`start_with_instance`** — never starts an instance on its own; may be added to a start when
+  another task is already starting the machine, and uses the usual `meta.json` rules on inspect.
+- **`always_run`** — never starts an instance on its own; is always added when any other task
+  starts the machine, and always runs on inspect (ignoring a previous successful `meta.json`).
+
+Timing sets both flags. A machine is therefore never started for timing alone; whenever it starts
+for another task, timing runs and writes a full checkpoint set under `timing/<GITHUB_RUN_ID>/`.
 
 ## PassMark
 
