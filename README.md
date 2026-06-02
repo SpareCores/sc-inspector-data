@@ -7,6 +7,11 @@ vendor by its `vendor_id`, and using the `api_reference` for the server.
 
 # Collected data
 
+In general, consult the [SpareCores Inspector](https://github.com/SpareCores/sc-inspector)
+repository for the technical details about the data collected, and the
+[Spare Cores Navigator Benchmark Coverage](https://sparecores.com/navigator/benchmark-workloads)
+page for a higher level overview.
+
 ## Timing
 
 Each inspected instance may have a `timing/` directory (alongside task directories such as
