@@ -119,7 +119,7 @@ Task timeout is **3 hours** (GuideLLM sweeps × models × workloads).
 | Platform | Image | Notes |
 |----------|--------|--------|
 | amd64 + GPU | `benchmark-vllm-gpu` | Multi-GPU tensor parallel |
-| arm64 + GPU | `benchmark-vllm-gpu` | arm64 base from `vllm-gpu-base` |
+| arm64 + GPU | `benchmark-vllm-gpu` | Hub `vllm/vllm-openai` (multi-arch) |
 | amd64 CPU (AVX-512) | `benchmark-vllm-cpu` | Hub `vllm-openai-cpu` |
 | arm64 CPU | `benchmark-vllm-cpu` | Hub `vllm-openai-cpu` |
 | amd64 CPU (AVX2 only) | `benchmark-vllm-cpu-avx2` | After Hub CPU probe fails on AVX2-only x86 |
@@ -129,7 +129,7 @@ Task timeout is **3 hours** (GuideLLM sweeps × models × workloads).
 **Models** (largest that fits in available GPU VRAM or CPU RAM; ladder stops if throughput
 collapses):
 
-- SmolLM2-135M, Qwen2.5-0.5B, Gemma-2-2B, Qwen3-4B
+- SmolLM2-135M, Qwen2.5-0.5B, Gemma-2-2B, Llama-3.1-8B (gated; needs `HF_TOKEN`)
 - Phi-4 and Llama-3.3-70B **bnb-4bit** on GPU-class memory only
 
 **Workloads** (synthetic token lengths per GuideLLM run):
@@ -140,9 +140,9 @@ collapses):
 | `rag` | 1024 | 256 | Context + answer |
 | `long` | 4096 | 512 | Long context (GPU only) |
 
-On **GPU**, GuideLLM uses a **`sweep`** profile (~6 steps: sync → max throughput → constant rates
-in between). On **CPU**, default is **`synchronous`** then **`throughput`** per workload (faster
-than a full sweep).
+On **CPU and GPU**, GuideLLM uses a **`sweep`** profile (default **3** steps: sync → saturated
+throughput → one constant rate). Use `GUIDELLM_SWEEP_SIZE=2` for sync+throughput only, or
+`GUIDELLM_PROFILES=legacy` for the old sync + capped-throughput path.
 
 ### Runtime vs `llm/` (from `meta.json`)
 
@@ -245,12 +245,12 @@ a second run whose logs are what you see in the repo.
 
 - **Not comparable 1:1 with `llm/` llama-bench charts** — different stack (GGUF vs HF weights),
   different metrics (isolated prefill/gen tok/s vs TTFT/TPOT under concurrency).
-- **Not gated Meta Llama weights by default** — 70B uses public
-  `unsloth/Llama-3.3-70B-Instruct-bnb-4bit`, aligned with the spirit of the GGUF ladder but served
-  via vLLM.
+- **Gated HF repos** — Gemma-2B and Llama-3.1-8B need license acceptance on Hugging Face and
+  `HF_TOKEN` in the inspector environment. 70B uses public
+  `unsloth/Llama-3.3-70B-Instruct-bnb-4bit` (ungated on Hub), aligned with the GGUF ladder spirit.
 - **Not a substitute for application-specific SLO tuning** — we use fixed workloads and GuideLLM
   defaults so instances are comparable on the Navigator; operators should still validate their
   own prompts and rates.
 
-For image build pins, env vars (`GUIDELLM_CPU_PROFILES`, probe overrides), and harness details, see
+For image build pins, env vars (`GUIDELLM_SWEEP_SIZE`, `GUIDELLM_PROFILES`, probe overrides), and harness details, see
 [`sc-images/vllm-common/README.md`](https://github.com/SpareCores/sc-images/tree/main/vllm-common).
