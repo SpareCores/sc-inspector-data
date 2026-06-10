@@ -106,31 +106,46 @@ images are `benchmark-vllm-gpu`, `benchmark-vllm-cpu`, and `benchmark-vllm-cpu-a
 The task tries Docker images **in order** until `--probe-only` succeeds (smallest model loads,
 `/health` OK):
 
-1. **`benchmark-vllm-gpu`** — NVIDIA GPU, all visible GPUs via `--tensor-parallel-size`
+1. **`benchmark-vllm-gpu`** — NVIDIA GPU (`--gpus all`; largest valid
+   `--tensor-parallel-size` per model — not always every GPU; see
+   [Tensor parallelism](#tensor-parallelism))
 2. **`benchmark-vllm-cpu`** — Hub CPU image (amd64 needs **AVX-512**; also **arm64**)
 3. **`benchmark-vllm-cpu-avx2`** — amd64 **AVX2-only** hosts (custom base built with
    `VLLM_CPU_AVX2=true`)
 
 The first image that passes the probe runs the **full** benchmark; there is no fallback mid-run.
-Task timeout is **3 hours** (GuideLLM sweeps × models × workloads).
+Task timeout is **3 hours** (GuideLLM sweeps × models × workloads). Instances with **under 4 GiB**
+RAM skip the task (`exit_code: -2`; task `minimum_memory` is 4 GiB).
 
 ### Architectures covered
 
 | Platform | Image | Notes |
 |----------|--------|--------|
-| amd64 + GPU | `benchmark-vllm-gpu` | Multi-GPU tensor parallel |
+| amd64 + GPU | `benchmark-vllm-gpu` | Tensor parallel when head count allows; 70B bnb uses pipeline parallel |
 | arm64 + GPU | `benchmark-vllm-gpu` | Hub `vllm/vllm-openai` (multi-arch) |
 | amd64 CPU (AVX-512) | `benchmark-vllm-cpu` | Hub `vllm-openai-cpu` |
 | arm64 CPU | `benchmark-vllm-cpu` | Hub `vllm-openai-cpu` |
 | amd64 CPU (AVX2 only) | `benchmark-vllm-cpu-avx2` | After Hub CPU probe fails on AVX2-only x86 |
 
+### Tensor parallelism
+
+vLLM requires `num_attention_heads % tensor_parallel_size == 0`. On multi-GPU hosts the harness
+picks the largest valid TP ≤ GPU count (e.g. SmolLM2-135M has **9** heads → **TP=1** on 2 GPUs, so
+only one GPU is busy — still `mode=gpu`). JSONL rows carry `tensor_parallel` (TP used) and
+`gpu_count` (visible GPUs). Full table:
+[`sc-images/vllm-common/README.md` — Tensor parallelism](https://github.com/SpareCores/sc-images/tree/main/vllm-common#tensor-parallelism).
+
 ### Models and workloads (default ladder)
 
-**Models** (largest that fits in available GPU VRAM or CPU RAM; ladder stops if throughput
-collapses):
+**Models** (small → large; each step runs only if `model_fits` RAM/VRAM and the server passes
+`/health`; ladder stops on OOM, failed health, or insufficient memory):
 
-- SmolLM2-135M, Qwen2.5-0.5B, Gemma-2-2B, Llama-3.1-8B (gated; needs `HF_TOKEN`)
-- Phi-4 and Llama-3.3-70B **bnb-4bit** on GPU-class memory only
+- SmolLM2-135M, Qwen2.5-0.5B, Gemma-2-2B, Llama-3.1-8B, Phi-4
+- Llama-3.3-70B **bnb-4bit** (~48 GiB) — **GPU only** (bitsandbytes quant)
+
+On **CPU**, every model except 70B may run when RAM allows (including Phi-4). Gemma-2B and
+Llama-3.1-8B are gated on Hugging Face — set `HF_TOKEN` and accept each license or those steps
+fail health quickly.
 
 **Workloads** (synthetic token lengths per GuideLLM run):
 
@@ -142,30 +157,24 @@ collapses):
 
 On **CPU and GPU**, GuideLLM uses a **`sweep`** profile (default **3** steps: sync → saturated
 throughput → one constant rate). Use `GUIDELLM_SWEEP_SIZE=2` for sync+throughput only, or
-`GUIDELLM_PROFILES=legacy` for the old sync + capped-throughput path.
+`GUIDELLM_PROFILES=legacy` for the old sync + capped-throughput path. CPU runs cap GuideLLM at
+**25 requests** per profile step (`GUIDELLM_MAX_REQUESTS_CPU`).
 
 ### Runtime vs `llm/` (from `meta.json`)
 
-There is **no `vllm/` data in this repo yet**; the table below compares inspector timeouts and
-observed **`llm`** wall times (`start` → `end` in `data/.../llm/meta.json`, **2 958** successful
-runs) to **expected** `vllm` cost from a manual GPU test (SmolLM2-135M on UpCloud 1×L4).
-
 | | **`llm`** (`benchmark-llm`) | **`vllm`** (`benchmark-vllm-*`) |
 |--|---------------------------|--------------------------------|
-| **Task timeout** | 1.5 h | 3 h (+ up to 18 min per failed image **probe**) |
-| **What runs** | 6 GGUF models; llama-bench prompt-processing + text-generation (~11 token sizes) | Up to 6 HF models; `vllm serve` + GuideLLM per workload (GPU: chat/rag/long × sweep) |
-| **`stdout` size** | ~15–40 KB typical full ladder (~30–40 JSONL lines, one row per bench scenario) | ~185 KB for **one** small GPU model (~320 JSONL metric rows) |
-| **Typical successful run** | **median ~35 min** (p90 ~42 min, max ~73 min) when most of the ladder completes | **~12 min per GPU model** measured (SmolLM2-135M, 3 workloads); scales with model count |
-| **Same host class (UpCloud 1×L4)** | **~7 min** (18 lines, **2** GGUF models — VRAM stops the ladder early) | **~12–15 min** for one HF model; **~25–40 min** if the vLLM ladder matches those 2–4 small models |
-| **Large GPU (e.g. 1×L40S, full ladder)** | **~40 min** (42 lines, **6** GGUF models) | **~1–1.5 h** rough estimate (6 models × ~12 min; 70B/Phi steps can add more) |
-| **CPU-only instances** | Same **~30–45 min** band for 5–6 GGUF models (llama.cpp CPU) | Often **slower than `llm`** per machine: CPU `vllm serve` startup + 4 models × 2 workloads × 2 GuideLLM profiles (no `long`, but real HTTP load) |
+| **Task timeout** | 1.5 h | 3 h (+ probe time per failed image, not stored) |
+| **What runs** | 6 GGUF models; llama-bench prompt-processing + text-generation (~11 token sizes) | Up to 6 HF models; `vllm serve` + GuideLLM per workload (GPU: chat/rag/long × sweep; CPU: chat/rag × sweep) |
+| **`stdout` size** | ~15–40 KB typical full ladder (~30–40 JSONL lines) | **~152 JSONL lines per GPU model** (38 chat + 57 rag + 57 long under `sweep`); **~367 KB** for four models on 1×L40S |
+| **Typical successful run** | **median ~35 min** when most of the ladder completes | **~8–12 min per small GPU model**; **~45 min** for four models on 1×L40S (observed) |
+| **Same host class (UpCloud 1×L4, GPU broken → CPU)** | **~7 min** (2 GGUF models) | **~23 min** CPU fallback; 3 small models with legacy profiles |
+| **Large GPU (1×L40S, full ladder)** | **~40 min** (6 GGUF models) | **~1–2 h** if all six HF models complete; phi-4 / 70B need headroom (~34 GiB / ~48 GiB) |
+| **CPU-only instances** | **~30–45 min** for 5–6 GGUF models | Often **slower per machine**: CPU `vllm serve` startup + up to 5 models × 2 workloads × sweep |
 
-**Takeaways:** `llm` is usually **one continuous 30–45 minute** job on instances that fit most GGUF
-models. `vllm` emits **far more metrics per model** and repeats **server startup + concurrent load**
-per workload; on **small GPUs** both tasks finish in **under ~15 minutes** because only small
-models run, but **`vllm` is not faster** — it is **heavier per model** and needs the **3 h** cap for
-full ladders on large GPUs (Phi-4, 70B bnb, multi-GPU). Inspector **`vllm`** also runs a **probe**
-before the timed benchmark; that phase is not stored in `data/.../vllm/`.
+**Takeaways:** `vllm` emits **far more metrics per model** than `llm` and repeats **server startup +
+concurrent HTTP load** per workload. A full GPU ladder needs the **3 h** timeout. The harness also
+runs a **probe** (`--probe-only`) before the timed benchmark; probe logs are not committed.
 
 ### What appears in `stdout` (JSONL)
 
@@ -190,11 +199,13 @@ below). Do not expect a pretty table on `stdout`.
 is invoked with `--models <hf-repo-id>`, `model` is the repo basename (e.g. `SmolLM2-135M-Instruct`);
 `model_id` is always the full Hugging Face id.
 
-**Row volume (GPU, one ladder model):** a full GPU run emits on the order of **~95 rows for
-`chat`**, **~114 for `rag`**, and **~114 for `long`** under `profile=sweep` (roughly **320 lines**
-total for SmolLM2-135M). Multiple ladder models append more lines until the ladder stops.
+**Row volume (GPU, one ladder model):** under `profile=sweep`, observed on UpCloud 1×L40S:
+**~38 rows for `chat`**, **~57 for `rag`**, **~57 for `long`** (**~152 lines** per model).
+Multiple ladder models append more lines until the ladder stops. Some sweep steps emit
+`score: 0.0` rows (`strategy=throughput` or `constant` with `concurrency: 0.0`) — normal GuideLLM
+sweep padding, not a failed benchmark.
 
-Example (from a real `benchmark-vllm-gpu` run on NVIDIA L4, single model, `chat` / synchronous step):
+Example (from `GPU-8xCPU-64GB-1xL40S`, `chat` / synchronous sweep step):
 
 ```json
 {
@@ -210,18 +221,18 @@ Example (from a real `benchmark-vllm-gpu` run on NVIDIA L4, single model, `chat`
   "concurrency": 0.999,
   "measurement": "ttft",
   "percentile": "p50",
-  "score": 10.16,
+  "score": 9.44,
   "unit": "ms",
   "mode": "gpu",
   "arch": "amd64",
   "avx512": true,
   "avx2_only_image": false,
-  "vllm_version": "0.22.0",
+  "vllm_version": "0.22.1",
   "guidellm_version": "0.6.0",
   "tensor_parallel": 1,
   "gpu_count": 1,
-  "gpu_model": "NVIDIA L4",
-  "total_vram_gb": 23.66
+  "gpu_model": "NVIDIA L40S",
+  "total_vram_gb": 47.67
 }
 ```
 
@@ -235,6 +246,8 @@ Example (from a real `benchmark-vllm-gpu` run on NVIDIA L4, single model, `chat`
 | `GuideLLM emitted N rows model=… workload=…` | After each GuideLLM JSON report is parsed |
 | `probe_ok model=… mode=…` | **`--probe-only`** runs only (inspector probe phase; not repeated in full benchmark `stderr`) |
 | vLLM `APIServer` / worker lines | Server subprocess (volume varies) |
+| `Invalid HTTP request received` | Occasional uvicorn warning (host networking, client disconnect); harmless if isolated |
+| `Server health check failed for …` | Model skipped; ladder continues or ends if nothing left |
 | Python `resource_tracker` / `shared_memory` warnings | Often at vLLM shutdown; harmless cleanup noise |
 
 The inspector stores **only the full benchmark container** output in `data/.../vllm/stdout` and
