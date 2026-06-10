@@ -1,484 +1,111 @@
-2026-06-10 08:22:11,012 - INFO - arch=amd64
-2026-06-10 08:22:11,012 - INFO - cpu_model=AMD EPYC 9575F 64-Core Processor
-2026-06-10 08:22:11,012 - INFO - cpu_flag_avx512f=yes
-2026-06-10 08:22:11,012 - INFO - cpu_flag_avx2=yes
-2026-06-10 08:22:11,012 - INFO - ram_total_gb=67.38 ram_available_gb=64.85
-2026-06-10 08:22:11,012 - INFO - mode=cpu arch=amd64 vllm=0.22.1 guidellm=0.6.0
-2026-06-10 08:22:11,012 - INFO - memory check smol-135m: need~0.3 GiB have~55.1 GiB
-2026-06-10 08:22:12,695 - INFO - Starting server: vllm serve HuggingFaceTB/SmolLM2-135M-Instruct --port 8000 --max-model-len 4096 --dtype float16 --gpu-memory-utilization 0.45
-(APIServer pid=25) Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[W610 08:22:39.294903035 utils.cpp:68] Warning: NUMA binding: Using MEMBIND policy for memory allocation on the NUMA nodes (0). Memory allocations will be strictly bound to these NUMA nodes. (function init_cpu_memory_env)
-(Worker pid=116) Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-(Worker pid=116) Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
-(Worker pid=116) Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00, 32.95it/s]
-(Worker pid=116) 
-(EngineCore pid=85) Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-(APIServer pid=25) INFO:     Started server process [25]
-(APIServer pid=25) INFO:     Waiting for application startup.
-(APIServer pid=25) INFO:     Application startup complete.
-2026-06-10 08:23:26,716 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model HuggingFaceTB/SmolLM2-135M-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=256,output_tokens=128 --profile sweep --random-seed 42 --max-seconds 46 --max-requests 25 --warmup 0.05 --output-dir /tmp/guidellm-vochj8_q --outputs json --disable-console --sample-requests 10 --rate 3
-(EngineCore pid=85) Process EngineCore:
-(EngineCore pid=85) Traceback (most recent call last):
-(EngineCore pid=85)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
-(EngineCore pid=85)     self.run()
-(EngineCore pid=85)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/process.py", line 108, in run
-(EngineCore pid=85)     self._target(*self._args, **self._kwargs)
-(EngineCore pid=85)   File "/opt/venv/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 1169, in run_engine_core
-(EngineCore pid=85)     raise e
-(EngineCore pid=85)   File "/opt/venv/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 1158, in run_engine_core
-(EngineCore pid=85)     engine_core.run_busy_loop()
-(EngineCore pid=85)   File "/opt/venv/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 1199, in run_busy_loop
-(EngineCore pid=85)     self._process_engine_step()
-(EngineCore pid=85)   File "/opt/venv/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 1238, in _process_engine_step
-(EngineCore pid=85)     outputs, model_executed = self.step_fn()
-(EngineCore pid=85)                               ^^^^^^^^^^^^^^
-(EngineCore pid=85)   File "/opt/venv/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 448, in step
-(EngineCore pid=85)     model_output = self.model_executor.sample_tokens(grammar_output)
-(EngineCore pid=85)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(EngineCore pid=85)   File "/opt/venv/lib/python3.12/site-packages/vllm/v1/executor/multiproc_executor.py", line 321, in sample_tokens
-(EngineCore pid=85)     return self.collective_rpc(
-(EngineCore pid=85)            ^^^^^^^^^^^^^^^^^^^^
-(EngineCore pid=85)   File "/opt/venv/lib/python3.12/site-packages/vllm/v1/executor/multiproc_executor.py", line 403, in collective_rpc
-(EngineCore pid=85)     return future if non_block else future.result()
-(EngineCore pid=85)                                     ^^^^^^^^^^^^^^^
-(EngineCore pid=85)   File "/opt/venv/lib/python3.12/site-packages/vllm/v1/executor/multiproc_executor.py", line 90, in result
-(EngineCore pid=85)     return super().result()
-(EngineCore pid=85)            ^^^^^^^^^^^^^^^^
-(EngineCore pid=85)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 449, in result
-(EngineCore pid=85)     return self.__get_result()
-(EngineCore pid=85)            ^^^^^^^^^^^^^^^^^^^
-(EngineCore pid=85)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
-(EngineCore pid=85)     raise self._exception
-(EngineCore pid=85)   File "/opt/venv/lib/python3.12/site-packages/vllm/v1/executor/multiproc_executor.py", line 94, in _wait_for_response
-(EngineCore pid=85)     response = self.aggregate(self.get_response())
-(EngineCore pid=85)                               ^^^^^^^^^^^^^^^^^^^
-(EngineCore pid=85)   File "/opt/venv/lib/python3.12/site-packages/vllm/v1/executor/multiproc_executor.py", line 386, in get_response
-(EngineCore pid=85)     status, result = mq.dequeue(timeout=dequeue_timeout)
-(EngineCore pid=85)                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(EngineCore pid=85)   File "/opt/venv/lib/python3.12/site-packages/vllm/distributed/device_communicators/shm_broadcast.py", line 772, in dequeue
-(EngineCore pid=85)     with self.acquire_read(timeout, indefinite) as buf:
-(EngineCore pid=85)          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(EngineCore pid=85)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/contextlib.py", line 137, in __enter__
-(EngineCore pid=85)     return next(self.gen)
-(EngineCore pid=85)            ^^^^^^^^^^^^^^
-(EngineCore pid=85)   File "/opt/venv/lib/python3.12/site-packages/vllm/distributed/device_communicators/shm_broadcast.py", line 694, in acquire_read
-(EngineCore pid=85)     raise RuntimeError("cancelled")
-(EngineCore pid=85) RuntimeError: cancelled
-2026-06-10 08:24:43,335 - WARNING - GuideLLM failed profile=sweep workload=chat: ssing/process.py", line 314, in _bootstrap
-    self.run()
-  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/process.py", line 108, in run
-    self._target(*self._args, **self._kwargs)
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/worker.py", line 160, in run
-    raise RuntimeError(
-RuntimeError: Worker process 2 encountered an error: Worker process 2 encountered an error: Backend validation request failed. Could not connect to the server or validate the backend configuration.
-Traceback (most recent call last):
-  File "/opt/venv/bin/guidellm", line 6, in <module>
-    sys.exit(cli())
-             ^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1514, in __call__
-    return self.main(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1435, in main
-    rv = self.invoke(ctx)
-         ^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
-    return _process_result(sub_ctx.command.invoke(sub_ctx))
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
-    return _process_result(sub_ctx.command.invoke(sub_ctx))
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1298, in invoke
-    return ctx.invoke(self.callback, **ctx.params)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 853, in invoke
-    return callback(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/__main__.py", line 476, in run
-    asyncio.run(
-  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
-    return runner.run(main)
-           ^^^^^^^^^^^^^^^^
-  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
-    return self._loop.run_until_complete(task)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/entrypoints.py", line 554, in benchmark_generative_text
-    async for benchmark in benchmarker.run(
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/benchmarker.py", line 133, in run
-    async for (
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/scheduler.py", line 143, in run
-    raise err
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/scheduler.py", line 126, in run
-    await worker_group.create_processes()
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/worker_group.py", line 265, in create_processes
-    raise RuntimeError(
-RuntimeError: Worker process group startup failed: error_event is set
-
-2026-06-10 08:24:43,335 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model HuggingFaceTB/SmolLM2-135M-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=1024,output_tokens=256 --profile sweep --random-seed 42 --max-seconds 46 --max-requests 25 --warmup 0.05 --output-dir /tmp/guidellm-tp1t3gnh --outputs json --disable-console --sample-requests 10 --rate 3
-(APIServer pid=25) INFO:     Shutting down
-(APIServer pid=25) INFO:     Waiting for application shutdown.
-(APIServer pid=25) INFO:     Application shutdown complete.
-(APIServer pid=25) INFO:     Finished server process [25]
-/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+2026-06-10 09:25:12,059 - INFO - arch=amd64
+2026-06-10 09:25:12,059 - INFO - cpu_model=AMD EPYC 9575F 64-Core Processor
+2026-06-10 09:25:12,059 - INFO - cpu_flag_avx512f=yes
+2026-06-10 09:25:12,059 - INFO - cpu_flag_avx2=yes
+2026-06-10 09:25:12,059 - INFO - ram_total_gb=67.38 ram_available_gb=64.88
+2026-06-10 09:25:12,059 - INFO - mode=gpu arch=amd64 vllm=0.22.1 guidellm=0.6.0
+2026-06-10 09:25:12,866 - INFO - memory check smol-135m: need~0.3 GiB have~42.9 GiB
+2026-06-10 09:25:12,866 - INFO - Starting server: vllm serve HuggingFaceTB/SmolLM2-135M-Instruct --port 8000 --max-model-len 8192 --tensor-parallel-size 1 --gpu-memory-utilization 0.9
+(EngineCore pid=79) Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+(EngineCore pid=79) Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00, 28.56it/s]
+(EngineCore pid=79) 
+(EngineCore pid=79) Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|          | 0/51 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  18%|█▊        | 9/51 [00:00<00:00, 81.96it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  35%|███▌      | 18/51 [00:00<00:00, 84.61it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  53%|█████▎    | 27/51 [00:00<00:00, 84.47it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  71%|███████   | 36/51 [00:00<00:00, 83.20it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  88%|████████▊ | 45/51 [00:00<00:00, 77.79it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 51/51 [00:00<00:00, 77.85it/s]
+(EngineCore pid=79) Capturing CUDA graphs (decode, FULL):   0%|          | 0/35 [00:00<?, ?it/s]Capturing CUDA graphs (decode, FULL):  23%|██▎       | 8/35 [00:00<00:00, 72.55it/s]Capturing CUDA graphs (decode, FULL):  46%|████▌     | 16/35 [00:00<00:00, 74.65it/s]Capturing CUDA graphs (decode, FULL):  69%|██████▊   | 24/35 [00:00<00:00, 75.96it/s]Capturing CUDA graphs (decode, FULL):  91%|█████████▏| 32/35 [00:00<00:00, 76.19it/s]Capturing CUDA graphs (decode, FULL): 100%|██████████| 35/35 [00:00<00:00, 76.08it/s]
+(APIServer pid=27) INFO:     Started server process [27]
+(APIServer pid=27) INFO:     Waiting for application startup.
+(APIServer pid=27) INFO:     Application startup complete.
+2026-06-10 09:26:10,884 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model HuggingFaceTB/SmolLM2-135M-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=256,output_tokens=128 --profile sweep --random-seed 42 --max-seconds 41 --max-requests 120 --warmup 0.05 --output-dir /tmp/guidellm-pa3qca9u --outputs json --disable-console --sample-requests 10 --rate 3
+2026-06-10 09:27:02,425 - INFO - GuideLLM emitted 38 rows model=smol-135m workload=chat profile=sweep
+2026-06-10 09:27:02,427 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model HuggingFaceTB/SmolLM2-135M-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=1024,output_tokens=256 --profile sweep --random-seed 42 --max-seconds 41 --max-requests 120 --warmup 0.05 --output-dir /tmp/guidellm-axv0r8_y --outputs json --disable-console --sample-requests 10 --rate 3
+2026-06-10 09:28:17,934 - INFO - GuideLLM emitted 57 rows model=smol-135m workload=rag profile=sweep
+2026-06-10 09:28:17,938 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model HuggingFaceTB/SmolLM2-135M-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=4096,output_tokens=512 --profile sweep --random-seed 42 --max-seconds 41 --max-requests 120 --warmup 0.05 --output-dir /tmp/guidellm-snvc3_oe --outputs json --disable-console --sample-requests 10 --rate 3
+2026-06-10 09:29:59,680 - INFO - GuideLLM emitted 57 rows model=smol-135m workload=long profile=sweep
+(APIServer pid=27) INFO:     Shutting down
+(APIServer pid=27) INFO:     Waiting for application shutdown.
+(APIServer pid=27) INFO:     Application shutdown complete.
+/usr/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
   warnings.warn('resource_tracker: There appear to be %d '
-/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 1 leaked shared_memory objects to clean up at shutdown
+2026-06-10 09:29:59,998 - INFO - memory check qwen-0.5b: need~1.2 GiB have~42.9 GiB
+2026-06-10 09:29:59,998 - INFO - Starting server: vllm serve Qwen/Qwen2.5-0.5B-Instruct --port 8000 --max-model-len 8192 --tensor-parallel-size 1 --gpu-memory-utilization 0.9
+(EngineCore pid=1024) Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+(EngineCore pid=1024) Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00, 11.30it/s]
+(EngineCore pid=1024) 
+(EngineCore pid=1024) Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|          | 0/51 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  20%|█▉        | 10/51 [00:00<00:00, 99.02it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  43%|████▎     | 22/51 [00:00<00:00, 109.67it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  67%|██████▋   | 34/51 [00:00<00:00, 109.29it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  88%|████████▊ | 45/51 [00:00<00:00, 108.70it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 51/51 [00:00<00:00, 106.02it/s]
+(EngineCore pid=1024) Capturing CUDA graphs (decode, FULL):   0%|          | 0/35 [00:00<?, ?it/s]Capturing CUDA graphs (decode, FULL):  37%|███▋      | 13/35 [00:00<00:00, 127.66it/s]Capturing CUDA graphs (decode, FULL):  77%|███████▋  | 27/35 [00:00<00:00, 129.52it/s]Capturing CUDA graphs (decode, FULL): 100%|██████████| 35/35 [00:00<00:00, 131.28it/s]
+(APIServer pid=973) INFO:     Started server process [973]
+(APIServer pid=973) INFO:     Waiting for application startup.
+(APIServer pid=973) INFO:     Application startup complete.
+2026-06-10 09:31:02,015 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model Qwen/Qwen2.5-0.5B-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=256,output_tokens=128 --profile sweep --random-seed 42 --max-seconds 44 --max-requests 120 --warmup 0.05 --output-dir /tmp/guidellm-m1uml02w --outputs json --disable-console --sample-requests 10 --rate 3
+2026-06-10 09:32:08,678 - INFO - GuideLLM emitted 38 rows model=qwen-0.5b workload=chat profile=sweep
+2026-06-10 09:32:08,680 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model Qwen/Qwen2.5-0.5B-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=1024,output_tokens=256 --profile sweep --random-seed 42 --max-seconds 44 --max-requests 120 --warmup 0.05 --output-dir /tmp/guidellm-vf98txir --outputs json --disable-console --sample-requests 10 --rate 3
+2026-06-10 09:33:30,600 - INFO - GuideLLM emitted 57 rows model=qwen-0.5b workload=rag profile=sweep
+2026-06-10 09:33:30,604 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model Qwen/Qwen2.5-0.5B-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=4096,output_tokens=512 --profile sweep --random-seed 42 --max-seconds 44 --max-requests 120 --warmup 0.05 --output-dir /tmp/guidellm-na23eqmu --outputs json --disable-console --sample-requests 10 --rate 3
+2026-06-10 09:35:15,437 - INFO - GuideLLM emitted 57 rows model=qwen-0.5b workload=long profile=sweep
+(APIServer pid=973) INFO:     Shutting down
+(APIServer pid=973) INFO:     Waiting for application shutdown.
+(APIServer pid=973) INFO:     Application shutdown complete.
+/usr/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
   warnings.warn('resource_tracker: There appear to be %d '
-2026-06-10 08:24:50,396 - WARNING - GuideLLM failed profile=sweep workload=rag: INFO 06-10 08:24:46 [importing.py:45] Triton is installed but 0 active driver(s) found (expected 1). Disabling Triton to prevent runtime errors.
-INFO 06-10 08:24:46 [importing.py:69] Triton not installed or not compatible; certain GPU-related functions will not be available.
-
-2026-06-10 08:24:50,396 - INFO - memory check qwen-0.5b: need~1.2 GiB have~54.9 GiB
-2026-06-10 08:24:50,396 - INFO - Starting server: vllm serve Qwen/Qwen2.5-0.5B-Instruct --port 8000 --max-model-len 4096 --dtype float16 --gpu-memory-utilization 0.45
-(APIServer pid=574) Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-(APIServer pid=574) Traceback (most recent call last):
-(APIServer pid=574)   File "/opt/venv/bin/vllm", line 10, in <module>
-(APIServer pid=574)     sys.exit(main())
-(APIServer pid=574)              ^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/cli/main.py", line 92, in main
-(APIServer pid=574)     args.dispatch_function(args)
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/cli/serve.py", line 148, in cmd
-(APIServer pid=574)     uvloop.run(run_server(args))
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/uvloop/__init__.py", line 96, in run
-(APIServer pid=574)     return __asyncio.run(
-(APIServer pid=574)            ^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
-(APIServer pid=574)     return runner.run(main)
-(APIServer pid=574)            ^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
-(APIServer pid=574)     return self._loop.run_until_complete(task)
-(APIServer pid=574)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "uvloop/loop.pyx", line 1512, in uvloop.loop.Loop.run_until_complete
-(APIServer pid=574)   File "uvloop/loop.pyx", line 1505, in uvloop.loop.Loop.run_until_complete
-(APIServer pid=574)   File "uvloop/loop.pyx", line 1379, in uvloop.loop.Loop.run_forever
-(APIServer pid=574)   File "uvloop/loop.pyx", line 557, in uvloop.loop.Loop._run
-(APIServer pid=574)   File "uvloop/loop.pyx", line 476, in uvloop.loop.Loop._on_idle
-(APIServer pid=574)   File "uvloop/cbhandles.pyx", line 83, in uvloop.loop.Handle._run
-(APIServer pid=574)   File "uvloop/cbhandles.pyx", line 61, in uvloop.loop.Handle._run
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/uvloop/__init__.py", line 48, in wrapper
-(APIServer pid=574)     return await main
-(APIServer pid=574)            ^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/openai/api_server.py", line 678, in run_server
-(APIServer pid=574)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/openai/api_server.py", line 692, in run_server_worker
-(APIServer pid=574)     async with build_async_engine_client(
-(APIServer pid=574)                ^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/contextlib.py", line 210, in __aenter__
-(APIServer pid=574)     return await anext(self.gen)
-(APIServer pid=574)            ^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/openai/api_server.py", line 100, in build_async_engine_client
-(APIServer pid=574)     async with build_async_engine_client_from_engine_args(
-(APIServer pid=574)                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/contextlib.py", line 210, in __aenter__
-(APIServer pid=574)     return await anext(self.gen)
-(APIServer pid=574)            ^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/openai/api_server.py", line 124, in build_async_engine_client_from_engine_args
-(APIServer pid=574)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)
-(APIServer pid=574)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/vllm/engine/arg_utils.py", line 1730, in create_engine_config
-(APIServer pid=574)     model_config = self.create_model_config()
-(APIServer pid=574)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/vllm/engine/arg_utils.py", line 1560, in create_model_config
-(APIServer pid=574)     return ModelConfig(
-(APIServer pid=574)            ^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__
-(APIServer pid=574)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/vllm/config/model.py", line 571, in __post_init__
-(APIServer pid=574)     self.encoder_config = self._get_encoder_config()
-(APIServer pid=574)                           ^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/vllm/config/model.py", line 900, in _get_encoder_config
-(APIServer pid=574)     return get_sentence_transformer_tokenizer_config(model, self.revision)
-(APIServer pid=574)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/vllm/transformers_utils/config.py", line 975, in get_sentence_transformer_tokenizer_config
-(APIServer pid=574)     repo_files = list_repo_files(model, revision=revision)
-(APIServer pid=574)                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/vllm/transformers_utils/repo_utils.py", line 92, in list_repo_files
-(APIServer pid=574)     return with_retry(lookup_files, "Error retrieving file list")
-(APIServer pid=574)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/vllm/transformers_utils/repo_utils.py", line 42, in with_retry
-(APIServer pid=574)     return func()
-(APIServer pid=574)            ^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/vllm/transformers_utils/repo_utils.py", line 83, in lookup_files
-(APIServer pid=574)     return hf_list_repo_files(
-(APIServer pid=574)            ^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
-(APIServer pid=574)     return fn(*args, **kwargs)
-(APIServer pid=574)            ^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/hf_api.py", line 3695, in list_repo_files
-(APIServer pid=574)     for f in self.list_repo_tree(
-(APIServer pid=574)              ^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/hf_api.py", line 3830, in list_repo_tree
-(APIServer pid=574)     for path_info in paginate(path=tree_url, headers=headers, params={"recursive": recursive, "expand": expand}):
-(APIServer pid=574)                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/utils/_pagination.py", line 35, in paginate
-(APIServer pid=574)     r = session.get(path, params=params, headers=headers)
-(APIServer pid=574)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/httpx/_client.py", line 1053, in get
-(APIServer pid=574)     return self.request(
-(APIServer pid=574)            ^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/httpx/_client.py", line 825, in request
-(APIServer pid=574)     return self.send(request, auth=auth, follow_redirects=follow_redirects)
-(APIServer pid=574)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/httpx/_client.py", line 914, in send
-(APIServer pid=574)     response = self._send_handling_auth(
-(APIServer pid=574)                ^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/httpx/_client.py", line 942, in _send_handling_auth
-(APIServer pid=574)     response = self._send_handling_redirects(
-(APIServer pid=574)                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/httpx/_client.py", line 979, in _send_handling_redirects
-(APIServer pid=574)     response = self._send_single_request(request)
-(APIServer pid=574)                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/httpx/_client.py", line 1014, in _send_single_request
-(APIServer pid=574)     response = transport.handle_request(request)
-(APIServer pid=574)                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 250, in handle_request
-(APIServer pid=574)     resp = self._pool.handle_request(req)
-(APIServer pid=574)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/httpcore/_sync/connection_pool.py", line 256, in handle_request
-(APIServer pid=574)     raise exc from None
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/httpcore/_sync/connection_pool.py", line 236, in handle_request
-(APIServer pid=574)     response = connection.handle_request(
-(APIServer pid=574)                ^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/httpcore/_sync/connection.py", line 103, in handle_request
-(APIServer pid=574)     return self._connection.handle_request(request)
-(APIServer pid=574)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/httpcore/_sync/http11.py", line 136, in handle_request
-(APIServer pid=574)     raise exc
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/httpcore/_sync/http11.py", line 106, in handle_request
-(APIServer pid=574)     ) = self._receive_response_headers(**kwargs)
-(APIServer pid=574)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/httpcore/_sync/http11.py", line 177, in _receive_response_headers
-(APIServer pid=574)     event = self._receive_event(timeout=timeout)
-(APIServer pid=574)             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/httpcore/_sync/http11.py", line 217, in _receive_event
-(APIServer pid=574)     data = self._network_stream.read(
-(APIServer pid=574)            ^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/httpcore/_backends/sync.py", line 128, in read
-(APIServer pid=574)     return self._sock.recv(max_bytes)
-(APIServer pid=574)            ^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/ssl.py", line 1244, in recv
-(APIServer pid=574)     return self.read(buflen)
-(APIServer pid=574)            ^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/ssl.py", line 1117, in read
-(APIServer pid=574)     return self._sslobj.read(len)
-(APIServer pid=574)            ^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=574)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/openai/api_server.py", line 673, in _interrupt_init
-(APIServer pid=574)     raise KeyboardInterrupt("terminated")
-(APIServer pid=574) KeyboardInterrupt: terminated
-2026-06-10 08:24:56,398 - WARNING - vLLM server exited with code -15
-2026-06-10 08:24:56,398 - WARNING - Server health check failed for Qwen/Qwen2.5-0.5B-Instruct
-2026-06-10 08:24:56,398 - ERROR - vLLM CPU server failed to start. Use --privileged --shm-size=4g and BENCHMARK_VLLM_ALLOW_AVX2_ONLY on AVX2-only amd64.
-2026-06-10 08:24:56,398 - INFO - memory check gemma-2b: need~4.8 GiB have~55.1 GiB
-2026-06-10 08:24:56,398 - INFO - Starting server: vllm serve google/gemma-2-2b-it --port 8000 --max-model-len 4096 --dtype float16 --gpu-memory-utilization 0.45
-(APIServer pid=601) Traceback (most recent call last):
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 761, in hf_raise_for_status
-(APIServer pid=601)     response.raise_for_status()
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/httpx/_models.py", line 829, in raise_for_status
-(APIServer pid=601)     raise HTTPStatusError(message, request=request, response=self)
-(APIServer pid=601) httpx.HTTPStatusError: Client error '401 Unauthorized' for url 'https://huggingface.co/google/gemma-2-2b-it/resolve/main/config.json'
-(APIServer pid=601) For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
-(APIServer pid=601) 
-(APIServer pid=601) The above exception was the direct cause of the following exception:
-(APIServer pid=601) 
-(APIServer pid=601) Traceback (most recent call last):
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 437, in cached_files
-(APIServer pid=601)     hf_hub_download(
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
-(APIServer pid=601)     return fn(*args, **kwargs)
-(APIServer pid=601)            ^^^^^^^^^^^^^^^^^^^
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1010, in hf_hub_download
-(APIServer pid=601)     return _hf_hub_download_to_cache_dir(
-(APIServer pid=601)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1161, in _hf_hub_download_to_cache_dir
-(APIServer pid=601)     _raise_on_head_call_error(head_call_error, force_download, local_files_only)
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1795, in _raise_on_head_call_error
-(APIServer pid=601)     raise head_call_error
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1682, in _get_metadata_or_catch_error
-(APIServer pid=601)     metadata = get_hf_file_metadata(
-(APIServer pid=601)                ^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
-(APIServer pid=601)     return fn(*args, **kwargs)
-(APIServer pid=601)            ^^^^^^^^^^^^^^^^^^^
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1604, in get_hf_file_metadata
-(APIServer pid=601)     response = _httpx_follow_relative_redirects_with_backoff(
-(APIServer pid=601)                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 692, in _httpx_follow_relative_redirects_with_backoff
-(APIServer pid=601)     hf_raise_for_status(response)
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 787, in hf_raise_for_status
-(APIServer pid=601)     raise _format(GatedRepoError, message, response, repo_type=repo_type, repo_id=repo_id) from e
-(APIServer pid=601) huggingface_hub.errors.GatedRepoError: 401 Client Error. (Request ID: Root=1-6a291f5c-601c09f41e6cdf045e591f9c;ce397fa3-af42-494d-9842-9472979cc1fc)
-(APIServer pid=601) 
-(APIServer pid=601) Cannot access gated repo for url https://huggingface.co/google/gemma-2-2b-it/resolve/main/config.json.
-(APIServer pid=601) Access to model google/gemma-2-2b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
-(APIServer pid=601) 
-(APIServer pid=601) The above exception was the direct cause of the following exception:
-(APIServer pid=601) 
-(APIServer pid=601) Traceback (most recent call last):
-(APIServer pid=601)   File "/opt/venv/bin/vllm", line 10, in <module>
-(APIServer pid=601)     sys.exit(main())
-(APIServer pid=601)              ^^^^^^
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/cli/main.py", line 92, in main
-(APIServer pid=601)     args.dispatch_function(args)
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/cli/serve.py", line 148, in cmd
-(APIServer pid=601)     uvloop.run(run_server(args))
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/uvloop/__init__.py", line 96, in run
-(APIServer pid=601)     return __asyncio.run(
-(APIServer pid=601)            ^^^^^^^^^^^^^^
-(APIServer pid=601)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
-(APIServer pid=601)     return runner.run(main)
-(APIServer pid=601)            ^^^^^^^^^^^^^^^^
-(APIServer pid=601)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
-(APIServer pid=601)     return self._loop.run_until_complete(task)
-(APIServer pid=601)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=601)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/uvloop/__init__.py", line 48, in wrapper
-(APIServer pid=601)     return await main
-(APIServer pid=601)            ^^^^^^^^^^
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/openai/api_server.py", line 678, in run_server
-(APIServer pid=601)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/openai/api_server.py", line 692, in run_server_worker
-(APIServer pid=601)     async with build_async_engine_client(
-(APIServer pid=601)                ^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=601)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/contextlib.py", line 210, in __aenter__
-(APIServer pid=601)     return await anext(self.gen)
-(APIServer pid=601)            ^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/openai/api_server.py", line 100, in build_async_engine_client
-(APIServer pid=601)     async with build_async_engine_client_from_engine_args(
-(APIServer pid=601)                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=601)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/contextlib.py", line 210, in __aenter__
-(APIServer pid=601)     return await anext(self.gen)
-(APIServer pid=601)            ^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/openai/api_server.py", line 124, in build_async_engine_client_from_engine_args
-(APIServer pid=601)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)
-(APIServer pid=601)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/vllm/engine/arg_utils.py", line 1720, in create_engine_config
-(APIServer pid=601)     maybe_override_with_speculators(
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/vllm/transformers_utils/config.py", line 626, in maybe_override_with_speculators
-(APIServer pid=601)     config_dict, _ = PretrainedConfig.get_config_dict(
-(APIServer pid=601)                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/transformers/configuration_utils.py", line 685, in get_config_dict
-(APIServer pid=601)     config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
-(APIServer pid=601)                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/transformers/configuration_utils.py", line 740, in _get_config_dict
-(APIServer pid=601)     resolved_config_file = cached_file(
-(APIServer pid=601)                            ^^^^^^^^^^^^
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 293, in cached_file
-(APIServer pid=601)     file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
-(APIServer pid=601)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=601)   File "/opt/venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 503, in cached_files
-(APIServer pid=601)     raise OSError(
-(APIServer pid=601) OSError: You are trying to access a gated repo.
-(APIServer pid=601) Make sure to have access to it at https://huggingface.co/google/gemma-2-2b-it.
-(APIServer pid=601) 401 Client Error. (Request ID: Root=1-6a291f5c-601c09f41e6cdf045e591f9c;ce397fa3-af42-494d-9842-9472979cc1fc)
-(APIServer pid=601) 
-(APIServer pid=601) Cannot access gated repo for url https://huggingface.co/google/gemma-2-2b-it/resolve/main/config.json.
-(APIServer pid=601) Access to model google/gemma-2-2b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
-2026-06-10 08:25:02,400 - WARNING - vLLM server exited with code 1
-2026-06-10 08:25:02,401 - WARNING - Server health check failed for google/gemma-2-2b-it
-2026-06-10 08:25:02,401 - ERROR - vLLM CPU server failed to start. Use --privileged --shm-size=4g and BENCHMARK_VLLM_ALLOW_AVX2_ONLY on AVX2-only amd64.
-2026-06-10 08:25:02,401 - INFO - memory check llama-8b: need~19.2 GiB have~55.0 GiB
-2026-06-10 08:25:02,401 - INFO - Starting server: vllm serve meta-llama/Llama-3.1-8B-Instruct --port 8000 --max-model-len 4096 --dtype float16 --gpu-memory-utilization 0.45
-(APIServer pid=627) Traceback (most recent call last):
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 761, in hf_raise_for_status
-(APIServer pid=627)     response.raise_for_status()
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/httpx/_models.py", line 829, in raise_for_status
-(APIServer pid=627)     raise HTTPStatusError(message, request=request, response=self)
-(APIServer pid=627) httpx.HTTPStatusError: Client error '401 Unauthorized' for url 'https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/resolve/main/config.json'
-(APIServer pid=627) For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
-(APIServer pid=627) 
-(APIServer pid=627) The above exception was the direct cause of the following exception:
-(APIServer pid=627) 
-(APIServer pid=627) Traceback (most recent call last):
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 437, in cached_files
-(APIServer pid=627)     hf_hub_download(
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
-(APIServer pid=627)     return fn(*args, **kwargs)
-(APIServer pid=627)            ^^^^^^^^^^^^^^^^^^^
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1010, in hf_hub_download
-(APIServer pid=627)     return _hf_hub_download_to_cache_dir(
-(APIServer pid=627)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1161, in _hf_hub_download_to_cache_dir
-(APIServer pid=627)     _raise_on_head_call_error(head_call_error, force_download, local_files_only)
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1795, in _raise_on_head_call_error
-(APIServer pid=627)     raise head_call_error
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1682, in _get_metadata_or_catch_error
-(APIServer pid=627)     metadata = get_hf_file_metadata(
-(APIServer pid=627)                ^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
-(APIServer pid=627)     return fn(*args, **kwargs)
-(APIServer pid=627)            ^^^^^^^^^^^^^^^^^^^
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1604, in get_hf_file_metadata
-(APIServer pid=627)     response = _httpx_follow_relative_redirects_with_backoff(
-(APIServer pid=627)                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 692, in _httpx_follow_relative_redirects_with_backoff
-(APIServer pid=627)     hf_raise_for_status(response)
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 787, in hf_raise_for_status
-(APIServer pid=627)     raise _format(GatedRepoError, message, response, repo_type=repo_type, repo_id=repo_id) from e
-(APIServer pid=627) huggingface_hub.errors.GatedRepoError: 401 Client Error. (Request ID: Root=1-6a291f62-11a7d0364de4c4477626d631;14a4816d-4344-4de5-99e9-ec22d58801f4)
-(APIServer pid=627) 
-(APIServer pid=627) Cannot access gated repo for url https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/resolve/main/config.json.
-(APIServer pid=627) Access to model meta-llama/Llama-3.1-8B-Instruct is restricted. You must have access to it and be authenticated to access it. Please log in.
-(APIServer pid=627) 
-(APIServer pid=627) The above exception was the direct cause of the following exception:
-(APIServer pid=627) 
-(APIServer pid=627) Traceback (most recent call last):
-(APIServer pid=627)   File "/opt/venv/bin/vllm", line 10, in <module>
-(APIServer pid=627)     sys.exit(main())
-(APIServer pid=627)              ^^^^^^
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/cli/main.py", line 92, in main
-(APIServer pid=627)     args.dispatch_function(args)
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/cli/serve.py", line 148, in cmd
-(APIServer pid=627)     uvloop.run(run_server(args))
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/uvloop/__init__.py", line 96, in run
-(APIServer pid=627)     return __asyncio.run(
-(APIServer pid=627)            ^^^^^^^^^^^^^^
-(APIServer pid=627)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
-(APIServer pid=627)     return runner.run(main)
-(APIServer pid=627)            ^^^^^^^^^^^^^^^^
-(APIServer pid=627)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
-(APIServer pid=627)     return self._loop.run_until_complete(task)
-(APIServer pid=627)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=627)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/uvloop/__init__.py", line 48, in wrapper
-(APIServer pid=627)     return await main
-(APIServer pid=627)            ^^^^^^^^^^
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/openai/api_server.py", line 678, in run_server
-(APIServer pid=627)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/openai/api_server.py", line 692, in run_server_worker
-(APIServer pid=627)     async with build_async_engine_client(
-(APIServer pid=627)                ^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=627)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/contextlib.py", line 210, in __aenter__
-(APIServer pid=627)     return await anext(self.gen)
-(APIServer pid=627)            ^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/openai/api_server.py", line 100, in build_async_engine_client
-(APIServer pid=627)     async with build_async_engine_client_from_engine_args(
-(APIServer pid=627)                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=627)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/contextlib.py", line 210, in __aenter__
-(APIServer pid=627)     return await anext(self.gen)
-(APIServer pid=627)            ^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/vllm/entrypoints/openai/api_server.py", line 124, in build_async_engine_client_from_engine_args
-(APIServer pid=627)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)
-(APIServer pid=627)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/vllm/engine/arg_utils.py", line 1720, in create_engine_config
-(APIServer pid=627)     maybe_override_with_speculators(
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/vllm/transformers_utils/config.py", line 626, in maybe_override_with_speculators
-(APIServer pid=627)     config_dict, _ = PretrainedConfig.get_config_dict(
-(APIServer pid=627)                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/transformers/configuration_utils.py", line 685, in get_config_dict
-(APIServer pid=627)     config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
-(APIServer pid=627)                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/transformers/configuration_utils.py", line 740, in _get_config_dict
-(APIServer pid=627)     resolved_config_file = cached_file(
-(APIServer pid=627)                            ^^^^^^^^^^^^
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 293, in cached_file
-(APIServer pid=627)     file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
-(APIServer pid=627)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-(APIServer pid=627)   File "/opt/venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 503, in cached_files
-(APIServer pid=627)     raise OSError(
-(APIServer pid=627) OSError: You are trying to access a gated repo.
-(APIServer pid=627) Make sure to have access to it at https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct.
-(APIServer pid=627) 401 Client Error. (Request ID: Root=1-6a291f62-11a7d0364de4c4477626d631;14a4816d-4344-4de5-99e9-ec22d58801f4)
-(APIServer pid=627) 
-(APIServer pid=627) Cannot access gated repo for url https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/resolve/main/config.json.
-(APIServer pid=627) Access to model meta-llama/Llama-3.1-8B-Instruct is restricted. You must have access to it and be authenticated to access it. Please log in.
-2026-06-10 08:25:08,403 - WARNING - vLLM server exited with code 1
-2026-06-10 08:25:08,403 - WARNING - Server health check failed for meta-llama/Llama-3.1-8B-Instruct
-2026-06-10 08:25:08,403 - ERROR - vLLM CPU server failed to start. Use --privileged --shm-size=4g and BENCHMARK_VLLM_ALLOW_AVX2_ONLY on AVX2-only amd64.
+2026-06-10 09:35:15,806 - INFO - memory check gemma-2b: need~4.8 GiB have~42.9 GiB
+2026-06-10 09:35:15,806 - INFO - Starting server: vllm serve google/gemma-2-2b-it --port 8000 --max-model-len 8192 --tensor-parallel-size 1 --gpu-memory-utilization 0.9
+(EngineCore pid=1993) Loading safetensors checkpoint shards:   0% Completed | 0/2 [00:00<?, ?it/s]
+(EngineCore pid=1993) Loading safetensors checkpoint shards:  50% Completed | 1/2 [00:00<00:00,  2.80it/s]
+(EngineCore pid=1993) Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:00<00:00,  4.55it/s]
+(EngineCore pid=1993) 
+(EngineCore pid=1993) Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|          | 0/51 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  10%|▉         | 5/51 [00:00<00:00, 46.77it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  22%|██▏       | 11/51 [00:00<00:00, 49.95it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  33%|███▎      | 17/51 [00:00<00:00, 50.93it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  45%|████▌     | 23/51 [00:00<00:00, 53.71it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  59%|█████▉    | 30/51 [00:00<00:00, 55.06it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  73%|███████▎  | 37/51 [00:00<00:00, 57.62it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  86%|████████▋ | 44/51 [00:00<00:00, 59.92it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 51/51 [00:00<00:00, 61.15it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 51/51 [00:00<00:00, 57.18it/s]
+(EngineCore pid=1993) Capturing CUDA graphs (decode, FULL):   0%|          | 0/35 [00:00<?, ?it/s]Capturing CUDA graphs (decode, FULL):  20%|██        | 7/35 [00:00<00:00, 60.67it/s]Capturing CUDA graphs (decode, FULL):  40%|████      | 14/35 [00:00<00:00, 62.57it/s]Capturing CUDA graphs (decode, FULL):  60%|██████    | 21/35 [00:00<00:00, 65.38it/s]Capturing CUDA graphs (decode, FULL):  80%|████████  | 28/35 [00:00<00:00, 63.78it/s]Capturing CUDA graphs (decode, FULL): 100%|██████████| 35/35 [00:00<00:00, 66.51it/s]
+(APIServer pid=1923) INFO:     Started server process [1923]
+(APIServer pid=1923) INFO:     Waiting for application startup.
+(APIServer pid=1923) INFO:     Application startup complete.
+2026-06-10 09:37:57,845 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model google/gemma-2-2b-it --backend openai_http --request-format /v1/completions --data prompt_tokens=256,output_tokens=128 --profile sweep --random-seed 42 --max-seconds 56 --max-requests 120 --warmup 0.05 --output-dir /tmp/guidellm-82iew4lt --outputs json --disable-console --sample-requests 10 --rate 3
+2026-06-10 09:39:33,570 - INFO - GuideLLM emitted 57 rows model=gemma-2b workload=chat profile=sweep
+2026-06-10 09:39:33,573 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model google/gemma-2-2b-it --backend openai_http --request-format /v1/completions --data prompt_tokens=1024,output_tokens=256 --profile sweep --random-seed 42 --max-seconds 56 --max-requests 120 --warmup 0.05 --output-dir /tmp/guidellm-ug66elss --outputs json --disable-console --sample-requests 10 --rate 3
+2026-06-10 09:41:31,202 - INFO - GuideLLM emitted 57 rows model=gemma-2b workload=rag profile=sweep
+2026-06-10 09:41:31,207 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model google/gemma-2-2b-it --backend openai_http --request-format /v1/completions --data prompt_tokens=4096,output_tokens=512 --profile sweep --random-seed 42 --max-seconds 56 --max-requests 120 --warmup 0.05 --output-dir /tmp/guidellm-0xrljytm --outputs json --disable-console --sample-requests 10 --rate 3
+2026-06-10 09:44:58,006 - INFO - GuideLLM emitted 57 rows model=gemma-2b workload=long profile=sweep
+(APIServer pid=1923) INFO:     Shutting down
+(APIServer pid=1923) INFO:     Waiting for application shutdown.
+(APIServer pid=1923) INFO:     Application shutdown complete.
+/usr/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+2026-06-10 09:44:58,427 - INFO - memory check llama-8b: need~19.2 GiB have~42.9 GiB
+2026-06-10 09:44:58,427 - INFO - Starting server: vllm serve meta-llama/Llama-3.1-8B-Instruct --port 8000 --max-model-len 8192 --tensor-parallel-size 1 --gpu-memory-utilization 0.9
+(EngineCore pid=3078) Loading safetensors checkpoint shards:   0% Completed | 0/4 [00:00<?, ?it/s]
+(EngineCore pid=3078) Loading safetensors checkpoint shards:  25% Completed | 1/4 [00:00<00:01,  2.53it/s]
+(EngineCore pid=3078) Loading safetensors checkpoint shards:  50% Completed | 2/4 [00:00<00:00,  2.29it/s]
+(EngineCore pid=3078) Loading safetensors checkpoint shards:  75% Completed | 3/4 [00:01<00:00,  2.27it/s]
+(EngineCore pid=3078) Loading safetensors checkpoint shards: 100% Completed | 4/4 [00:01<00:00,  3.05it/s]
+(EngineCore pid=3078) Loading safetensors checkpoint shards: 100% Completed | 4/4 [00:01<00:00,  2.74it/s]
+(EngineCore pid=3078) 
+(EngineCore pid=3078) Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|          | 0/51 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   6%|▌         | 3/51 [00:00<00:02, 20.46it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  12%|█▏        | 6/51 [00:00<00:02, 20.99it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  18%|█▊        | 9/51 [00:00<00:01, 21.20it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  24%|██▎       | 12/51 [00:00<00:01, 22.43it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  29%|██▉       | 15/51 [00:00<00:01, 23.47it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  35%|███▌      | 18/51 [00:00<00:01, 23.99it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  41%|████      | 21/51 [00:00<00:01, 24.97it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  47%|████▋     | 24/51 [00:01<00:01, 25.88it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  53%|█████▎    | 27/51 [00:01<00:00, 25.10it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  59%|█████▉    | 30/51 [00:01<00:00, 26.19it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  65%|██████▍   | 33/51 [00:01<00:00, 26.72it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  73%|███████▎  | 37/51 [00:01<00:00, 27.86it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  78%|███████▊  | 40/51 [00:01<00:00, 27.91it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  84%|████████▍ | 43/51 [00:01<00:00, 28.42it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  92%|█████████▏| 47/51 [00:01<00:00, 29.39it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 51/51 [00:01<00:00, 29.94it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 51/51 [00:01<00:00, 26.32it/s]
+(EngineCore pid=3078) Capturing CUDA graphs (decode, FULL):   0%|          | 0/35 [00:00<?, ?it/s]Capturing CUDA graphs (decode, FULL):   9%|▊         | 3/35 [00:00<00:01, 23.70it/s]Capturing CUDA graphs (decode, FULL):  17%|█▋        | 6/35 [00:00<00:01, 26.00it/s]Capturing CUDA graphs (decode, FULL):  26%|██▌       | 9/35 [00:00<00:00, 27.28it/s]Capturing CUDA graphs (decode, FULL):  34%|███▍      | 12/35 [00:00<00:00, 27.83it/s]Capturing CUDA graphs (decode, FULL):  43%|████▎     | 15/35 [00:00<00:00, 28.33it/s]Capturing CUDA graphs (decode, FULL):  54%|█████▍    | 19/35 [00:00<00:00, 29.25it/s]Capturing CUDA graphs (decode, FULL):  66%|██████▌   | 23/35 [00:00<00:00, 29.78it/s]Capturing CUDA graphs (decode, FULL):  77%|███████▋  | 27/35 [00:00<00:00, 30.56it/s]Capturing CUDA graphs (decode, FULL):  89%|████████▊ | 31/35 [00:01<00:00, 31.61it/s]Capturing CUDA graphs (decode, FULL): 100%|██████████| 35/35 [00:01<00:00, 32.06it/s]Capturing CUDA graphs (decode, FULL): 100%|██████████| 35/35 [00:01<00:00, 29.96it/s]
+(APIServer pid=3050) INFO:     Started server process [3050]
+(APIServer pid=3050) INFO:     Waiting for application startup.
+(APIServer pid=3050) INFO:     Application startup complete.
+2026-06-10 09:48:22,474 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model meta-llama/Llama-3.1-8B-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=256,output_tokens=128 --profile sweep --random-seed 42 --max-seconds 104 --max-requests 120 --warmup 0.05 --output-dir /tmp/guidellm-ktevdmc3 --outputs json --disable-console --sample-requests 10 --rate 3
+2026-06-10 09:50:55,722 - INFO - GuideLLM emitted 57 rows model=llama-8b workload=chat profile=sweep
+2026-06-10 09:50:55,726 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model meta-llama/Llama-3.1-8B-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=1024,output_tokens=256 --profile sweep --random-seed 42 --max-seconds 104 --max-requests 120 --warmup 0.05 --output-dir /tmp/guidellm-o_er9w5z --outputs json --disable-console --sample-requests 10 --rate 3
+2026-06-10 09:54:04,534 - INFO - GuideLLM emitted 57 rows model=llama-8b workload=rag profile=sweep
+2026-06-10 09:54:04,538 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model meta-llama/Llama-3.1-8B-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=4096,output_tokens=512 --profile sweep --random-seed 42 --max-seconds 104 --max-requests 120 --warmup 0.05 --output-dir /tmp/guidellm-8sk3hvqg --outputs json --disable-console --sample-requests 10 --rate 3
+2026-06-10 10:00:00,116 - INFO - GuideLLM emitted 57 rows model=llama-8b workload=long profile=sweep
+(APIServer pid=3050) INFO:     Shutting down
+(APIServer pid=3050) INFO:     Waiting for application shutdown.
+(APIServer pid=3050) INFO:     Application shutdown complete.
+/usr/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+2026-06-10 10:00:00,487 - INFO - memory check phi-4: need~33.6 GiB have~42.9 GiB
+2026-06-10 10:00:00,487 - INFO - Starting server: vllm serve microsoft/phi-4 --port 8000 --max-model-len 8192 --tensor-parallel-size 1 --gpu-memory-utilization 0.9
+(EngineCore pid=4249) Loading safetensors checkpoint shards:   0% Completed | 0/6 [00:00<?, ?it/s]
+(EngineCore pid=4249) Loading safetensors checkpoint shards:  17% Completed | 1/6 [00:00<00:01,  2.54it/s]
+(EngineCore pid=4249) Loading safetensors checkpoint shards:  33% Completed | 2/6 [00:00<00:01,  2.24it/s]
+(EngineCore pid=4249) Loading safetensors checkpoint shards:  50% Completed | 3/6 [00:01<00:01,  2.18it/s]
+(EngineCore pid=4249) Loading safetensors checkpoint shards:  67% Completed | 4/6 [00:01<00:00,  2.20it/s]
+(EngineCore pid=4249) Loading safetensors checkpoint shards:  83% Completed | 5/6 [00:02<00:00,  2.14it/s]
+(EngineCore pid=4249) Loading safetensors checkpoint shards: 100% Completed | 6/6 [00:02<00:00,  2.17it/s]
+(EngineCore pid=4249) Loading safetensors checkpoint shards: 100% Completed | 6/6 [00:02<00:00,  2.19it/s]
+(EngineCore pid=4249) 
+(EngineCore pid=4249) Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|          | 0/51 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   4%|▍         | 2/51 [00:00<00:04, 11.85it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   8%|▊         | 4/51 [00:00<00:03, 11.94it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  12%|█▏        | 6/51 [00:00<00:03, 11.96it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  16%|█▌        | 8/51 [00:00<00:03, 12.06it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  20%|█▉        | 10/51 [00:00<00:03, 12.84it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  24%|██▎       | 12/51 [00:00<00:02, 13.44it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  27%|██▋       | 14/51 [00:01<00:02, 13.85it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  31%|███▏      | 16/51 [00:01<00:02, 14.21it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  35%|███▌      | 18/51 [00:01<00:02, 14.62it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  39%|███▉      | 20/51 [00:01<00:02, 14.97it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  43%|████▎     | 22/51 [00:01<00:01, 15.13it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  47%|████▋     | 24/51 [00:01<00:01, 15.26it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  51%|█████     | 26/51 [00:01<00:01, 15.54it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  55%|█████▍    | 28/51 [00:01<00:01, 15.74it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  59%|█████▉    | 30/51 [00:02<00:01, 15.61it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  63%|██████▎   | 32/51 [00:02<00:01, 15.70it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  67%|██████▋   | 34/51 [00:02<00:01, 16.04it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  71%|███████   | 36/51 [00:02<00:00, 16.21it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  75%|███████▍  | 38/51 [00:02<00:00, 16.39it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  78%|███████▊  | 40/51 [00:02<00:00, 16.60it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  82%|████████▏ | 42/51 [00:02<00:00, 16.75it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  86%|████████▋ | 44/51 [00:02<00:00, 16.94it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  90%|█████████ | 46/51 [00:03<00:00, 17.12it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  94%|█████████▍| 48/51 [00:03<00:00, 17.42it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  98%|█████████▊| 50/51 [00:03<00:00, 17.64it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 51/51 [00:03<00:00, 15.29it/s]
+(EngineCore pid=4249) Capturing CUDA graphs (decode, FULL):   0%|          | 0/35 [00:00<?, ?it/s]Capturing CUDA graphs (decode, FULL):   6%|▌         | 2/35 [00:00<00:02, 16.12it/s]Capturing CUDA graphs (decode, FULL):  11%|█▏        | 4/35 [00:00<00:01, 16.12it/s]Capturing CUDA graphs (decode, FULL):  17%|█▋        | 6/35 [00:00<00:01, 16.27it/s]Capturing CUDA graphs (decode, FULL):  23%|██▎       | 8/35 [00:00<00:01, 16.31it/s]Capturing CUDA graphs (decode, FULL):  29%|██▊       | 10/35 [00:00<00:01, 16.42it/s]Capturing CUDA graphs (decode, FULL):  34%|███▍      | 12/35 [00:00<00:01, 16.66it/s]Capturing CUDA graphs (decode, FULL):  40%|████      | 14/35 [00:00<00:01, 16.77it/s]Capturing CUDA graphs (decode, FULL):  46%|████▌     | 16/35 [00:00<00:01, 16.84it/s]Capturing CUDA graphs (decode, FULL):  51%|█████▏    | 18/35 [00:01<00:00, 17.09it/s]Capturing CUDA graphs (decode, FULL):  57%|█████▋    | 20/35 [00:01<00:00, 17.13it/s]Capturing CUDA graphs (decode, FULL):  63%|██████▎   | 22/35 [00:01<00:00, 17.26it/s]Capturing CUDA graphs (decode, FULL):  69%|██████▊   | 24/35 [00:01<00:00, 17.49it/s]Capturing CUDA graphs (decode, FULL):  74%|███████▍  | 26/35 [00:01<00:00, 17.81it/s]Capturing CUDA graphs (decode, FULL):  80%|████████  | 28/35 [00:01<00:00, 18.12it/s]Capturing CUDA graphs (decode, FULL):  86%|████████▌ | 30/35 [00:01<00:00, 18.47it/s]Capturing CUDA graphs (decode, FULL):  94%|█████████▍| 33/35 [00:01<00:00, 19.23it/s]Capturing CUDA graphs (decode, FULL): 100%|██████████| 35/35 [00:01<00:00, 17.67it/s]
+2026-06-10 10:05:00,556 - WARNING - Server health check failed for microsoft/phi-4
+2026-06-10 10:05:30,557 - INFO - memory check llama-70b: need~48.0 GiB have~42.9 GiB
+2026-06-10 10:05:30,557 - INFO - Skipping llama-70b — insufficient memory
