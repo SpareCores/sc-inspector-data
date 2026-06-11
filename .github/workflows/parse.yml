@@ -10,6 +10,17 @@ jobs:
   parse:
     runs-on: ubuntu-latest
 #    runs-on: self-hosted
+    env:
+      TRACKER_PROJECT_NAME: inspector
+      TRACKER_ORCHESTRATOR: github-actions
+      TRACKER_ENV: ci
+      TRACKER_QUIET: "true"
+      TRACKER_EXTERNAL_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      TRACKER_STAGE_NAME: ${{ github.workflow }}
+      TRACKER_CONTAINER_IMAGE: ghcr.io/sparecores/sc-inspector:main
+      TRACKER_LANGUAGE: python
+      TRACKER_JOB_NAME: parse
+      TRACKER_TASK_NAME: parse
     container:
       image: ghcr.io/sparecores/sc-inspector:main
       env:
@@ -28,5 +39,14 @@ jobs:
       - name: restore file modification times
         run: git restore-mtime
         working-directory: sc-inspector-data
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6.1.0
+        with:
+          role-to-assume: ${{ secrets.SC_RUNNER_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          role-duration-seconds: 43200
+          aws-region: us-east-1
+      - name: Set up resource-tracker
+        run: bash /repo/sc-inspector-data/.github/scripts/setup-resource-tracker.sh
       - name: inspector
-        run: python /inspector/inspector.py parse
+        run: bash /repo/sc-inspector-data/.github/scripts/run-with-resource-tracker.sh python /inspector/inspector.py parse

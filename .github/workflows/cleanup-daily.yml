@@ -12,10 +12,21 @@ jobs:
 #    runs-on: self-hosted
     strategy:
       matrix:
-        vendor: [aws, azure, gcp, hcloud, upcloud, ovh, alicloud]
+        vendor: [aws, azure, gcp, hcloud, upcloud, ovh, alicloud, vultr]
       fail-fast: false
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.vendor }}
+    env:
+      TRACKER_PROJECT_NAME: inspector
+      TRACKER_ORCHESTRATOR: github-actions
+      TRACKER_ENV: ci
+      TRACKER_QUIET: "true"
+      TRACKER_EXTERNAL_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      TRACKER_STAGE_NAME: ${{ github.workflow }}
+      TRACKER_CONTAINER_IMAGE: ghcr.io/sparecores/sc-inspector:main
+      TRACKER_LANGUAGE: python
+      TRACKER_JOB_NAME: daily-cleanup-${{ matrix.vendor }}
+      TRACKER_TASK_NAME: cleanup
     container:
       image: ghcr.io/sparecores/sc-inspector:main
       env:
@@ -29,6 +40,7 @@ jobs:
         ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
         SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+        VULTR_API_KEY: ${{ secrets.VULTR_API_KEY }}
         OVH_CLOUD_PROJECT_SERVICE: ${{ secrets.OVH_CLOUD_PROJECT_SERVICE }}
         OVH_CLIENT_ID: ${{ secrets.OVH_CLIENT_ID }}
         OVH_CLIENT_SECRET: ${{ secrets.OVH_CLIENT_SECRET }}
@@ -61,5 +73,7 @@ jobs:
           oidc-provider-arn: '${{ secrets.ALIBABA_CLOUD_RAM_OIDC_ARN }}'
           export-environment-variables: 'true'
           region: 'us-west-1'
+      - name: Set up resource-tracker
+        run: bash /repo/sc-inspector-data/.github/scripts/setup-resource-tracker.sh
       - name: inspector
-        run: python /inspector/inspector.py cleanup --vendor ${{ matrix.vendor }}
+        run: bash /repo/sc-inspector-data/.github/scripts/run-with-resource-tracker.sh python /inspector/inspector.py cleanup --vendor ${{ matrix.vendor }}
