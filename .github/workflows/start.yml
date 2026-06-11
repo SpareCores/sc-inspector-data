@@ -19,12 +19,24 @@ jobs:
           # azure,  # we have no quota for new instances 
           alicloud,
           hcloud, 
-          upcloud, 
+          upcloud,
+          # vultr,
           # ovh # ran out of credits
         ]
       fail-fast: false
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.vendor }}
+    env:
+      TRACKER_PROJECT_NAME: inspector
+      TRACKER_ORCHESTRATOR: github-actions
+      TRACKER_ENV: ci
+      TRACKER_QUIET: "true"
+      TRACKER_EXTERNAL_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      TRACKER_STAGE_NAME: ${{ github.workflow }}
+      TRACKER_CONTAINER_IMAGE: ghcr.io/sparecores/sc-inspector:main
+      TRACKER_LANGUAGE: python
+      TRACKER_JOB_NAME: start-${{ matrix.vendor }}
+      TRACKER_TASK_NAME: start
     container:
       image: ghcr.io/sparecores/sc-inspector:main
       env:
@@ -47,6 +59,7 @@ jobs:
         UPCLOUD_USERNAME: ${{ secrets.UPCLOUD_USERNAME }}
         UPCLOUD_PASSWORD: ${{ secrets.UPCLOUD_PASSWORD }}
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+        VULTR_API_KEY: ${{ secrets.VULTR_API_KEY }}
         ALIBABA_CLOUD_RAM_OIDC_ARN: ${{ vars.ALIBABA_CLOUD_RAM_OIDC_ARN }}
         REPO_PATH: /repo/sc-inspector-data
       volumes:
@@ -84,13 +97,10 @@ jobs:
           oidc-provider-arn: '${{ secrets.ALIBABA_CLOUD_RAM_OIDC_ARN }}'
           export-environment-variables: 'true'
           region: 'us-west-1'
-      - name: Get Sentinel API token from SSM
-        run: |
-          SENTINEL_API_TOKEN="$(aws ssm get-parameter --name "/sentinel/api-tokens/public-benchmarks" --with-decryption --region us-east-1 --query 'Parameter.Value' --output text)"
-          echo "::add-mask::$SENTINEL_API_TOKEN"
-          echo "SENTINEL_API_TOKEN=$SENTINEL_API_TOKEN" >> "$GITHUB_ENV"
+      - name: Set up resource-tracker
+        run: bash /repo/sc-inspector-data/.github/scripts/setup-resource-tracker.sh
       - name: inspector
-        run: python /inspector/inspector.py start --vendor ${{ matrix.vendor }}
+        run: bash /repo/sc-inspector-data/.github/scripts/run-with-resource-tracker.sh python /inspector/inspector.py start --vendor ${{ matrix.vendor }}
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
           #--start-only aws t3.nano --start-only aws c7a.4xlarge --start-only aws c7g.2xlarge
