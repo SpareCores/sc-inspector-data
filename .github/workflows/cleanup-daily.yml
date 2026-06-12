@@ -1,4 +1,4 @@
-name: Daily cleanup
+name: Daily cleanup (data-only safety net)
 on:
   schedule:
     - cron: "13 3 * * *"
@@ -47,6 +47,7 @@ jobs:
         OVH_ENDPOINT: ${{ vars.OVH_ENDPOINT }}
         UPCLOUD_USERNAME: ${{ secrets.UPCLOUD_USERNAME }}
         UPCLOUD_PASSWORD: ${{ secrets.UPCLOUD_PASSWORD }}
+        ALICLOUD_SHARED_VPC_NAME_PREFIX: ${{ vars.ALICLOUD_SHARED_VPC_NAME_PREFIX }}
         REPO_PATH: /repo/sc-inspector-data
       volumes:
         - ${{ github.workspace }}/sc-inspector-data:/repo/sc-inspector-data
@@ -76,4 +77,4 @@ jobs:
       - name: Set up resource-tracker
         run: bash /repo/sc-inspector-data/.github/scripts/setup-resource-tracker.sh
       - name: inspector
-        run: bash /repo/sc-inspector-data/.github/scripts/run-with-resource-tracker.sh python /inspector/inspector.py cleanup --vendor ${{ matrix.vendor }}
+        run: bash /repo/sc-inspector-data/.github/scripts/run-with-resource-tracker.sh python /inspector/inspector.py cleanup --data-only --lookback-mins 10080 --vendor ${{ matrix.vendor }}
