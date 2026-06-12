@@ -147,10 +147,13 @@ jobs:
         run: bash /repo/sc-inspector-data/.github/scripts/setup-resource-tracker.sh
       - name: inspector
         run: |
-          args=(python /inspector/inspector.py start --vendor "${{ matrix.vendor }}")
           if [ -n "${{ inputs.instance }}" ]; then
-            args+=(--start-only "${{ matrix.vendor }}" "${{ inputs.instance }}")
+            bash /repo/sc-inspector-data/.github/scripts/run-with-resource-tracker.sh \
+              python /inspector/inspector.py start --vendor "${{ matrix.vendor }}" \
+              --start-only "${{ matrix.vendor }}" "${{ inputs.instance }}"
+          else
+            bash /repo/sc-inspector-data/.github/scripts/run-with-resource-tracker.sh \
+              python /inspector/inspector.py start --vendor "${{ matrix.vendor }}"
           fi
-          bash /repo/sc-inspector-data/.github/scripts/run-with-resource-tracker.sh "${args[@]}"
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
