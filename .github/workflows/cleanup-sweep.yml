@@ -1,13 +1,13 @@
-name: Daily cleanup (data-only safety net)
+name: Cleanup sweep (meta-driven safety net)
 on:
   schedule:
-    - cron: "13 3 * * *"
+    - cron: "13 0,12 * * *"
   workflow_dispatch:
 permissions:
   contents: write
   id-token: write
 jobs:
-  cleanup:
+  cleanup-sweep:
     runs-on: ubuntu-latest
 #    runs-on: self-hosted
     strategy:
@@ -15,7 +15,8 @@ jobs:
         vendor: [aws, azure, gcp, hcloud, upcloud, ovh, alicloud, vultr]
       fail-fast: false
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.vendor }}
+      group: inspector-cleanup-sweep-${{ matrix.vendor }}
+      cancel-in-progress: false
     env:
       TRACKER_PROJECT_NAME: inspector
       TRACKER_ORCHESTRATOR: github-actions
@@ -25,8 +26,8 @@ jobs:
       TRACKER_STAGE_NAME: ${{ github.workflow }}
       TRACKER_CONTAINER_IMAGE: ghcr.io/sparecores/sc-inspector:main
       TRACKER_LANGUAGE: python
-      TRACKER_JOB_NAME: daily-cleanup-${{ matrix.vendor }}
-      TRACKER_TASK_NAME: cleanup
+      TRACKER_JOB_NAME: cleanup-sweep-${{ matrix.vendor }}
+      TRACKER_TASK_NAME: cleanup-sweep
     container:
       image: ghcr.io/sparecores/sc-inspector:main
       env:
