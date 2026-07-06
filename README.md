@@ -331,12 +331,12 @@ to ~½ DB vCPUs from multi-VM measurements (F16: ~6.5 cores for both async and d
 16 VUs), with a small bump for parallel schema-build loaders. Client vCPUs never exceed the DB host.
 
 **Profiling ladder (concurrency):** the inspector passes `SC_PROFILE_VUS` to benchmark containers.
-Ladder rungs scale with DB vCPU count (1 → 2 → 4 → 8 → 16 → vCPUs on larger hosts). For
-**`async`** (CPU-bound) workloads, extra rungs at **1.5×** and **2×** vCPUs are added when warehouse
-count allows (e.g. F16 C30 → 24 and 32 VUs; M800-class → up to 1600 VUs). For **`durable`** (disk/fsync-bound) workloads the ladder
-stops at **min(vCPUs, 16)** with no oversubscription — higher concurrency only queues on commit
-fsync. Warehouse spread (`wh_per_vu_min`: 5 below 16 vCPUs, 20 at 16+) caps the top rung on small
-schemas (C100 on F16 stays at 16 VUs).
+Ladder rungs scale geometrically with DB vCPU count (1 → 2 → 4 → … → vCPUs). Workload-specific
+caps apply before vCPU/durability limits: HammerDB TPC-C uses warehouse spread (`wh_per_vu_min`: 5
+below 16 vCPUs, 20 at 16+); BenchBase uses scale factor ÷ 5 (Wikipedia SF 50 on F16 → up to 10
+terminals). For **`async`** (CPU-bound) workloads, extra rungs at **1.5×** and **2×** vCPUs are
+added when the workload cap allows (catalog spans 1–1920 vCPUs). For **`durable`** (disk/fsync-bound)
+workloads the ladder stops at **min(vCPUs, 16)** with no oversubscription.
 
 **Initial rollout allowlist:** `azure` / `Standard_F16ams_v6` only (`servers_only` on tasks). Expand
 by validating multi-VM stacks per vendor and adding `(vendor, instance)` pairs to the allowlist.
