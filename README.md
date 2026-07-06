@@ -274,23 +274,61 @@ Database benchmarks (HammerDB TPROC-C, BenchBase wikipedia) run on a **two-VM st
 runs Postgres 18; a companion client VM runs the benchmark container against the DB over the
 private network. Both VMs share one Pulumi stack keyed by the DB instance (`data/<vendor>/<db_instance>/`).
 
-| Task | Workload | Cache tier | Typical timeout |
-|------|----------|------------|-----------------|
-| `hammerdb_postgres_multi_oltp_mixed_c100` | HammerDB TPROC-C | C100 (1.0) | 60 min |
-| `hammerdb_postgres_multi_oltp_mixed_c30` | HammerDB TPROC-C | C30 (0.3) | 120 min |
-| `benchbase_postgres_multi_read_heavy_c100` | BenchBase wikipedia | C100 | 60 min |
+| Task | Workload | Cache tier | Durability | Typical timeout |
+|------|----------|------------|------------|-----------------|
+| `hammerdb_postgres_multi_oltp_mixed_c100` | HammerDB TPROC-C | C100 (1.0) | **async** | 60 min |
+| `hammerdb_postgres_multi_oltp_mixed_c30` | HammerDB TPROC-C | C30 (0.3) | **async** | 120 min |
+| `hammerdb_postgres_multi_oltp_mixed_durable_c100` | HammerDB TPROC-C | C100 (1.0) | durable | 60 min |
+| `benchbase_postgres_multi_read_heavy_c100` | BenchBase wikipedia | C100 | durable | 60 min |
+
+### Durability tiers (why OLTP has two)
+
+HammerDB TPROC-C on Postgres is **commit-latency bound**: with `synchronous_commit=on`, every
+transaction waits for a WAL `fsync`, so throughput tracks the provisioned disk's fsync latency
+rather than the instance's CPU/memory. Measured on `Standard_F16ams_v6`, both the DB host (~5–12%
+of 16 vCPUs) and the client stayed near-idle while ~30k NOPM was gated purely by commit latency —
+i.e. the durable score mostly ranks the **disk product**, not the compute instance.
+
+- **`async` (headline, comparable):** the timed run sets **`synchronous_commit=off`** on the server.
+  `fsync` stays **on**, so the cluster is never at risk of corruption (worst case on crash is the
+  loss of the last few hundred ms of commits — irrelevant for an ephemeral benchmark VM). This
+  removes the fsync wait from the commit path, so the score reflects CPU / memory / lock scaling and
+  is comparable across clouds regardless of storage tier. This is the number used for compute ranking.
+- **`durable` (secondary, disclosed):** production-default **`synchronous_commit=on`**. Reflects
+  real-world durable-commit throughput on that instance's disk. It is **disk-dependent** and must
+  **not** be used to compare compute across instances/clouds.
+
+Both are stored under `benchmark_id = hammerdb_postgres_multi:nopm` and distinguished by the
+`durability` (and `cache_tier`) fields in `metrics.json`'s config. `fsync` is never disabled.
+
+### DB disk tiers
+
+Because the durable metric and schema build depend on storage, the inspector requests faster SSD
+for **only the multi-VM DB host**: Azure `Premium_LRS`, GCP `pd-ssd`, AWS `gp3` with provisioned
+IOPS/throughput. The policy lives on the sc-inspector side (`benchmark_tiers.db_disk_options`) and is
+passed through `sc-runner`'s generic per-VM disk knobs (`disk_type` / `disk_iops` / `disk_throughput`),
+so `sc-runner` stays a plain, reusable provisioner with no benchmark-specific defaults. It is applied
+**only in the multi-VM DB-benchmark stack** — normal single-VM inspections and the companion client
+keep the cheap provider default (Azure `Standard_LRS`, GCP `pd-standard`, AWS AMI-default `gp3`), so
+the higher-cost storage is paid for only when the DB benchmark actually runs. All tiers are
+env-overridable (`MULTI_VM_DB_DISK_TYPE`, `MULTI_VM_DB_DISK_IOPS`, `MULTI_VM_DB_DISK_THROUGHPUT`) and
+can be disabled by setting `MULTI_VM_DB_DISK_TYPE=` (empty) to fall back to the provider default.
+Note: disk fsync latency **cannot** be equalized across clouds (network-attached vs local NVMe), which
+is exactly why the headline OLTP score uses `async`.
 
 **Companion client:** picked from the catalog as the cheapest x86_64 instance meeting
-`stressngfull:best1` score and memory/vCPU requirements (benchmark images are amd64-only).
+`stressngfull:best1` score and memory/vCPU requirements (benchmark images are amd64-only). Sized for
+the busiest driver phase (peak run VUs or parallel schema-build loaders) with headroom.
 
 **Initial rollout allowlist:** `azure` / `Standard_F16ams_v6` only (`servers_only` on tasks). Expand
 by validating multi-VM stacks per vendor and adding `(vendor, instance)` pairs to the allowlist.
 
-**Runtime budget (F16 DB + client):** about 1.5–2.5 hours for C100 OLTP + read-heavy + C30 when disk allows.
+**Runtime budget (F16 DB + client):** about 2.5–3.5 hours for both OLTP durability tiers +
+read-heavy + C30 when disk allows.
 
 **Artifacts:**
 
-- `<task>/metrics.json` — score, `peak_concurrency`, `client_rtt_ms`, `cache_ratio`
+- `<task>/metrics.json` — `score`, `score_unit`, `durability`, `peak_concurrency`, `client_rtt_ms`, `cache_ratio`, `profile`
 - `<task>/meta.json` — standard inspector task lifecycle
 
 Only the **server** VM uploads S3 run-status; cleanup destroys the whole stack (both VMs).
