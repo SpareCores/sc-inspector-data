@@ -326,10 +326,9 @@ Note: disk fsync latency **cannot** be equalized across clouds (network-attached
 is exactly why write-heavy headline scores use `async`.
 
 **Companion client:** picked from the catalog as the cheapest x86_64 instance meeting
-`stressngfull:best1` score and memory/vCPU requirements (benchmark images are amd64-only). Sized for
-the busiest driver phase (peak run VUs or parallel schema-build loaders) with headroom — async HammerDB
-runs scale the client to ~1.5× DB vCPUs so a 2×-VU profile ladder stays driver-bound on the DB, not
-the Tcl/Java client (up to 2048 vCPUs absolute cap).
+`stressngfull:best1` score and memory/vCPU requirements (benchmark images are amd64-only). Sized
+to ~½ DB vCPUs from multi-VM measurements (F16: ~6.5 cores for both async and durable HammerDB at
+16 VUs), with a small bump for parallel schema-build loaders. Client vCPUs never exceed the DB host.
 
 **Profiling ladder (concurrency):** the inspector passes `SC_PROFILE_VUS` to benchmark containers.
 Ladder rungs scale with DB vCPU count (1 → 2 → 4 → 8 → 16 → vCPUs on larger hosts). For
