@@ -267,3 +267,30 @@ a second run whose logs are what you see in the repo.
 
 For image build pins, env vars (`GUIDELLM_SWEEP_SIZE`, `GUIDELLM_PROFILES`, probe overrides), and harness details, see
 [`sc-images/vllm-common/README.md`](https://github.com/SpareCores/sc-images/tree/main/vllm-common).
+
+## Postgres multi-VM benchmarks
+
+Database benchmarks (HammerDB TPROC-C, BenchBase wikipedia) run on a **two-VM stack**: a DB host
+runs Postgres 18; a companion client VM runs the benchmark container against the DB over the
+private network. Both VMs share one Pulumi stack keyed by the DB instance (`data/<vendor>/<db_instance>/`).
+
+| Task | Workload | Cache tier | Typical timeout |
+|------|----------|------------|-----------------|
+| `hammerdb_postgres_multi_oltp_mixed_c100` | HammerDB TPROC-C | C100 (1.0) | 60 min |
+| `hammerdb_postgres_multi_oltp_mixed_c30` | HammerDB TPROC-C | C30 (0.3) | 120 min |
+| `benchbase_postgres_multi_read_heavy_c100` | BenchBase wikipedia | C100 | 60 min |
+
+**Companion client:** picked from the catalog as the cheapest x86_64 instance meeting
+`stressngfull:best1` score and memory/vCPU requirements (benchmark images are amd64-only).
+
+**Initial rollout allowlist:** `azure` / `Standard_F16ams_v6` only (`servers_only` on tasks). Expand
+by validating multi-VM stacks per vendor and adding `(vendor, instance)` pairs to the allowlist.
+
+**Runtime budget (F16 DB + client):** about 1.5–2.5 hours for C100 OLTP + read-heavy + C30 when disk allows.
+
+**Artifacts:**
+
+- `<task>/metrics.json` — score, `peak_concurrency`, `client_rtt_ms`, `cache_ratio`
+- `<task>/meta.json` — standard inspector task lifecycle
+
+Only the **server** VM uploads S3 run-status; cleanup destroys the whole stack (both VMs).
