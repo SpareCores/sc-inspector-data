@@ -327,12 +327,14 @@ is exactly why write-heavy headline scores use `async`.
 
 **Companion client:** picked from the catalog as the cheapest x86_64 instance meeting
 `stressngfull:best1` score and memory/vCPU requirements (benchmark images are amd64-only). Sized for
-the busiest driver phase (peak run VUs or parallel schema-build loaders) with headroom.
+the busiest driver phase (peak run VUs or parallel schema-build loaders) with headroom — async HammerDB
+runs scale the client to ~1.5× DB vCPUs so a 2×-VU profile ladder stays driver-bound on the DB, not
+the Tcl/Java client (up to 2048 vCPUs absolute cap).
 
 **Profiling ladder (concurrency):** the inspector passes `SC_PROFILE_VUS` to benchmark containers.
 Ladder rungs scale with DB vCPU count (1 → 2 → 4 → 8 → 16 → vCPUs on larger hosts). For
 **`async`** (CPU-bound) workloads, extra rungs at **1.5×** and **2×** vCPUs are added when warehouse
-count allows (e.g. F16 C30 → 24 and 32 VUs). For **`durable`** (disk/fsync-bound) workloads the ladder
+count allows (e.g. F16 C30 → 24 and 32 VUs; M800-class → up to 1600 VUs). For **`durable`** (disk/fsync-bound) workloads the ladder
 stops at **min(vCPUs, 16)** with no oversubscription — higher concurrency only queues on commit
 fsync. Warehouse spread (`wh_per_vu_min`: 5 below 16 vCPUs, 20 at 16+) caps the top rung on small
 schemas (C100 on F16 stays at 16 VUs).
@@ -345,7 +347,7 @@ read-heavy + C30 when disk allows.
 
 **Artifacts:**
 
-- `<task>/metrics.json` — `score`, `score_unit`, `durability`, `peak_concurrency`, `client_rtt_ms`, `cache_ratio`, `profile`
+- `<task>/metrics.json` — `score`, `score_unit`, `durability`, `peak_concurrency`, `client_rtt_ms`, `latency_ms` (p50/p95/p99/avg/min/max at peak), `cache_ratio`, `profile` (each ladder rung includes `latency_ms` when available)
 - `<task>/meta.json` — standard inspector task lifecycle
 
 Only the **server** VM uploads S3 run-status; cleanup destroys the whole stack (both VMs).
