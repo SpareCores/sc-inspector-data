@@ -270,9 +270,9 @@ For image build pins, env vars (`GUIDELLM_SWEEP_SIZE`, `GUIDELLM_PROFILES`, prob
 
 ## Postgres multi-VM benchmarks
 
-Database benchmarks (HammerDB TPROC-C, BenchBase wikipedia) run on a **two-VM stack**: a DB host
-runs Postgres 18; a companion client VM runs the benchmark container against the DB over the
-private network. Both VMs share one Pulumi stack keyed by the DB instance (`data/<vendor>/<db_instance>/`).
+Database benchmarks run on a **two-VM stack**: a DB host runs Postgres 18; a companion client VM
+runs the benchmark container against the DB over the private network. Both VMs share one Pulumi
+stack keyed by the DB instance (`data/<vendor>/<db_instance>/`).
 
 | Task | Workload | Cache tier | Durability | Typical timeout |
 |------|----------|------------|------------|-----------------|
@@ -280,26 +280,35 @@ private network. Both VMs share one Pulumi stack keyed by the DB instance (`data
 | `hammerdb_postgres_multi_oltp_mixed_c30` | HammerDB TPROC-C | C30 (0.3) | **async** | 120 min |
 | `hammerdb_postgres_multi_oltp_mixed_durable_c100` | HammerDB TPROC-C | C100 (1.0) | durable | 60 min |
 | `benchbase_postgres_multi_read_heavy_c100` | BenchBase wikipedia | C100 | durable | 60 min |
+| `benchbase_postgres_multi_crud_simple_c100` | BenchBase ycsb | C100 | **async** | 60 min |
+| `hammerdb_postgres_multi_olap_c100` | HammerDB TPC-H | C100 | durable | 90 min |
 
-### Durability tiers (why OLTP has two)
+### Durability tiers
 
-HammerDB TPROC-C on Postgres is **commit-latency bound**: with `synchronous_commit=on`, every
-transaction waits for a WAL `fsync`, so throughput tracks the provisioned disk's fsync latency
-rather than the instance's CPU/memory. Measured on `Standard_F16ams_v6`, both the DB host (~5–12%
-of 16 vCPUs) and the client stayed near-idle while ~30k NOPM was gated purely by commit latency —
-i.e. the durable score mostly ranks the **disk product**, not the compute instance.
+Write-heavy workloads (HammerDB TPROC-C, BenchBase ycsb) on Postgres are **commit-latency bound**:
+with `synchronous_commit=on`, every transaction waits for a WAL `fsync`, so throughput can track the
+provisioned disk's fsync latency rather than the instance's CPU/memory. Measured on
+`Standard_F16ams_v6`, OLTP on both the DB host (~5–12% of 16 vCPUs) and the client stayed near-idle
+while ~30k NOPM was gated purely by commit latency — i.e. the durable score mostly ranks the **disk
+product**, not the compute instance.
+
+Read-heavy workloads (BenchBase wikipedia, HammerDB TPC-H) keep **`durable`** (production-default
+`synchronous_commit=on`). TPC-H scoring is read-only, so durability does not affect QphH; wikipedia
+is mostly reads, so commit latency is rarely the bottleneck.
 
 - **`async` (headline, comparable):** the timed run sets **`synchronous_commit=off`** on the server.
   `fsync` stays **on**, so the cluster is never at risk of corruption (worst case on crash is the
   loss of the last few hundred ms of commits — irrelevant for an ephemeral benchmark VM). This
   removes the fsync wait from the commit path, so the score reflects CPU / memory / lock scaling and
-  is comparable across clouds regardless of storage tier. This is the number used for compute ranking.
-- **`durable` (secondary, disclosed):** production-default **`synchronous_commit=on`**. Reflects
-  real-world durable-commit throughput on that instance's disk. It is **disk-dependent** and must
-  **not** be used to compare compute across instances/clouds.
+  is comparable across clouds regardless of storage tier. Used for OLTP and ycsb headline scores.
+- **`durable` (secondary or default):** production-default **`synchronous_commit=on`**. For OLTP there
+  is a separate disclosed task (`…_durable_c100`) that reflects real-world durable-commit throughput on
+  that instance's disk. It is **disk-dependent** and must **not** be used to compare compute across
+  instances/clouds.
 
-Both are stored under `benchmark_id = hammerdb_postgres_multi:nopm` and distinguished by the
-`durability` (and `cache_tier`) fields in `metrics.json`'s config. `fsync` is never disabled.
+OLTP async and durable scores are stored under `benchmark_id = hammerdb_postgres_multi:nopm` and
+distinguished by the `durability` (and `cache_tier`) fields in `metrics.json`'s config. BenchBase
+scores use `benchbase_postgres_multi:tpm` with the same `durability` field. `fsync` is never disabled.
 
 ### DB disk tiers
 
@@ -314,7 +323,7 @@ the higher-cost storage is paid for only when the DB benchmark actually runs. Al
 env-overridable (`MULTI_VM_DB_DISK_TYPE`, `MULTI_VM_DB_DISK_IOPS`, `MULTI_VM_DB_DISK_THROUGHPUT`) and
 can be disabled by setting `MULTI_VM_DB_DISK_TYPE=` (empty) to fall back to the provider default.
 Note: disk fsync latency **cannot** be equalized across clouds (network-attached vs local NVMe), which
-is exactly why the headline OLTP score uses `async`.
+is exactly why write-heavy headline scores use `async`.
 
 **Companion client:** picked from the catalog as the cheapest x86_64 instance meeting
 `stressngfull:best1` score and memory/vCPU requirements (benchmark images are amd64-only). Sized for
