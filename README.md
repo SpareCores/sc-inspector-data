@@ -329,6 +329,14 @@ is exactly why write-heavy headline scores use `async`.
 `stressngfull:best1` score and memory/vCPU requirements (benchmark images are amd64-only). Sized for
 the busiest driver phase (peak run VUs or parallel schema-build loaders) with headroom.
 
+**Profiling ladder (concurrency):** the inspector passes `SC_PROFILE_VUS` to benchmark containers.
+Ladder rungs scale with DB vCPU count (1 → 2 → 4 → 8 → 16 → vCPUs on larger hosts). For
+**`async`** (CPU-bound) workloads, extra rungs at **1.5×** and **2×** vCPUs are added when warehouse
+count allows (e.g. F16 C30 → 24 and 32 VUs). For **`durable`** (disk/fsync-bound) workloads the ladder
+stops at **min(vCPUs, 16)** with no oversubscription — higher concurrency only queues on commit
+fsync. Warehouse spread (`wh_per_vu_min`: 5 below 16 vCPUs, 20 at 16+) caps the top rung on small
+schemas (C100 on F16 stays at 16 VUs).
+
 **Initial rollout allowlist:** `azure` / `Standard_F16ams_v6` only (`servers_only` on tasks). Expand
 by validating multi-VM stacks per vendor and adding `(vendor, instance)` pairs to the allowlist.
 
