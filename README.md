@@ -281,7 +281,7 @@ stack keyed by the DB instance (`data/<vendor>/<db_instance>/`).
 | `hammerdb_postgres_multi_oltp_mixed_durable_c100` | HammerDB TPROC-C | C100 (1.0) | durable | 60 min |
 | `benchbase_postgres_multi_read_heavy_c100` | BenchBase wikipedia | C100 | durable | 60 min |
 | `benchbase_postgres_multi_crud_simple_c100` | BenchBase ycsb | C100 | **async** | 60 min |
-| `hammerdb_postgres_multi_olap_c100` | HammerDB TPC-H | C100 | durable | 90 min |
+| `hammerdb_postgres_multi_olap_c100` | HammerDB TPC-H | C100 | durable | 180 min |
 
 ### Durability tiers
 
@@ -341,8 +341,9 @@ workloads the ladder stops at **min(vCPUs, 16)** with no oversubscription.
 **Initial rollout allowlist:** `azure` / `Standard_F16ams_v6` only (`servers_only` on tasks). Expand
 by validating multi-VM stacks per vendor and adding `(vendor, instance)` pairs to the allowlist.
 
-**Runtime budget (F16 DB + client):** about 2.5–3.5 hours for both OLTP durability tiers +
-read-heavy + C30 when disk allows.
+**Runtime budget (F16 DB + client):** about 3–4 hours for OLTP (both durability tiers) +
+read-heavy + C30; add **~3 hours** for TPC-H (schema build dominates). Run OLAP on a fresh VM
+pair when a long prior session OOM-killed the host inspector.
 
 **Artifacts:**
 
