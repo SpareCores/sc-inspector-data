@@ -347,6 +347,47 @@ profiling). Run OLAP on a fresh VM pair when a long prior session OOM-killed the
 
 **Artifacts:**
 
+## Postgres DBaaS benchmarks (`dbaas/`)
+
+Managed-database benchmarks live under **`dbaas/<vendor>/<native_id>/postgres/<version>/<ha_mode>/`**
+(sibling to `data/`, which remains compute-only IaaS). PoC targets Azure Flexible Server
+`Standard_E16ds_v5` with Postgres 18, standalone HA.
+
+```
+dbaas/azure/Standard_E16ds_v5/postgres/18/standalone/
+  hammerdb_postgres_dbaas_oltp_mixed_durable_c100/
+    meta.json
+    stdout          # JSON: scores + provision metadata (single source of truth)
+  timing/<run_id>/…
+```
+
+| Task | Workload | Cache tier | Durability | Notes |
+|------|----------|------------|------------|-------|
+| `hammerdb_postgres_dbaas_oltp_mixed_c100` | HammerDB TPROC-C | C100 | async | Skipped on Azure (`sync_commit_session_settable=false`) |
+| `hammerdb_postgres_dbaas_oltp_mixed_c30` | HammerDB TPROC-C | C30 | async | Skipped on Azure |
+| `hammerdb_postgres_dbaas_oltp_mixed_durable_c100` | HammerDB TPROC-C | C100 | durable | Azure PoC headline |
+| `benchbase_postgres_dbaas_read_heavy_c100` | BenchBase wikipedia | C100 | durable | |
+| `benchbase_postgres_dbaas_crud_simple_c100` | BenchBase ycsb | C100 | async | Skipped on Azure |
+| `hammerdb_postgres_dbaas_olap_c100` | HammerDB TPC-H | C100 | durable | |
+
+**C100 vs C30:** separate Flexible Server provisions per cache tier (different `storage_gib` /
+IOPS). Cache tier appears in the **task name**, not the directory path.
+
+**Networking (Azure PoC):** Flexible Server is deployed into a **delegated subnet** with a linked
+**private DNS zone** (`privatelink.postgres.database.azure.com`). The benchmark client VM connects
+via the server's private FQDN over the VNet (`network_mode: private_vnet` in `stdout`). The client
+VM keeps a public IP only for bootstrap (git, Docker, S3); DB traffic does not use the public
+firewall path.
+
+**Azure `synchronous_commit`:** Flexible Server allows only `on` at the service level. Async
+tasks remain defined for all vendors; Azure skips them automatically via
+`ManagedDbTarget.sync_commit_session_settable` in the catalog (and runtime precheck in `stdout`).
+
+**Workflow:** manual [`start-dbaas.yml`](.github/workflows/start-dbaas.yml); cleanup via
+[`cleanup-dbaas`](.github/workflows/cleanup.yml) (Azure) and S3 run records with `"topology": "dbaas"`.
+
+**Artifacts (multi-VM):**
+
 - `<task>/metrics.json` — `score`, `score_unit`, `durability`, `peak_concurrency`, `client_rtt_ms`, `latency_ms` (p50/p95/p99/avg/min/max at peak), `cache_ratio`, `profile` (each ladder rung includes `latency_ms` when available)
 - `<task>/meta.json` — standard inspector task lifecycle
 

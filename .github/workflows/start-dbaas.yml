@@ -1,0 +1,64 @@
+name: Start DBaaS benchmarks (PoC)
+on:
+  workflow_dispatch:
+    inputs:
+      vendor:
+        description: Vendor to start DBaaS benchmarks for
+        required: true
+        default: azure
+        type: choice
+        options:
+          - azure
+permissions:
+  contents: write
+  id-token: write
+jobs:
+  start-dbaas:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: start-dbaas-${{ inputs.vendor }}
+      cancel-in-progress: false
+    env:
+      TRACKER_PROJECT_NAME: inspector
+      TRACKER_ORCHESTRATOR: github-actions
+      TRACKER_ENV: ci
+      TRACKER_QUIET: "true"
+      TRACKER_EXTERNAL_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      TRACKER_STAGE_NAME: ${{ github.workflow }}
+      TRACKER_CONTAINER_IMAGE: ghcr.io/sparecores/sc-inspector:main
+      TRACKER_LANGUAGE: python
+      TRACKER_JOB_NAME: start-dbaas-${{ inputs.vendor }}
+      TRACKER_TASK_NAME: start-dbaas
+    container:
+      image: ghcr.io/sparecores/sc-inspector:main
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        PULUMI_BACKEND_URL: ${{ secrets.PULUMI_BACKEND_URL }}
+        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+        SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+        SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        INSPECTOR_RUNS_BUCKET: ${{ vars.INSPECTOR_RUNS_BUCKET }}
+        INSPECTOR_RUNS_REGION: ${{ vars.INSPECTOR_RUNS_REGION }}
+        REPO_PATH: /repo/sc-inspector-data
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6.0.2
+        with:
+          token: ${{ github.token }}
+          fetch-depth: 0
+          path: sc-inspector-data
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6.1.0
+        with:
+          role-to-assume: ${{ secrets.SC_RUNNER_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          role-duration-seconds: 43200
+          aws-region: us-east-1
+      - name: Set up resource-tracker
+        run: bash /repo/sc-inspector-data/.github/scripts/setup-resource-tracker.sh
+      - name: inspector start-dbaas
+        run: bash /repo/sc-inspector-data/.github/scripts/run-with-resource-tracker.sh python /inspector/inspector.py start-dbaas --vendor ${{ inputs.vendor }}
