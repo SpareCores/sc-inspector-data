@@ -127,3 +127,48 @@ jobs:
         run: bash /repo/sc-inspector-data/.github/scripts/setup-resource-tracker.sh
       - name: inspector cleanup-dbaas
         run: bash /repo/sc-inspector-data/.github/scripts/run-with-resource-tracker.sh python /inspector/inspector.py cleanup-dbaas --vendor azure
+  cleanup-dbaas-gcp:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-cleanup-dbaas-gcp
+    env:
+      TRACKER_PROJECT_NAME: inspector
+      TRACKER_ORCHESTRATOR: github-actions
+      TRACKER_ENV: ci
+      TRACKER_QUIET: "true"
+      TRACKER_EXTERNAL_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      TRACKER_STAGE_NAME: ${{ github.workflow }}
+      TRACKER_CONTAINER_IMAGE: ghcr.io/sparecores/sc-inspector:main
+      TRACKER_LANGUAGE: python
+      TRACKER_JOB_NAME: cleanup-dbaas-gcp
+      TRACKER_TASK_NAME: cleanup-dbaas
+    container:
+      image: ghcr.io/sparecores/sc-inspector:main
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        PULUMI_BACKEND_URL: ${{ secrets.PULUMI_BACKEND_URL }}
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+        GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+        INSPECTOR_RUNS_BUCKET: ${{ vars.INSPECTOR_RUNS_BUCKET }}
+        INSPECTOR_RUNS_REGION: ${{ vars.INSPECTOR_RUNS_REGION }}
+        REPO_PATH: /repo/sc-inspector-data
+      volumes:
+        - ${{ github.workspace }}/sc-inspector-data:/repo/sc-inspector-data
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6.0.2
+        with:
+          token: ${{ github.token }}
+          fetch-depth: 0
+          path: sc-inspector-data
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6.1.0
+        with:
+          role-to-assume: ${{ secrets.SC_RUNNER_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          role-duration-seconds: 43200
+          aws-region: us-east-1
+      - name: Set up resource-tracker
+        run: bash /repo/sc-inspector-data/.github/scripts/setup-resource-tracker.sh
+      - name: inspector cleanup-dbaas
+        run: bash /repo/sc-inspector-data/.github/scripts/run-with-resource-tracker.sh python /inspector/inspector.py cleanup-dbaas --vendor gcp
