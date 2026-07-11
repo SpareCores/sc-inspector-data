@@ -1,0 +1,98 @@
+{
+  "benchmark": "hammerdb_postgres",
+  "workload": "tpcc",
+  "topology": "multi_vm",
+  "cache_ratio": 0.3,
+  "durability": "async",
+  "client_rtt_ms": 0.259,
+  "peak_concurrency": 32,
+  "score": 288707,
+  "score_tpm": 661881,
+  "score_unit": "NOPM",
+  "profile": [
+    {
+      "concurrency": 1,
+      "score": 30300,
+      "tpm": 69853
+    },
+    {
+      "concurrency": 2,
+      "score": 62360,
+      "tpm": 143228
+    },
+    {
+      "concurrency": 4,
+      "score": 120070,
+      "tpm": 277015
+    },
+    {
+      "concurrency": 8,
+      "score": 165577,
+      "tpm": 381394
+    },
+    {
+      "concurrency": 16,
+      "score": 177794,
+      "tpm": 410012
+    },
+    {
+      "concurrency": 24,
+      "score": 191089,
+      "tpm": 437457
+    },
+    {
+      "concurrency": 32,
+      "score": 288707,
+      "tpm": 661881
+    },
+    {
+      "concurrency": 32,
+      "confirmation": true,
+      "score": 131831,
+      "tpm": 301114
+    }
+  ],
+  "storage_gib": 251,
+  "storage_type": "Premium_LRS",
+  "hammerdb": {
+    "build_vus": 8,
+    "run_vus": 32,
+    "rampup_min": 1,
+    "duration_min": 2,
+    "profile_vus": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      24,
+      32
+    ],
+    "final_repeats": 1,
+    "wh_per_vu_min": 20,
+    "storedprocs": true,
+    "driver": "timed",
+    "warehouses": 1103,
+    "benchmark_user": "tpcc"
+  },
+  "synchronous_commit": {
+    "sessions": [
+      {
+        "user": "postgres",
+        "database": "tpcc",
+        "synchronous_commit": "off"
+      },
+      {
+        "user": "tpcc",
+        "database": "tpcc",
+        "synchronous_commit": "off"
+      }
+    ],
+    "benchmark_session": {
+      "user": "tpcc",
+      "database": "tpcc",
+      "synchronous_commit": "off"
+    }
+  },
+  "warehouses": 1103
+}
