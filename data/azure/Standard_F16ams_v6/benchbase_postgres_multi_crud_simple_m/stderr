@@ -1,0 +1,36 @@
+Traceback (most recent call last):
+  File "/benchmark.py", line 561, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/benchmark.py", line 506, in main
+    result = run_once(
+             ^^^^^^^^^
+  File "/benchmark.py", line 420, in run_once
+    raise RuntimeError(f"BenchBase execute failed: {out[-2000:]}")
+RuntimeError: BenchBase execute failed: [INFO ] 2026-07-14 21:31:08,262 [main]  com.oltpbenchmark.DBWorkload main - ======================================================================
+
+Benchmark:                       YCSB {com.oltpbenchmark.benchmarks.ycsb.YCSBBenchmark}
+Configuration:                   /tmp/ycsb_config.xml
+Type:                            POSTGRES
+Driver:                          org.postgresql.Driver
+URL:                             jdbc:postgresql://10.0.1.5:5432/benchbase?sslmode=disable&ApplicationName=ycsb&reWriteBatchedInserts=true
+Isolation:                       TRANSACTION_READ_COMMITTED
+Batch Size:                      128
+DDL Path:                        null
+Loader Threads:                  8
+Session Setup File:              null
+Scale Factor:                    20000.0
+Terminals:                       8
+New Connection Per Txn:          false
+Reconnect on Connection Failure: true
+
+[INFO ] 2026-07-14 21:31:08,263 [main]  com.oltpbenchmark.DBWorkload main - ======================================================================
+[INFO ] 2026-07-14 21:31:08,408 [main]  com.oltpbenchmark.DBWorkload runWorkload - Creating 8 virtual terminals...
+[ERROR] 2026-07-14 21:31:08,408 [main]  com.oltpbenchmark.DBWorkload main - Unexpected error when executing benchmarks.
+java.lang.IllegalArgumentException: no table found with name [USERTABLE]
+	at com.oltpbenchmark.catalog.Catalog.getTable(Catalog.java:47)
+	at com.oltpbenchmark.benchmarks.ycsb.YCSBBenchmark.makeWorkersImpl(YCSBBenchmark.java:75)
+	at com.oltpbenchmark.api.BenchmarkModule.makeWorkers(BenchmarkModule.java:208)
+	at com.oltpbenchmark.DBWorkload.runWorkload(DBWorkload.java:787)
+	at com.oltpbenchmark.DBWorkload.main(DBWorkload.java:564)
+
