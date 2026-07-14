@@ -293,7 +293,141 @@ Self-hosted Postgres GUCs (`postgres_multi.pg_gucs`) per task:
 
 **Stored metrics** (crawler): `hammerdb_postgres_multi:nopm`, `benchbase_postgres_multi:tpm`, with `durability`, `cache_tier`, `topology`, `peak_concurrency`, `client_rtt_ms` in config JSON.
 
-**RTT:** measured once per run (`pg_rtt_ms` simple connect latency); typically **0.15–0.5 ms** on private VNet/VPC — not the bottleneck.
+**RTT:** measured once per run (`pg_rtt_ms`): opens one connection, runs warmup `SELECT 1`s, then reports the **minimum** of 20 timed `SELECT 1` round-trips on that warm session (connect/auth excluded). Typically **0.15–0.5 ms** on private VNet/VPC — not the bottleneck.
+
+## stdout JSON fields
+
+Each successful benchmark writes **one JSON object** to `<task>/stdout` (also mirrored as `/output/metrics.json` inside the container). Fields below are stable across topologies unless noted.
+
+### Common top-level fields
+
+
+| Field | Type | Meaning |
+| ----- | ---- | ------- |
+| `benchmark` | string | Driver image id: `hammerdb_postgres` or `benchbase_postgres`. |
+| `workload` | string | Proxy workload: `tpcc`, `tpch`, `wikipedia`, or `ycsb`. |
+| `topology` | string | `multi_vm` (self-hosted Postgres on DB VM) or `dbaas` (managed endpoint). |
+| `cache_ratio` | number | Cache tier ratio from task def: `1.0` (C100) or `0.3` (C30). |
+| `durability` | string | Task durability: `async` or `durable` (see **Durability semantics** above). |
+| `client_rtt_ms` | number | Min `SELECT 1` round-trip (ms) on an **already-established** session: one `psycopg.connect`, 3 warmup queries, then min of 20 timed `SELECT 1` samples (`SC_RTT_WARMUP` / `SC_RTT_SAMPLES`). TCP handshake and Postgres auth are **not** included in the reported value. |
+| `peak_concurrency` | integer | Client terminals / HammerDB VUs at the winning ladder rung. |
+| `score` | integer | **Headline throughput** (see scoring rules below). |
+| `score_unit` | string | Unit for `score`: `NOPM`, `QphH`, or `tpm`. |
+| `profile` | array | Per-rung profiling results (see below). |
+| `synchronous_commit` | object | `SHOW synchronous_commit` captured per relevant DB session (see below). |
+
+### Headline scoring rules
+
+
+| Driver | Workloads | `score` meaning | Extra top-level fields |
+| ------ | --------- | --------------- | ---------------------- |
+| HammerDB | `tpcc` | **NOPM** — new-order transactions/min at peak concurrency ([HammerDB NOPM](https://www.hammerdb.com/blog/uncategorized/how-to-understand-tpc-c-tpmc-and-tproc-c-nopm-and-what-is-good-performance/)). | `score_tpm` (all TPROC-C tx/min), `warehouses` |
+| HammerDB | `tpch` | **QphH** — queries per hour @ scale (parsed from HammerDB output or derived from geometric mean). | `scale_factor`, `score_tpm` is always `0` |
+| BenchBase | `wikipedia`, `ycsb` | **TPM** — transactions per minute (`TPS × 60` from BenchBase summary). | `scalefactor`, optional top-level `latency_ms` from confirmation run |
+
+**HammerDB OLTP:** `score` = max NOPM across profiling rungs **and** confirmation repeat(s) at `peak_concurrency` (confirmation can be lower; headline keeps the best observed sample).
+
+**BenchBase:** `profile[]` uses 90 s rungs to pick `peak_concurrency`; `score` comes from a separate **120 s confirmation** run at that concurrency only.
+
+### `profile[]` entries
+
+Each element is one profiling rung (plus optional confirmation).
+
+
+| Field | Present | Type | Meaning |
+| ----- | ------- | ---- | ------- |
+| `concurrency` | always | integer | Terminals (BenchBase) or VUs (HammerDB) for this rung. |
+| `score` | always | integer | Throughput at this rung (same unit as headline). |
+| `tpm` | HammerDB OLTP | integer | Total PostgreSQL TPM at this rung (all TPROC-C transaction types). |
+| `tps` | BenchBase | number | BenchBase requests/second at this rung. |
+| `latency_ms` | optional | object | Transaction latency ms: `p50`, `p95`, `p99`, `avg`, `min`, `max`. HammerDB: weighted from job timing JSON (OLTP). BenchBase: from summary latency distribution. |
+| `confirmation` | optional | boolean | `true` on HammerDB confirmation repeat(s) at `peak_concurrency` (absent on ladder rungs). |
+
+### `synchronous_commit` object
+
+Recorded after schema build, before the timed/query phase.
+
+
+| Field | Type | Meaning |
+| ----- | ---- | ------- |
+| `sessions` | array | `{user, database, synchronous_commit}` for each checked role. |
+| `benchmark_session` | object | The session HammerDB/BenchBase actually uses (`on` or `off`). |
+
+Async OLTP/YCSB expect `off` on the benchmark session; durable tasks expect `on`.
+
+### Multi-VM only (`topology: multi_vm`)
+
+Merged from `host_context()` when the DB host exports disk metadata:
+
+
+| Field | Type | Meaning |
+| ----- | ---- | ------- |
+| `storage_gib` | integer | Provisioned data disk on the **DB VM** (GiB). |
+| `storage_type` | string | Provider disk SKU (e.g. `Premium_LRS`, `pd-ssd`, `gp3`). |
+| `disk_iops` | integer | Provisioned IOPS when set (`MULTI_VM_DB_DISK_IOPS`). |
+| `disk_throughput_mb_s` | integer | Provisioned throughput MB/s when set. |
+
+### DBaaS only (`topology: dbaas`)
+
+Merged from `provision_context()` when the managed instance is provisioned:
+
+
+| Field | Type | Meaning |
+| ----- | ---- | ------- |
+| `cache_tier` | string | `c100` or `c30`. |
+| `vendor_id` | string | Cloud vendor (`azure`, `gcp`, …). |
+| `native_id` | string | Compute SKU (e.g. `Standard_E16ds_v5`). |
+| `engine_version` | string | Postgres major version (`18`). |
+| `ha_mode` | string | `standalone` (current rollout). |
+| `sku_id` | string | Catalog key (e.g. `Standard_E16ds_v5:MemoryOptimized:18`). |
+| `cpu_count` | number | Managed instance vCPUs. |
+| `memory_gib` | number | Managed instance RAM (GiB). |
+| `storage_gib` | integer | Managed storage size (GiB). |
+| `storage_edition` | string | Vendor storage product (e.g. `ManagedDiskV2`, `PD_SSD`). |
+| `client_instance` | string | Companion VM SKU used for the benchmark client. |
+| `region` | string | Cloud region. |
+| `zone` | string | Zone when zonal (empty if regional). |
+| `db_fqdn` | string | Private or public DB endpoint hostname. |
+| `network_mode` | string | e.g. `private_vnet`. |
+| `iops_tier` | string | Azure P-tier when applicable (e.g. `P40`). |
+| `sync_commit_session_settable` | boolean | Whether async tasks were allowed on this SKU. |
+
+### HammerDB-only: `hammerdb` object
+
+
+| Field | Workloads | Meaning |
+| ----- | --------- | ------- |
+| `build_vus` | all | Parallel schema-build threads/VUs. |
+| `run_vus` | all | Initial run-VU hint from sizing (actual peak comes from profiling). |
+| `rampup_min` | OLTP | Timed-driver ramp-up minutes (`SC_RAMPUP_MIN`, default 1). |
+| `duration_min` | OLTP | Timed-driver measure window minutes (`SC_DURATION_MIN`, default 2). |
+| `profile_vus` | all | Concurrency ladder rungs executed (`SC_PROFILE_VUS`). |
+| `final_repeats` | all | Confirmation repeats at peak (`SC_FINAL_REPEATS`, default 1). |
+| `wh_per_vu_min` | all | Minimum warehouses (OLTP) or scale units per VU cap. |
+| `storedprocs` | OLTP | Always `true` (PostgreSQL stored procedures). |
+| `driver` | OLTP | `timed` for TPROC-C; OLAP uses query driver (not timed). |
+| `warehouses` | OLTP | TPC-C warehouse count. |
+| `scale_factor` | OLAP | TPC-H scale factor (SF). |
+| `benchmark_user` | all | HammerDB schema user (`tpcc` or `tpch`). |
+| `degree_of_parallel` | OLAP | `pg_degree_of_parallel` for TPC-H query phase. |
+
+HammerDB OLTP also sets top-level `warehouses`; OLAP sets top-level `scale_factor`. Optional top-level `latency_ms` (OLTP) reflects the latency sample at the winning `score`.
+
+### BenchBase-only fields
+
+- `scalefactor` — BenchBase scale factor (Wikipedia row count proxy / YCSB row count).
+- `profile[].tps` — requests per second at each rung.
+- Top-level `latency_ms` — from the 120 s confirmation run (not the max across profile rungs).
+
+`warehouses` appears only if a BenchBase `tpcc` workload were run (not in current task matrix).
+
+### Example snippets
+
+HammerDB OLTP (multi-VM): `score` / `score_tpm` / `score_unit: "NOPM"` / `profile[].tpm` — see `data/azure/Standard_E16ds_v5/hammerdb_postgres_multi_oltp_mixed_c100/stdout`.
+
+BenchBase read-heavy: `score_unit: "tpm"` / `profile[].tps` / `latency_ms` — see `data/azure/Standard_E16ds_v5/benchbase_postgres_multi_read_heavy_c100/stdout`.
+
+DBaaS HammerDB: provision fields + `db_fqdn` — see `dbaas/azure/Standard_E16ds_v5/postgres/18/standalone/hammerdb_postgres_dbaas_oltp_mixed_c100/stdout`.
 
 ## Artifacts and operations
 
@@ -332,7 +466,7 @@ Self-hosted Postgres GUCs (`postgres_multi.pg_gucs`) per task:
 
 
 
-## Discussion prompts for benchmark experts
+## Discussion prompts
 
 1. **Async vs durable split** — Is `synchronous_commit=off` with `fsync=on` an acceptable headline for cross-cloud compute ranking, with durable disclosed separately?
 2. **Warehouse / SF sizing** — C100 uses 25% of RAM for schema; C30 forces ~3.3× larger working set. Are HammerDB warehouse count and BenchBase SF formulas reasonable vs TPC council guidance?
