@@ -397,6 +397,107 @@ HammerDB OLTP also sets top-level `warehouses`. Optional top-level `latency_ms` 
 
 **Runtime budget (16 vCPU class):** ~1–2 h per shirt size for all 3 workloads (OLTP + read-heavy + CRUD). Total depends on how many tiers an instance qualifies for.
 
+## Current results
+
+Snapshot from published `stdout` JSON in this repo (2026-07-14 – 2026-07-15). Only tasks with `meta.json` `exit_code=0` are included.
+
+### How to compare on Navigator
+
+Spare Cores compares cloud servers **at the same fixed workload size** (shirt-size tier), not by mixing tiers on one machine. This mirrors how Navigator ranks other benchmarks: **raw peak score** as the headline, **score per USD** when priced (not computed here), and secondary efficiency columns where cross-size fairness matters.
+
+| Rule | What it means |
+| ---- | ------------- |
+| **Same tier, different instances** | Valid comparison. S-tier on `E8ds_v5` vs S-tier on `E16ds_v5` uses identical warehouse/scale-factor sizing. |
+| **Same tier, different topology** | Valid when topology is disclosed (multi-VM self-hosted vs DBaaS managed). |
+| **S vs M on the same instance** | **Not** a ranking signal. Peak NOPM/TPM is aggregate throughput at the profiler's chosen peak VU; M-tier allows higher concurrency (more warehouses → higher `wh_per_vu_min` cap). |
+| **OLTP headline** | Peak NOPM at adaptive concurrency. Also show **NOPM/vCPU** for 8 vs 16 vCPU cross-size, and **@4 VU** when profiling caps differ. |
+| **Read / CRUD headline** | Peak TPM at adaptive concurrency, plus TPM/vCPU for cross-size. |
+| **DBaaS durable OLTP** | Separate column — disk-commit bound; not comparable to multi-VM async OLTP. |
+
+HammerDB NOPM is `Δ sum(d_next_o_id) / minutes` — total system throughput, not normalized per warehouse. Industry comparisons (Principled Technologies, AWS/Azure SQL blogs) use the same raw NOPM at a stated concurrency; per-vCPU is a secondary efficiency view, not a replacement headline.
+
+### Coverage
+
+
+| Topology | Instance | vCPU | RAM (GiB) | Completed | Missing / failed |
+| -------- | -------- | ---- | --------- | --------- | ---------------- |
+| Multi-VM | `azure/Standard_F16ams_v6` | 16 | 128 | 5 / 9 (S+M) | L-tier not run; `crud_simple_m` failed |
+| Multi-VM | `azure/Standard_E16ds_v5` | 16 | 128 | 5 / 9 (S+M) | L-tier not run; `crud_simple_m` failed |
+| Multi-VM | `azure/Standard_E8ds_v5` | 8 | 64 | 6 / 6 (S+M) | L-tier out of RAM range |
+| DBaaS | `azure/Standard_E16ds_v5` | 16 | 128 | 12 / 12 (S+M/L) | — |
+| DBaaS | `gcp/db-perf-optimized-N-16` | 16 | 128 | 3 / 12 | HammerDB (bootstrap); L-tier; `crud_simple_m` pending re-run |
+
+### Multi-VM — Tier S (100 WH / SF 20 / YCSB 5k)
+
+Self-hosted Postgres 18, async durability for OLTP and CRUD; durable for read-heavy.
+
+
+| Instance | vCPU | OLTP peak NOPM | /vCPU | Peak VU | @4 VU NOPM | Read TPM | /vCPU | CRUD TPM | /vCPU |
+| -------- | ---- | -------------- | ----- | ------- | ---------- | -------- | ----- | -------- | ----- |
+| `Standard_E8ds_v5` | 8 | **256.0k** | 32.0k | 12 | 156.4k | **107.7k** | 13.5k | 1.79M | **223.3k** |
+| `Standard_E16ds_v5` | 16 | 168.5k | 10.5k | 5 † | 137.7k | 86.6k | 5.4k | **1.98M** | 123.5k |
+| `Standard_F16ams_v6` | 16 | 157.0k | 9.8k | 5 † | 127.6k | 60.7k | 3.8k | 1.72M | 107.6k |
+
+
+† 16 vCPU instances cap OLTP profiling at 5 VU on S-tier (`100 WH ÷ 20 wh/VU`). `E8ds_v5` reaches 12 VU (`100 ÷ 5`), so its peak NOPM is higher despite fewer cores. At matched 4 VU, all three are within ~15% (128–156k NOPM).
+
+### Multi-VM — Tier M (300 WH / SF 50 / YCSB 20k)
+
+
+| Instance | vCPU | OLTP peak NOPM | /vCPU | Peak VU | @4 VU NOPM | Read TPM | /vCPU | CRUD TPM | /vCPU |
+| -------- | ---- | -------------- | ----- | ------- | ---------- | -------- | ----- | -------- | ----- |
+| `Standard_F16ams_v6` | 16 | **319.6k** | 20.0k | 15 | 120.8k | 136.4k | 8.5k | — † | — |
+| `Standard_E16ds_v5` | 16 | 246.7k | 15.4k | 8 | **144.6k** | **161.2k** | 10.1k | — † | — |
+| `Standard_E8ds_v5` | 8 | 233.6k | **29.2k** | 12 | 143.4k | 110.9k | **13.9k** | **1.60M** | **200.2k** |
+
+
+† `crud_simple_m` failed on F16ams and E16ds. At 4 VU, E16ds M (145k) ≈ E8ds M (143k) — tier size does not make the DB slower; peak headline reflects concurrency headroom.
+
+### DBaaS — Tier S
+
+
+| Instance | vCPU | OLTP async | /vCPU | Peak VU | OLTP durable | /vCPU | Read TPM | /vCPU | CRUD TPM | /vCPU |
+| -------- | ---- | ---------- | ----- | ------- | ------------ | ----- | -------- | ----- | -------- | ----- |
+| `gcp/db-perf-optimized-N-16` | 16 | — | — | — | — | — | 107.4k | 6.7k | **3.64M** | **227.7k** |
+| `azure/Standard_E16ds_v5` | 16 | 140.1k | 8.8k | 5 | 62.7k | 3.9k | 68.0k | 4.3k | 2.14M | 133.6k |
+
+
+GCP partial run (BenchBase only). Azure S-tier OLTP async is profiling-capped at 5 VU; durable OLTP is ~45% of async (disk-commit bound).
+
+### DBaaS — Tier M
+
+
+| Instance | vCPU | OLTP async | /vCPU | Peak VU | OLTP durable | /vCPU | Read TPM | /vCPU | CRUD TPM | /vCPU |
+| -------- | ---- | ---------- | ----- | ------- | ------------ | ----- | -------- | ----- | -------- | ----- |
+| `azure/Standard_E16ds_v5` | 16 | **329.8k** | 20.6k | 15 | 235.7k | 14.7k | **257.5k** | 16.1k | **3.80M** | 237.7k |
+| `gcp/db-perf-optimized-N-16` | 16 | — | — | — | — | — | 153.7k | 9.6k | — | — |
+
+### DBaaS — Tier L (Azure only)
+
+
+| Instance | vCPU | OLTP async | /vCPU | Peak VU | OLTP durable | /vCPU | Read TPM | /vCPU | CRUD TPM | /vCPU |
+| -------- | ---- | ---------- | ----- | ------- | ------------ | ----- | -------- | ----- | -------- | ----- |
+| `azure/Standard_E16ds_v5` | 16 | **352.0k** | 22.0k | 16 | 226.6k | 14.2k | 201.6k | 12.6k | 3.04M | 190.1k |
+
+L-tier OLTP async peaks at 16 VU (vCPU cap). CRUD M > L (3.80M vs 3.04M) likely reflects client saturation at 32 VU, not DB regression.
+
+### Cross-topology — same tier (`Standard_E16ds_v5`, 16 vCPU, 128 GiB)
+
+Compare self-hosted multi-VM vs Azure Flexible Server **at the same shirt size**. RTT included because it affects profiling on S-tier.
+
+
+| Tier | Workload | Multi-VM | DBaaS | Multi RTT (ms) | DBaaS RTT (ms) |
+| ---- | -------- | -------- | ----- | -------------- | -------------- |
+| S | OLTP async (NOPM) | 168.5k @ 5 VU | 140.1k @ 5 VU | 0.223 | 0.409 |
+| S | Read-heavy (TPM) | 86.6k @ 4 | 68.0k @ 4 | 0.251 | 0.392 |
+| S | CRUD (TPM) | 1.98M @ 32 | 2.14M @ 32 | 0.229 | 0.396 |
+| M | OLTP async (NOPM) | 246.7k @ 8 VU | **329.8k @ 15 VU** | 0.213 | 0.403 |
+| M | Read-heavy (TPM) | 161.2k @ 10 | **257.5k @ 10** | 0.208 | 0.138 |
+| M | CRUD (TPM) | — † | **3.80M @ 32** | — | 0.145 |
+
+
+DBaaS leads at M-tier for OLTP and read-heavy; multi-VM leads S-tier OLTP when normalized per VU (33.7k vs 28.0k NOPM/VU). S-tier DBaaS gap is partly RTT (0.39–0.41 ms vs 0.22–0.25 ms multi-VM).
+
 ## Code map (quick reference)
 
 
