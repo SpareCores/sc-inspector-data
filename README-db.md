@@ -281,6 +281,13 @@ Each successful benchmark writes **one JSON object** to `<task>/stdout` (also mi
 | `score_unit` | string | Unit for `score`: `NOPM` or `tpm`. |
 | `profile` | array | Per-rung profiling results (see below). |
 | `synchronous_commit` | object | `SHOW synchronous_commit` captured per relevant DB session (see below). |
+| `postgres` | object | Live server snapshot for reproduction (GUCs, extensions, role settings; see below). |
+| `db_vcpus` | integer | vCPUs used for DB-side sizing / VU ladder caps. |
+| `client_vcpus` | integer | Client VM vCPUs (VU/build concurrency clamp). |
+| `db_mem_gib` | number | DB host RAM (GiB) used for warehouse / buffer sizing. |
+| `profile_vus` | array | Concurrency ladder requested for this run. |
+| `benchmark_image` | string | Benchmark client image ref (inspector merge). |
+| `pg_image` | string | Multi-VM only: Postgres server image ref. |
 
 ### Headline scoring rules
 
@@ -319,6 +326,23 @@ Recorded after schema build, before the timed/query phase.
 | `benchmark_session` | object | The session HammerDB/BenchBase actually uses (`on` or `off`). |
 
 Async OLTP/YCSB expect `off` on the benchmark session; durable tasks expect `on`.
+
+### `postgres` object
+
+Captured from the **running** server after the timed phase (inspector merge; also emitted by benchmark images into `metrics.json`). Use this to reproduce GUC state on self-hosted Postgres or to record vendor-managed defaults on DBaaS.
+
+
+| Field | Type | Meaning |
+| ----- | ---- | ------- |
+| `version` | string | Full `version()` string. |
+| `server_version` | string | `SHOW server_version`. |
+| `server_version_num` | integer | `SHOW server_version_num`. |
+| `in_recovery` | boolean | `pg_is_in_recovery()`. |
+| `settings` | object | All `pg_settings` name→`current_setting()` value (SHOW-style, e.g. `4GB`). |
+| `nondefault_settings` | object | Settings whose `source != default`, with `setting` (pretty), `source`, `context`, `vartype`, `category`, optional `unit` / `setting_raw` / `pending_restart`. |
+| `extensions` | array | `{name, version}` from `pg_extension`. |
+| `role_settings` | array | `ALTER ROLE` / DB settings from `pg_db_role_setting` (`role`, `database`, `config[]`). Includes DBaaS durability overrides. |
+| `requested_gucs` | object | Multi-VM only: GUC template inspector applied via `postgres -c` at server start. |
 
 ### Multi-VM only (`topology: multi_vm`)
 
