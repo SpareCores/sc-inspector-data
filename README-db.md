@@ -9,7 +9,7 @@ Calibration and design rationale live in `sc-db-benchmark-tmp/RESULTS.md` (wikip
 **Goals**
 
 - Comparable **wikipedia TPM** across SKUs with a **cache-resident** working set scaled to instance RAM.
-- Full durability sweep on **both** topologies: **async** (`synchronous_commit=off`) and **durable** (default `on`).
+- **Durable** (`synchronous_commit=on`) wikipedia on both topologies. Async (`off`) plumbing remains but is not in the live task matrix (wikipedia is read-heavy).
 - Fixed concurrency ladder `{1, ncpus/2, ncpus}` with **5-minute** measurement windows.
 - Persist enough metadata (all GUCs, profile rungs, provision context, server logs) to reproduce a run.
 
@@ -39,21 +39,17 @@ Calibration and design rationale live in `sc-db-benchmark-tmp/RESULTS.md` (wikip
 | **B — RAM @ fixed cores** | `n2-standard-8` (8c/32 GiB) vs `n2-highmem-8` (8c/64 GiB) | `db-perf-optimized-N-8` (8c/64 GiB) vs `db-memory-optimized-N-8` (8c/256 GiB) |
 | **C — µarch @ fixed shape** | `n2-highmem-8` (Intel) vs `c2d-highmem-8` (AMD Milan), both 8c/64 GiB | Cloud SQL does not expose host CPU; compare topologies instead: multi-VM highmem-8/16 ↔ DBaaS N-8/N-16 |
 
-## Live workload: BenchBase wikipedia × durability
+## Live workload: BenchBase wikipedia (durable)
 
 | Task | Topology | Durability | Metric |
 | ---- | -------- | ---------- | ------ |
-| `benchbase_postgres_multi_read_heavy_async` | multi-VM | async (`synchronous_commit=off`) | TPM |
 | `benchbase_postgres_multi_read_heavy_durable` | multi-VM | durable (`on`) | TPM |
-| `benchbase_postgres_dbaas_read_heavy_async` | DBaaS | async | TPM |
-| `benchbase_postgres_dbaas_read_heavy_durable` | DBaaS | durable | TPM |
+| `benchbase_postgres_dbaas_read_heavy_durable` | DBaaS | durable (`on`) | TPM |
 
 **Durability**
 
-- **async:** removes per-commit WAL wait so scores track CPU/memory/lock scaling. `fsync` stays on (no corruption risk; only loss of the last ~100 ms of commits on crash).
-- **durable:** production-default `synchronous_commit=on` (DBaaS: `ALTER ROLE … RESET` so vendor default applies).
-
-DBaaS async is skipped when the managed catalog / runtime precheck reports `sync_commit_session_settable=false`.
+- **durable (live):** production-default `synchronous_commit=on` (DBaaS: `ALTER ROLE … RESET` so vendor default applies).
+- **async (infrastructure only):** `MultiVmDbTask` / `DbaasDbTask` still accept `durability="async"` (`synchronous_commit=off`); task definitions are commented out in `tasks.py` / `dbaas_tasks.py` until a write-heavier workload needs them. DBaaS async is skipped when the catalog / precheck reports `sync_commit_session_settable=false`.
 
 ## Schema sizing (~¼ RAM, ≤16 GiB)
 
@@ -82,7 +78,7 @@ storage_gib = max(64, ceil(schema × 2 / 0.85))
 
 Ops overrides: `MULTI_VM_DB_DISK_TYPE`, `MULTI_VM_DB_DISK_IOPS`, `MULTI_VM_DB_DISK_THROUGHPUT`.
 
-**Caveat:** network-attached fsync latency still differs by cloud/product; async scores isolate compute, durable scores include storage commit cost by design.
+**Caveat:** network-attached fsync latency still differs by cloud/product; durable scores include storage commit cost by design.
 
 ## Concurrency ladder
 
