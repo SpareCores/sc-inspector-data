@@ -130,10 +130,8 @@ Vendor-managed GUC surface — no server-side pg_tune. Full `pg_settings` still 
 | `<task>/stdout` | Single JSON: score, `profile[]`, `postgres{}`, sizing, provision |
 | `<task>/stderr` | Driver stderr |
 | `<task>/meta.json` | Inspector lifecycle |
-| `<task>/resource_tracker.jsonl` | Resource metrics |
-| `<task>/postgres.log` | Multi-VM: Docker Postgres container logs |
 
-S3 upload places `resource_tracker.jsonl` and `postgres.log` under the run’s `tasks/<task>/` prefix.
+**S3 only** (uploaded then deleted locally; not committed to git): `resource_tracker.jsonl`, and multi-VM `postgres.log` (Docker Postgres container logs). Both land under the run’s `tasks/<task>/` prefix.
 
 ## Code map
 
