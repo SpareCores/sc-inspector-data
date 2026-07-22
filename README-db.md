@@ -28,8 +28,16 @@ Calibration and design rationale live in `sc-db-benchmark-tmp/RESULTS.md` (wikip
 
 **Rollout allowlists** (expand after stack validation):
 
-- Multi-VM: `azure/Standard_F16ams_v6`, `azure/Standard_E16ds_v5`, `azure/Standard_E8ds_v5`
-- DBaaS: `azure/Standard_E16ds_v5/postgres/18/standalone`, `gcp/db-perf-optimized-N-16/postgres/18/standalone`
+- Multi-VM: Azure `Standard_F16ams_v6`, `Standard_E16ds_v5`, `Standard_E8ds_v5`; GCP `n2-standard-8`, `n2-highmem-8`, `n2-standard-16`, `n2-highmem-16`, `c2d-highmem-8`
+- DBaaS: Azure `Standard_E16ds_v5/postgres/18/standalone`; GCP `db-perf-optimized-N-8`, `db-perf-optimized-N-16`, `db-memory-optimized-N-8` (each `/postgres/18/standalone`)
+
+### GCP comparison matrix
+
+| Axis | Multi-VM (GCE) | DBaaS (Cloud SQL Enterprise Plus) |
+| ---- | -------------- | --------------------------------- |
+| **A — cores @ fixed RAM** | `n2-highmem-8` (8c/64 GiB) vs `n2-standard-16` (16c/64 GiB) | No fixed-RAM 16c tier; use `db-perf-optimized-N-8` (8c/64 GiB) vs `N-16` (16c/128 GiB) — cores *and* RAM scale |
+| **B — RAM @ fixed cores** | `n2-standard-8` (8c/32 GiB) vs `n2-highmem-8` (8c/64 GiB) | `db-perf-optimized-N-8` (8c/64 GiB) vs `db-memory-optimized-N-8` (8c/256 GiB) |
+| **C — µarch @ fixed shape** | `n2-highmem-8` (Intel) vs `c2d-highmem-8` (AMD Milan), both 8c/64 GiB | Cloud SQL does not expose host CPU; compare topologies instead: multi-VM highmem-8/16 ↔ DBaaS N-8/N-16 |
 
 ## Live workload: BenchBase wikipedia × durability
 
