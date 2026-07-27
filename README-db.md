@@ -2,21 +2,20 @@
 
 How **Spare Cores** measures managed and self-hosted Postgres for the Navigator. Implementation: `sc-inspector`, `sc-runner`, `sc-images` (`benchmark-pgbench-postgres`, `benchmark-postgres-server`), artifacts in `sc-inspector-data`.
 
-Calibration and design rationale live in `sc-db-benchmark-tmp/RESULTS.md` (pgbench RO/TPC-B studies, pgtune GUC defaults).
-
 ## Goals and non-goals
 
 **Goals**
 
 - Comparable **pgbench TPM** across SKUs with a **cache-resident** working set.
 - **RO** (`pgbench -S`, durable) and **TPC-B** (`tpcb-like`, async) on both topologies.
-- Geometric concurrency anchors `{1, V/4, V/2, V}` plus upward search while TPM improves ≥5%, with **5-minute** measurement windows.
+- Shared geometric concurrency rungs so machines can be compared at the same client counts, plus a short upward search for the peak.
 - Persist enough metadata (all GUCs, profile rungs, provision context, server logs) to reproduce a run.
 
 **Non-goals**
 
 - BenchBase / HammerDB / YCSB in the live path (image trees may still exist for ad-hoc use).
 - Equalizing storage fsync latency across clouds.
+- Claiming colocated loopback TPS as the product number for multi-VM / DBaaS (those paths are networked by design).
 
 ## Two topologies
 
@@ -58,7 +57,7 @@ Calibration and design rationale live in `sc-db-benchmark-tmp/RESULTS.md` (pgben
 SCHEMA_SIZE_GIB = (1, 4, 16, 64)          # few fixed sizes for cross-SKU compare
 cache_budget   = 0.25 × mem_gib          # ≈ shared_buffers (pgtune web/SSD)
 # Disk plan: largest rung ≤ budget
-# RO: fixed ~1 GiB (scale 65)
+# RO: fixed ~1 GiB (scale 65 ≈ 980 MB)
 # TPC-B async: smallest rung whose pgbench scale ≥ concurrency_search_cap(V),
 #             else largest rung ≤ budget (clients still capped at scale)
 ```
@@ -87,7 +86,17 @@ Ops overrides: `MULTI_VM_DB_DISK_TYPE`, `MULTI_VM_DB_DISK_IOPS`, `MULTI_VM_DB_DI
 
 ## Concurrency ladder
 
-Geometric anchors `{1, rung(V/4), rung(V/2), rung(V)}`, then search upward while TPM improves ≥5% (cap `rung(4V)`). TPC-B also enforces pgbench’s `-s ≥ -c`.
+Static geometric ladder (powers of two + midpoints):
+
+`1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512, 768, 1024, 1536, 2048, 3072`
+
+Per host:
+
+1. Always measure anchors `{1, rung(V/4), rung(V/2), rung(V)}`.
+2. Then walk upward while TPM improves by ≥ **5%** vs the best so far.
+3. Cap search at `rung(4V)` (and the ladder max).
+
+TPC-B also enforces pgbench’s `-s ≥ -c` (branch/teller update contention otherwise). When the chosen size cannot cover the full host search cap, clients are capped at the scale factor and anchors are taken from `min(V, scale)`.
 
 Inspector sets `SC_PROFILE=1` and `SC_PROFILE_VUS`. Headline `score` = max TPM across measured rungs.
 
@@ -99,13 +108,15 @@ Inspector sets `SC_PROFILE=1` and `SC_PROFILE_VUS`. Headline `score` = max TPM a
 | Settle (later rungs) | **60 s** | `SC_SETTLE_SECONDS` |
 | Measurement | **300 s** (5 min) | `SC_RUN_SECONDS` |
 
-Duration studies in `sc-db-benchmark-tmp/RESULTS.md` support 2 min warmup + 5 min measure for SKU ranking.
+Full warmup runs only on the first timed rung; later rungs use the short settle (connection storm / cache already hot).
 
 ## Postgres configuration
 
 ### Multi-VM
 
 GUCs from [pgtune.leopard.in.ua](https://pgtune.leopard.in.ua/) (`pgtune_leopard.generate_for_host`): form defaults `dbType=web`, `hdType=ssd`, `dbVersion=18`, `osType=linux`, `dbSize=mid_ram`; only host RAM and CPU count vary. Then set `synchronous_commit` from task durability. Applied via `postgres -c …`. Requested template: `postgres.requested_gucs`; share URL: `pgtune_share_url`; full live dump: `postgres.settings`.
+
+Containers use elevated `nofile` / privileged / host network as needed for high `max_connections` and `io_uring` (see `DB_DOCKER_OPTS`).
 
 ### DBaaS
 
@@ -133,6 +144,61 @@ Vendor-managed GUC surface — no server-side pg_tune. Full `pg_settings` still 
 | DBaaS storage sizing | `sc-inspector/inspector/dbaas_tiers.py` |
 | Shared disk IOPS/size plan | `sc-inspector/inspector/db_storage.py` |
 | pgbench wrapper | `sc-images/images/benchmark-pgbench-postgres/benchmark.py` |
-| Calibration notes | `sc-db-benchmark-tmp/RESULTS.md` |
 
 Historical BenchBase / HammerDB / YCSB runs may still exist under `data/` and `dbaas/`; they are **not** produced by the current live task matrix.
+
+---
+
+## Design decisions (why this shape)
+
+Calibration was done on GCP with Postgres 18, pgtune leopard web/SSD defaults, and `shared_buffers` ≈ ¼ RAM. The live matrix below is what we kept; raw experiment trees are not required to operate the inspector.
+
+### Why pgbench (not BenchBase / HammerDB)
+
+- **RO (`-S`)** is a clean CPU / cache / connection ceiling: one prepared PK `SELECT` on `pgbench_accounts`. Fixed **scale 65 ≈ 980 MB** is enough — on large RAM hosts, RO TPM is flat from ~0.25–4 GiB (and even 1 GiB vs 64 GiB is within a few percent when both fit in shared buffers).
+- **TPC-B (`tpcb-like`)** is the write path we care about for ranking under durability pressure (account + teller + branch updates + history insert).
+- Heavier mixes (BenchBase wikipedia, HammerDB TPC-C) were useful for early exploration but add schema/build complexity without improving SKU ranking once we standardized on cache-resident pgbench. They are out of the live path for now.
+
+### Why durable RO + async TPC-B
+
+- **Durable RO** matches production defaults (`synchronous_commit=on`) for a read path that barely touches WAL.
+- **Durable TPC-B saturates early** (on a 360 vCPU host, ~37 k TPS / ~2.3 M TPM by ~90 clients on 1 GiB; flat through 360 while P95 climbs). It is WAL/fsync-bound, not CPU-bound — so durable write scores barely move with core count once the fsync ceiling is hit.
+- **Durable × large DB is a cliff** (64 GiB held only ~¼–⅓ of 1 GiB durable TPM; P95 stuck ~38 ms) from dirty-page / WAL amplification — opposite of RO, which stays flat across size when cache-resident.
+- **Async TPC-B is 3–16× durable** and on large sizes can *beat* small-DB async at high concurrency. That makes async the useful write-side SKU differentiator; durable remains available in plumbing if we need an fsync-bound score later.
+- vs RO on the same host: select-only peaked ~3 M TPS colocated; TPC-B durable ~38 k, async ~150 k — writes are ~80–200× slower. Both workloads stay in the matrix because they answer different questions.
+
+### Why cache-resident discrete sizes
+
+- Working set must stay under **~shared_buffers (¼ RAM)** so timed runs measure CPU/locking/commit behavior, not storage.
+- A short GiB ladder **`(1, 4, 16, 64)`** keeps dump/CDN cardinality low and lets SKUs land on shared sizes for comparison.
+- **RO** stays at the 1 GiB rung (scale 65); growing the RO schema does not change the ranking story.
+- **TPC-B** picks the **smallest** ladder rung whose scale covers `concurrency_search_cap(V)` (see below), else the largest rung that still fits in cache. That implements pgbench’s documented rule without inventing a unique scale per SKU.
+
+### Why `-s ≥ -c` for TPC-B
+
+Postgres docs: for the default TPC-B-like script, initialization scale must be **at least as large as the largest `-c`**, otherwise you mostly measure branch/teller update contention (`pgbench_branches` has only `-s` rows). We size from the planned search cap and still cap clients at scale when RAM forces a smaller rung.
+
+### Why the geometric ladder + 5% search
+
+- Fleet vCPU counts are sparse; a **static** ladder (powers of two + midpoints) maximizes shared client counts across SKUs instead of densifying to every fleet shape.
+- Always measure **anchors** `{1, V/4, V/2, V}` so small/medium/full host concurrency is present even if search stops early.
+- Search upward while TPM improves ≥ **5%**, capped at **`rung(4V)`**, to find oversubscribe peaks (remote RO on a 360 vCPU server peaked near 540 clients, not at `nproc`) without unbounded wall time.
+- Do **not** densify the ladder to match the fleet histogram — most hosts already land on an exact rung, and shared points matter more than per-SKU exactness.
+
+### Why 2 min warmup + 5 min measure (warmup once)
+
+- Interleaved duration studies (measure ∈ {5, 10, 15, 30} min, n=5) on both wikipedia-era and pgbench RO hosts showed **mean TPM within ~1–2%** of the 5 min mean at longer windows; longer runs did **not** systematically tighten CV (run-to-run noise dominates).
+- Prefer spending wall clock on more SKUs / concurrency rungs / replicates over 10–30 min windows.
+- After the first full warmup, later rungs only need a short **settle** (connection storm); caches and backends are already hot.
+
+### Why multi-VM / DBaaS use a separate client
+
+- Product topologies are networked (companion VM or VPC client → DB). Colocated loopback can hit multi-million RO TPS; same-VPC remote on the same server class peaked around **~43%** of colocated RO (~1.35 M vs ~3.15 M TPS) with **~2–3×** client-side latency.
+- Little’s Law holds: \(TPS ≈ C / R\). The remote gap is mostly higher \(R\) (NIC + softirq), not missing Postgres CPU — servers stayed ~80% idle with `ksoftirqd` pegged.
+- Companion client sizing therefore budgets for high client counts that multiplex well (many threads wait on RTT), not 1:1 vCPU mapping to `-c`.
+- External/managed paths with higher RTT will score lower at the same `-c`; that is expected and should not be “corrected” away.
+
+### Why shared disk IOPS/size across topologies
+
+- Multi-VM and DBaaS use the same `storage_gib` and vendor performance contract so SKU compares are not confounded by accidentally different provisioned IOPS.
+- Durable scores still include real fsync cost; we do not try to normalize clouds to identical commit latency.
