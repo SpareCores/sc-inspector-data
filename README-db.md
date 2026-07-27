@@ -1,23 +1,22 @@
 # Postgres benchmark methodology (sc-inspector)
 
-How **Spare Cores** measures managed and self-hosted Postgres for the Navigator. Implementation: `sc-inspector`, `sc-runner`, `sc-images` (`benchmark-benchbase-postgres`, `benchmark-postgres-server`), artifacts in `sc-inspector-data`.
+How **Spare Cores** measures managed and self-hosted Postgres for the Navigator. Implementation: `sc-inspector`, `sc-runner`, `sc-images` (`benchmark-pgbench-postgres`, `benchmark-postgres-server`), artifacts in `sc-inspector-data`.
 
-Calibration and design rationale live in `sc-db-benchmark-tmp/RESULTS.md` (wikipedia duration study, pgtune GUC defaults).
+Calibration and design rationale live in `sc-db-benchmark-tmp/RESULTS.md` (pgbench RO/TPC-B studies, pgtune GUC defaults).
 
 ## Goals and non-goals
 
 **Goals**
 
-- Comparable **wikipedia TPM** across SKUs with a **cache-resident** working set scaled to instance RAM.
-- **Durable** (`synchronous_commit=on`) wikipedia on both topologies. Async (`off`) plumbing remains but is not in the live task matrix (wikipedia is read-heavy).
-- Fixed concurrency ladder `{1, ncpus/2, ncpus}` with **5-minute** measurement windows.
+- Comparable **pgbench TPM** across SKUs with a **cache-resident** working set.
+- **RO** (`pgbench -S`, durable) and **TPC-B** (`tpcb-like`, async) on both topologies.
+- Geometric concurrency anchors `{1, V/4, V/2, V}` plus upward search while TPM improves ≥5%, with **5-minute** measurement windows.
 - Persist enough metadata (all GUCs, profile rungs, provision context, server logs) to reproduce a run.
 
 **Non-goals**
 
-- HammerDB / YCSB in the live path.
+- BenchBase / HammerDB / YCSB in the live path (image trees may still exist for ad-hoc use).
 - Equalizing storage fsync latency across clouds.
-- Application-specific query mix beyond BenchBase wikipedia weights.
 
 ## Two topologies
 
@@ -39,26 +38,32 @@ Calibration and design rationale live in `sc-db-benchmark-tmp/RESULTS.md` (wikip
 | **B — RAM @ fixed cores** | `n2-standard-8` (8c/32 GiB) vs `n2-highmem-8` (8c/64 GiB) | `db-perf-optimized-N-8` (8c/64 GiB) vs `db-memory-optimized-N-8` (8c/256 GiB) |
 | **C — µarch @ fixed shape** | `n2-highmem-8` (Intel) vs `c2d-highmem-8` (AMD Milan), both 8c/64 GiB | Cloud SQL does not expose host CPU; compare topologies instead: multi-VM highmem-8/16 ↔ DBaaS N-8/N-16 |
 
-## Live workload: BenchBase wikipedia (durable)
+## Live workloads: pgbench
 
 | Task | Topology | Durability | Metric |
 | ---- | -------- | ---------- | ------ |
-| `benchbase_postgres_multi_read_heavy_durable` | multi-VM | durable (`on`) | TPM |
-| `benchbase_postgres_dbaas_read_heavy_durable` | DBaaS | durable (`on`) | TPM |
+| `pgbench_postgres_multi_ro_durable` | multi-VM | durable (`on`) | TPM |
+| `pgbench_postgres_dbaas_ro_durable` | DBaaS | durable (`on`) | TPM |
+| `pgbench_postgres_multi_tpcb_async` | multi-VM | async (`off`) | TPM |
+| `pgbench_postgres_dbaas_tpcb_async` | DBaaS | async (`off`) | TPM |
 
 **Durability**
 
-- **durable (live):** production-default `synchronous_commit=on` (DBaaS: `ALTER ROLE … RESET` so vendor default applies).
-- **async (infrastructure only):** `MultiVmDbTask` / `DbaasDbTask` still accept `durability="async"` (`synchronous_commit=off`); task definitions are commented out in `tasks.py` / `dbaas_tasks.py` until a write-heavier workload needs them. DBaaS async is skipped when the catalog / precheck reports `sync_commit_session_settable=false`.
+- **durable:** production-default `synchronous_commit=on` (DBaaS: `ALTER ROLE … RESET` so vendor default applies).
+- **async:** `synchronous_commit=off`. DBaaS async is skipped when the catalog / precheck reports `sync_commit_session_settable=false`.
 
-## Schema sizing (~¼ RAM, ≤16 GiB)
+## Schema sizing (discrete rungs ≤ ¼ RAM)
 
 ```
-target_schema_gib = min(0.25 × mem_gib, 16)
-scalefactor = round(target_schema_gib / 0.14803)   # measured: SF 100 ≈ 14.8 GiB
+SCHEMA_SIZE_GIB = (1, 4, 16, 64)          # few fixed sizes for cross-SKU compare
+cache_budget   = 0.25 × mem_gib          # ≈ shared_buffers (pgtune web/SSD)
+# Disk plan: largest rung ≤ budget
+# RO: fixed ~1 GiB (scale 65)
+# TPC-B async: smallest rung whose pgbench scale ≥ concurrency_search_cap(V),
+#             else largest rung ≤ budget (clients still capped at scale)
 ```
 
-Multi-VM GUCs come from [pgtune.leopard.in.ua](https://pgtune.leopard.in.ua/) form defaults (`web` / SSD / PG18) — same formulas as run4-wikipedia. Targeting ~¼ RAM for schema (capped at 16 GiB) keeps the working set **inside Postgres caches**. On large RAM hosts the cap leaves schema under a larger buffer cache (e.g. 128 GiB → schema 16 GiB, `shared_buffers` ≈ 32 GiB).
+Multi-VM GUCs come from [pgtune.leopard.in.ua](https://pgtune.leopard.in.ua/) form defaults (`web` / SSD / PG18). Schema stays **inside Postgres caches**; 64 GiB covers the concurrency ladder max (3072 clients ≈ 45 GiB of pgbench data).
 
 Minimum RAM to schedule: **2 GiB**.
 
@@ -82,32 +87,19 @@ Ops overrides: `MULTI_VM_DB_DISK_TYPE`, `MULTI_VM_DB_DISK_IOPS`, `MULTI_VM_DB_DI
 
 ## Concurrency ladder
 
-Always run concurrency **1**. When `ncpus ≥ 2`, also run **`ncpus/2`** and **`ncpus`**. Examples: 1-CPU → `{1}`; 16-CPU → `{1, 8, 16}`.
+Geometric anchors `{1, rung(V/4), rung(V/2), rung(V)}`, then search upward while TPM improves ≥5% (cap `rung(4V)`). TPC-B also enforces pgbench’s `-s ≥ -c`.
 
-Inspector sets `SC_PROFILE=1` and `SC_PROFILE_VUS`. Headline `score` = max TPM across those rungs (each rung is a full timed measurement).
+Inspector sets `SC_PROFILE=1` and `SC_PROFILE_VUS`. Headline `score` = max TPM across measured rungs.
 
 ## Timed run length
 
 | Phase | Default | Env |
 | ----- | ------- | --- |
-| Warmup | **120 s** | `SC_WARMUP_SECONDS` |
+| Warmup (once) | **120 s** | `SC_WARMUP_SECONDS` |
+| Settle (later rungs) | **60 s** | `SC_SETTLE_SECONDS` |
 | Measurement | **300 s** (5 min) | `SC_RUN_SECONDS` |
 
-### Why 5 min (duration study)
-
-Calibrated on GCP with BenchBase wikipedia: 2 min warmup, measure ∈ {5, 10, 15, 30} min, **n=5 interleaved** trials per duration on `t2d-standard-16`, `t2d-standard-32`, and `e2-highmem-16` (terminals=`nproc`, fresh create+load each trial).
-
-**Mean TPM ± 95% t-CI (CV%)**
-
-| Instance | 5 min | 10 min | 15 min | 30 min |
-| -------- | ----- | ------ | ------ | ------ |
-| `t2d-standard-16` | 580 228 ± 3 585 (0.50%) | 578 237 ± 3 503 (0.49%) | 576 567 ± 3 560 (0.50%) | 576 145 ± 3 009 (0.42%) |
-| `t2d-standard-32` | 690 881 ± 7 723 (0.90%) | 691 927 ± 21 263 (2.48%) | 677 111 ± 30 259 (3.60%) | 686 730 ± 19 205 (2.25%) |
-| `e2-highmem-16` | 260 997 ± 7 045 (2.17%) | 261 574 ± 11 845 (3.65%) | 264 425 ± 5 489 (1.67%) | 260 321 ± 12 490 (3.86%) |
-
-**Δ mean % vs 5 min:** all within ~2% (worst −1.99% on `t2d-32` @ 15 min, partly one outlier; 30 min on that host was only −0.60%). CIs overlap.
-
-**Takeaway:** longer measure windows do **not** systematically tighten CV (run-to-run noise dominates over within-run averaging). Prefer **2 min warmup + 5 min measure**, and spend wall-clock budget on more SKUs / concurrency rungs / replicates rather than 10–30 min windows.
+Duration studies in `sc-db-benchmark-tmp/RESULTS.md` support 2 min warmup + 5 min measure for SKU ranking.
 
 ## Postgres configuration
 
@@ -140,7 +132,7 @@ Vendor-managed GUC surface — no server-side pg_tune. Full `pg_settings` still 
 | DBaaS orchestration | `sc-inspector/inspector/postgres_dbaas.py` |
 | DBaaS storage sizing | `sc-inspector/inspector/dbaas_tiers.py` |
 | Shared disk IOPS/size plan | `sc-inspector/inspector/db_storage.py` |
-| BenchBase wrapper | `sc-images/images/benchmark-benchbase-postgres/benchmark.py` |
+| pgbench wrapper | `sc-images/images/benchmark-pgbench-postgres/benchmark.py` |
 | Calibration notes | `sc-db-benchmark-tmp/RESULTS.md` |
 
-Historical S/M/L HammerDB+YCSB+wikipedia runs may still exist under `data/` and `dbaas/`; they are **not** produced by the current live task matrix.
+Historical BenchBase / HammerDB / YCSB runs may still exist under `data/` and `dbaas/`; they are **not** produced by the current live task matrix.
