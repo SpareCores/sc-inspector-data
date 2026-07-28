@@ -116,7 +116,7 @@ Full warmup runs only on the first timed rung; later rungs use the short settle 
 
 ### Multi-VM
 
-GUCs from [pgtune.leopard.in.ua](https://pgtune.leopard.in.ua/) (`pgtune_leopard.generate_for_host`): form defaults `dbType=web`, `hdType=ssd`, `dbVersion=18`, `osType=linux`, `dbSize=mid_ram`; only host RAM and CPU count vary. Then set `synchronous_commit` from task durability. Applied via `postgres -c …`. Requested template: `postgres.requested_gucs`; share URL: `pgtune_share_url`; full live dump: `postgres.settings`.
+GUCs from [pgtune.leopard.in.ua](https://pgtune.leopard.in.ua/) (`pgtune_leopard.generate_for_host`): form defaults `dbType=web`, `hdType=ssd`, `dbVersion=18`, `osType=linux`, `dbSize=mid_ram`; only host RAM and CPU count vary. Then set `synchronous_commit` from task durability, and raise `max_connections` to at least `CONCURRENCY_LADDER_MAX + 50` (3122) so RO adaptive extension to ladder max cannot hit `too many clients` (TPC-B may raise further to `scale + 50`). Applied via `postgres -c …`. Requested template: `postgres.requested_gucs`; share URL: `pgtune_share_url`; full live dump: `postgres.settings`. The pgbench driver also `SHOW max_connections` and clamps its client plan to `max_connections - 50` (important for DBaaS where the vendor caps connections).
 
 Containers use elevated `nofile` / privileged / host network as needed for high `max_connections` and `io_uring` (see `DB_DOCKER_OPTS`).
 
