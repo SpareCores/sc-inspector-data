@@ -388,7 +388,7 @@ tasks remain defined for all vendors; Azure skips them automatically via
 
 **Artifacts (multi-VM):**
 
-- `<task>/metrics.json` — `score`, `score_unit`, `durability`, `peak_concurrency`, `client_rtt_ms`, `latency_ms` (p50/p95/p99/avg/min/max at peak), `cache_ratio`, `profile` (each ladder rung includes `latency_ms` when available)
+- `<task>/metrics.json` — `score`, `score_unit`, `durability`, `peak_concurrency`, `client_rtt_ms`, `latency_ms` (p50/p95/p99/avg/min/max at peak), `cache_ratio`, `sizes[].profile` (each ladder rung includes `latency_ms` when available)
 - `<task>/meta.json` — standard inspector task lifecycle
 
 Only the **server** VM uploads S3 run-status; cleanup destroys the whole stack (both VMs).

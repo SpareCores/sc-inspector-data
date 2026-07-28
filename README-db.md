@@ -128,7 +128,7 @@ Vendor-managed GUC surface — no server-side pg_tune. Full `pg_settings` still 
 
 | Path | Contents |
 | ---- | -------- |
-| `<task>/stdout` | Single JSON: score, `profile[]`, `postgres{}`, sizing, provision |
+| `<task>/stdout` | Single JSON: score, `sizes[].profile[]`, `postgres{}`, sizing, provision |
 | `<task>/stderr` | Driver stderr |
 | `<task>/meta.json` | Inspector lifecycle |
 
