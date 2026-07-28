@@ -198,8 +198,8 @@ Postgres docs: for the default TPC-B-like script, initialization scale must be *
 ### Why multi-VM / DBaaS use a separate client
 
 - Product topologies are networked (companion VM or VPC client → DB). Colocated loopback can hit multi-million RO TPS; same-VPC remote on the same server class peaked around **~43%** of colocated RO (~1.35 M vs ~3.15 M TPS) with **~2–3×** client-side latency.
-- Little’s Law holds: \(TPS ≈ C / R\). The remote gap is mostly higher \(R\) (NIC + softirq), not missing Postgres CPU — servers stayed ~80% idle with `ksoftirqd` pegged.
-- Companion client sizing therefore budgets for high client counts that multiplex well (many threads wait on RTT), not 1:1 vCPU mapping to `-c`.
+- Little’s Law holds: \(TPS ≈ C / R\). The remote gap is mostly higher \(R\) (NIC + softirq), not missing Postgres CPU — servers stayed largely idle with backends in `ClientRead` while the companion burned **sys + softirq**.
+- Companion sizing (`companion_client_vcpus`) therefore designs for **adaptive RO concurrency** (~3× the planned `rung(4V)` search cap, ladder-snapped) at about **20 clients per client vCPU**, and never below `V/2`. On n2-standard-128, a 64-vCPU companion saturated around 1–1.5 k clients while the DB still had headroom; the new rule yields ~77+ client vCPUs for that class so ranking measures the DB, not the client NIC.
 - External/managed paths with higher RTT will score lower at the same `-c`; that is expected and should not be “corrected” away.
 
 ### Why shared disk IOPS/size across topologies
