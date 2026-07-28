@@ -94,9 +94,11 @@ Per host:
 
 1. Always measure anchors `{1, rung(V/4), rung(V/2), rung(V)}`.
 2. Then walk upward while TPM improves by ≥ **5%** vs the best so far.
-3. Cap search at `rung(4V)` (and the ladder max).
+3. Planned cap is `rung(4V)` (and ladder max) via `SC_PROFILE_MAX_CLIENTS`.
+4. Adaptive extension can continue above the planned cap up to ladder max (`3072`) via `SC_PROFILE_HARD_MAX_CLIENTS` when the tail is still improving.
 
 TPC-B also enforces pgbench’s `-s ≥ -c` (branch/teller update contention otherwise). When the chosen size cannot cover the full host search cap, clients are capped at the scale factor and anchors are taken from `min(V, scale)`.
+For TPC-B, both planned and hard caps are set to that memory-derived client cap; adaptive extension beyond it is disabled.
 
 Inspector sets `SC_PROFILE=1` and `SC_PROFILE_VUS`. Headline `score` = max TPM across measured rungs.
 
@@ -183,6 +185,8 @@ Postgres docs: for the default TPC-B-like script, initialization scale must be *
 - Fleet vCPU counts are sparse; a **static** ladder (powers of two + midpoints) maximizes shared client counts across SKUs instead of densifying to every fleet shape.
 - Always measure **anchors** `{1, V/4, V/2, V}` so small/medium/full host concurrency is present even if search stops early.
 - Search upward while TPM improves ≥ **5%**, capped at **`rung(4V)`**, to find oversubscribe peaks (remote RO on a 360 vCPU server peaked near 540 clients, not at `nproc`) without unbounded wall time.
+- For **RO**, adaptive tail extension can continue from the planned `rung(4V)` cap up to ladder max (`3072`) while improvement holds.
+- For **TPC-B**, hard cap is pinned to the memory-derived `-s` cap (still enforcing pgbench `-s ≥ -c`), so no extension beyond that point.
 - Do **not** densify the ladder to match the fleet histogram — most hosts already land on an exact rung, and shared points matter more than per-SKU exactness.
 
 ### Why 2 min warmup + 5 min measure (warmup once)
