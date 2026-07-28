@@ -24,9 +24,9 @@ How **Spare Cores** measures managed and self-hosted Postgres for the Navigator.
 | **Multi-VM** (`topology: multi_vm`) | `data/<vendor>/<instance>/` | Postgres 18 in Docker on the **DB VM** | Companion VM, same region/zone | `postgres_multi.py` ↔ companion multiprocessing |
 | **DBaaS** (`topology: dbaas`) | `dbaas/<vendor>/<native_id>/postgres/<ver>/<ha>/` | Azure Flexible Server / GCP Cloud SQL | Client VM in customer VPC/VNet | `postgres_dbaas.py` on the client |
 
-**Rollout allowlists** (expand after stack validation):
+**Rollout**
 
-- Multi-VM: Azure `Standard_F16ams_v6`, `Standard_E16ds_v5`, `Standard_E8ds_v5`; GCP `n2-standard-8`, `n2-highmem-8`, `n2-standard-16`, `n2-highmem-16`, `c2d-highmem-8`
+- Multi-VM pgbench tasks use `start_with_instance=True` (piggyback on other tasks; no SKU allowlist).
 - DBaaS: Azure `Standard_E16ds_v5/postgres/18/standalone`; GCP `db-perf-optimized-N-8`, `db-perf-optimized-N-16`, `db-memory-optimized-N-8` (each `/postgres/18/standalone`)
 
 ### GCP comparison matrix
