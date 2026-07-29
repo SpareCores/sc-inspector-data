@@ -68,17 +68,33 @@ Minimum RAM to schedule: **2 GiB**.
 
 ## Shared disk plan (multi-VM ↔ DBaaS)
 
-Both topologies use `db_storage.db_storage_plan(vendor, mem_gib)` so size and I/O targets match:
+Both topologies use `db_storage.db_storage_plan(vendor, mem_gib, vcpus)` so size and I/O scale with the VM. The goal is cross-vendor parity: disk should never bottleneck before CPU.
+
+### vCPU-scaled I/O budget
 
 ```
-storage_gib = max(64, ceil(schema × 2 / 0.85))
+target_write_mbps = max(50, vcpus × 3)     # MB/s per VM
+target_write_iops = max(1000, vcpus × 50)  # IOPS per VM
 ```
 
-| Vendor | Disk type | IOPS / throughput | Comparability contract |
-| ------ | --------- | ----------------- | ---------------------- |
-| **Azure** | `PremiumV2_LRS` (DBaaS: ManagedDiskV2 + P30 tier) | **5000 IOPS / 200 MB/s** (explicit) | Same type + same provisioned IOPS/throughput |
-| **GCP** | `pd-ssd` / Cloud SQL `PD_SSD` | size-derived (~30 IOPS/GiB) | **Same `storage_gib`** (IOPS follows size) |
-| **AWS** (later) | `gp3` stub | 5000 / 200 | Same as Azure target when rolled out |
+Calibrated from n2-standard-128 TPC-B: 110K TPS needed ~330 MB/s WAL write → ~2.6 MB/s/vCPU; we target 3 for headroom. The size floor (`max(64, ceil(schema × 2 / 0.85))`) still applies for data capacity.
+
+### Vendor disk profiles (`disk_profiles.py`)
+
+| Vendor | Disk type | Performance model | How I/O target is met |
+| ------ | --------- | ----------------- | --------------------- |
+| **GCP** | `pd-ssd` / Cloud SQL `PD_SSD` | Size-derived: 30 IOPS/GiB, 0.48 MB/s/GiB (cap 30K / 400 MB/s) | Provision a **larger disk** (e.g. 800 GiB for 128 vCPUs → 384 MB/s) |
+| **Azure** | `PremiumV2_LRS` (DBaaS: ManagedDiskV2 / P30) | Independently provisioned | Set explicit **IOPS + throughput** |
+| **AWS** | `gp3` | Independently provisioned (base 3K/125; max 16K/1000) | Set explicit **IOPS + throughput** |
+
+Per-VM caps (GCP N2: 800 IOPS/vCPU, 6 MB/s/vCPU) are respected — the module never provisions more than the VM can consume.
+
+| vCPUs | GCP pd-ssd GiB | GCP eff MB/s | Azure/AWS IOPS | Azure/AWS MB/s |
+| -----:| --------------:| ------------:| --------------:| --------------:|
+| 2 | 64 | 12 | 1000 | 50 |
+| 16 | 105 | 50 | 1000 | 50 |
+| 64 | 400 | 192 | 3200 | 192 |
+| 128 | 800 | 384 | 6400 | 384 |
 
 Ops overrides: `MULTI_VM_DB_DISK_TYPE`, `MULTI_VM_DB_DISK_IOPS`, `MULTI_VM_DB_DISK_THROUGHPUT`.
 
@@ -144,7 +160,8 @@ Vendor-managed GUC surface — no server-side pg_tune. Full `pg_settings` still 
 | Multi-VM orchestration + postgres.log | `sc-inspector/inspector/postgres_multi.py` |
 | DBaaS orchestration | `sc-inspector/inspector/postgres_dbaas.py` |
 | DBaaS storage sizing | `sc-inspector/inspector/dbaas_tiers.py` |
-| Shared disk IOPS/size plan | `sc-inspector/inspector/db_storage.py` |
+| Vendor disk profiles + vCPU scaling | `sc-inspector/inspector/disk_profiles.py` |
+| Shared disk plan (uses profiles) | `sc-inspector/inspector/db_storage.py` |
 | pgbench wrapper | `sc-images/images/benchmark-pgbench-postgres/benchmark.py` |
 
 Historical BenchBase / HammerDB / YCSB runs may still exist under `data/` and `dbaas/`; they are **not** produced by the current live task matrix.
@@ -202,7 +219,11 @@ Postgres docs: for the default TPC-B-like script, initialization scale must be *
 - Companion sizing (`companion_client_vcpus`) therefore designs for **adaptive RO concurrency** (~3× the planned `rung(4V)` search cap, ladder-snapped) at about **20 clients per client vCPU**, and never below `V/2`. On n2-standard-128, a 64-vCPU companion saturated around 1–1.5 k clients while the DB still had headroom; the new rule yields ~77+ client vCPUs for that class so ranking measures the DB, not the client NIC.
 - External/managed paths with higher RTT will score lower at the same `-c`; that is expected and should not be “corrected” away.
 
-### Why shared disk IOPS/size across topologies
+### Why vCPU-scaled disk I/O
 
-- Multi-VM and DBaaS use the same `storage_gib` and vendor performance contract so SKU compares are not confounded by accidentally different provisioned IOPS.
+- Fixed IOPS/throughput (the old 5000/200 target) starves large instances: n2-standard-128 TPC-B plateaued at ~110K TPS because pd-ssd write throughput (72 MB/s at 151 GiB) could not keep up with WAL flush demand (~330 MB/s).
+- Scaling at 3 MB/s per vCPU ensures disk grows proportionally with compute, so benchmarks measure CPU/memory scaling, not accidental I/O ceilings.
+- For size-derived types (GCP pd-ssd), this means provisioning a larger disk on bigger instances; for independently-provisioned types (Azure, AWS), it means requesting higher IOPS/throughput.
+- The per-VM caps built into `disk_profiles.py` prevent over-provisioning beyond what the hypervisor can deliver.
+- Multi-VM and DBaaS still use the same plan so SKU comparisons are not confounded by different I/O.
 - Durable scores still include real fsync cost; we do not try to normalize clouds to identical commit latency.
