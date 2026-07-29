@@ -27,7 +27,7 @@ How **Spare Cores** measures managed and self-hosted Postgres for the Navigator.
 **Rollout**
 
 - Multi-VM pgbench tasks use `start_with_instance=True` (piggyback on other tasks; no SKU allowlist).
-- DBaaS: Azure `Standard_E16ds_v5/postgres/18/standalone`; GCP `db-perf-optimized-N-8`, `db-perf-optimized-N-16`, `db-memory-optimized-N-8` (each `/postgres/18/standalone`)
+- DBaaS: Azure `Standard_E16ds_v5/postgres/18/standalone`; GCP `db-perf-optimized-N-8`, `N-16`, `N-128` (peer of GCE `n2-standard-128`), `db-memory-optimized-N-8` (each `/postgres/18/standalone`; Enterprise Plus **data cache off**)
 
 ### GCP comparison matrix
 
@@ -73,17 +73,17 @@ Both topologies use `db_storage.db_storage_plan(vendor, mem_gib, vcpus)` so size
 ### vCPU-scaled I/O budget
 
 ```
-target_write_mbps = max(50, vcpus × 3)     # MB/s per VM
-target_write_iops = max(1000, vcpus × 50)  # IOPS per VM
+target_write_mbps = max(50, vcpus × 1.5)     # MB/s per VM
+target_write_iops = max(1000, vcpus × 25)    # IOPS per VM
 ```
 
-Calibrated from n2-standard-128 TPC-B: 110K TPS needed ~330 MB/s WAL write → ~2.6 MB/s/vCPU; we target 3 for headroom. The size floor (`max(64, ceil(schema × 2 / 0.85))`) still applies for data capacity.
+n2-standard-128 showed TPC-B peaking at ~105–110K TPS whether the disk wrote ~310 or ~600 MB/s — lock/WAL contention, not bandwidth. Budget is halved vs the first pass so large SKUs stay near the old ~200 MB/s Azure/AWS target without the 800 GiB overshoot. The size floor (`max(64, ceil(schema × 2 / 0.85))`) still applies for data capacity.
 
 ### Vendor disk profiles (`disk_profiles.py`)
 
 | Vendor | Disk type | Performance model | How I/O target is met |
 | ------ | --------- | ----------------- | --------------------- |
-| **GCP** | `pd-ssd` / Cloud SQL `PD_SSD` | Size-derived: 30 IOPS/GiB, 0.48 MB/s/GiB (cap 30K / 400 MB/s) | Provision a **larger disk** (e.g. 800 GiB for 128 vCPUs → 384 MB/s) |
+| **GCP** | `pd-ssd` / Cloud SQL `PD_SSD` | Size-derived: 30 IOPS/GiB, 0.48 MB/s/GiB (cap 30K / 400 MB/s) | Provision a **larger disk** (e.g. 400 GiB for 128 vCPUs → 192 MB/s) |
 | **Azure** | `PremiumV2_LRS` (DBaaS: ManagedDiskV2 / P30) | Independently provisioned | Set explicit **IOPS + throughput** |
 | **AWS** | `gp3` | Independently provisioned (base 3K/125; max 16K/1000) | Set explicit **IOPS + throughput** |
 
@@ -93,8 +93,8 @@ Per-VM caps (GCP N2: 800 IOPS/vCPU, 6 MB/s/vCPU) are respected — the module ne
 | -----:| --------------:| ------------:| --------------:| --------------:|
 | 2 | 64 | 12 | 1000 | 50 |
 | 16 | 105 | 50 | 1000 | 50 |
-| 64 | 400 | 192 | 3200 | 192 |
-| 128 | 800 | 384 | 6400 | 384 |
+| 64 | 200 | 96 | 1600 | 96 |
+| 128 | 400 | 192 | 3200 | 192 |
 
 Ops overrides: `MULTI_VM_DB_DISK_TYPE`, `MULTI_VM_DB_DISK_IOPS`, `MULTI_VM_DB_DISK_THROUGHPUT`.
 
@@ -221,8 +221,8 @@ Postgres docs: for the default TPC-B-like script, initialization scale must be *
 
 ### Why vCPU-scaled disk I/O
 
-- Fixed IOPS/throughput (the old 5000/200 target) starves large instances: n2-standard-128 TPC-B plateaued at ~110K TPS because pd-ssd write throughput (72 MB/s at 151 GiB) could not keep up with WAL flush demand (~330 MB/s).
-- Scaling at 3 MB/s per vCPU ensures disk grows proportionally with compute, so benchmarks measure CPU/memory scaling, not accidental I/O ceilings.
+- Schema-only sizing (151 GiB on n2-standard-128) under-documents sustained pd-ssd write; large SKUs need a vCPU-linked I/O floor so async TPC-B is not trivially storage-starved vs mid-size Azure/AWS targets (~200 MB/s).
+- A first pass at 3 MB/s/vCPU (800 GiB / ~384 MB/s) did not raise TPC-B past ~110K TPS — peak waits were WALInsert / ProcArray / transactionid. Budget is **1.5 MB/s and 25 IOPS per vCPU** (~400 GiB / 192 MB/s at 128 vCPUs): still above the old floor, aligned with ~200 MB/s cross-vendor parity, without the 800 GiB overshoot.
 - For size-derived types (GCP pd-ssd), this means provisioning a larger disk on bigger instances; for independently-provisioned types (Azure, AWS), it means requesting higher IOPS/throughput.
 - The per-VM caps built into `disk_profiles.py` prevent over-provisioning beyond what the hypervisor can deliver.
 - Multi-VM and DBaaS still use the same plan so SKU comparisons are not confounded by different I/O.
