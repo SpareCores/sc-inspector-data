@@ -1,15 +1,26 @@
-name: Start DBaaS benchmarks (PoC)
+name: Start DBaaS benchmarks
 on:
+  schedule:
+    - cron: "*/15 * * * *"
   workflow_dispatch:
     inputs:
       vendor:
-        description: Vendor to start DBaaS benchmarks for
+        description: Vendor to start DBaaS benchmarks for (azure disabled for now)
         required: true
-        default: azure
+        default: gcp
         type: choice
         options:
-          - azure
           - gcp
+      instance:
+        description: Managed DB instance key to start (optional; e.g. db-perf-optimized-N-8/postgres/18/standalone)
+        required: false
+        type: string
+        default: ""
+      limit:
+        description: Max DBaaS stacks to start this round (ignored when instance is set)
+        required: false
+        type: number
+        default: 4
 permissions:
   contents: write
   id-token: write
@@ -17,9 +28,11 @@ jobs:
   start-dbaas:
     runs-on: ubuntu-latest
     concurrency:
-      group: start-dbaas-${{ inputs.vendor }}
+      group: start-dbaas-gcp
       cancel-in-progress: false
     env:
+      # Default batch size for scheduled runs; workflow_dispatch can override via inputs.limit.
+      DBAAS_START_LIMIT: "4"
       TRACKER_PROJECT_NAME: inspector
       TRACKER_ORCHESTRATOR: github-actions
       TRACKER_ENV: ci
@@ -28,17 +41,13 @@ jobs:
       TRACKER_STAGE_NAME: ${{ github.workflow }}
       TRACKER_CONTAINER_IMAGE: ghcr.io/sparecores/sc-inspector:main
       TRACKER_LANGUAGE: python
-      TRACKER_JOB_NAME: start-dbaas-${{ inputs.vendor }}
+      TRACKER_JOB_NAME: start-dbaas-gcp
       TRACKER_TASK_NAME: start-dbaas
     container:
       image: ghcr.io/sparecores/sc-inspector:main
       env:
         GITHUB_TOKEN: ${{ github.token }}
         PULUMI_BACKEND_URL: ${{ secrets.PULUMI_BACKEND_URL }}
-        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
         GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
@@ -71,4 +80,24 @@ jobs:
       - name: Set up resource-tracker
         run: bash /repo/sc-inspector-data/.github/scripts/setup-resource-tracker.sh
       - name: inspector start-dbaas
-        run: bash /repo/sc-inspector-data/.github/scripts/run-with-resource-tracker.sh python /inspector/inspector.py start-dbaas --vendor ${{ inputs.vendor }}
+        env:
+          START_VENDOR: ${{ inputs.vendor || 'gcp' }}
+          START_INSTANCE: ${{ inputs.instance || '' }}
+          START_LIMIT: ${{ inputs.limit || '4' }}
+        run: |
+          set -euo pipefail
+          vendor="${START_VENDOR:-gcp}"
+          instance="${START_INSTANCE:-}"
+          limit="${START_LIMIT:-${DBAAS_START_LIMIT:-4}}"
+          if [ -n "$instance" ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+            echo "::error::instance input is only valid for workflow_dispatch" >&2
+            exit 1
+          fi
+          args=(start-dbaas --vendor "$vendor")
+          if [ -n "$instance" ]; then
+            args+=(--instance-key "$instance")
+          else
+            args+=(--limit "$limit")
+          fi
+          bash /repo/sc-inspector-data/.github/scripts/run-with-resource-tracker.sh \
+            python /inspector/inspector.py "${args[@]}"
