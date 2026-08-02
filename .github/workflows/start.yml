@@ -25,6 +25,11 @@ on:
         required: false
         type: string
         default: ""
+      limit:
+        description: Max hosts to start this round per vendor (ignored when instance is set)
+        required: false
+        type: number
+        default: 8
 permissions:
   contents: write
   id-token: write
@@ -75,6 +80,8 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.vendor }}
     env:
+      # Default batch size for scheduled runs; workflow_dispatch can override via inputs.limit.
+      START_LIMIT: "8"
       TRACKER_PROJECT_NAME: inspector
       TRACKER_ORCHESTRATOR: github-actions
       TRACKER_ENV: ci
@@ -152,14 +159,19 @@ jobs:
       - name: Set up resource-tracker
         run: bash /repo/sc-inspector-data/.github/scripts/setup-resource-tracker.sh
       - name: inspector
-        run: |
-          if [ -n "${{ inputs.instance }}" ]; then
-            bash /repo/sc-inspector-data/.github/scripts/run-with-resource-tracker.sh \
-              python /inspector/inspector.py start --vendor "${{ matrix.vendor }}" \
-              --start-only "${{ matrix.vendor }}" "${{ inputs.instance }}"
-          else
-            bash /repo/sc-inspector-data/.github/scripts/run-with-resource-tracker.sh \
-              python /inspector/inspector.py start --vendor "${{ matrix.vendor }}"
-          fi
+        shell: bash
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+          START_INSTANCE: ${{ inputs.instance || '' }}
+          START_LIMIT: ${{ inputs.limit || '8' }}
+        run: |
+          set -euo pipefail
+          limit="${START_LIMIT:-8}"
+          args=(start --vendor "${{ matrix.vendor }}")
+          if [ -n "${START_INSTANCE:-}" ]; then
+            args+=(--start-only "${{ matrix.vendor }}" "$START_INSTANCE")
+          else
+            args+=(--limit "$limit")
+          fi
+          bash /repo/sc-inspector-data/.github/scripts/run-with-resource-tracker.sh \
+            python /inspector/inspector.py "${args[@]}"
