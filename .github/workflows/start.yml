@@ -30,11 +30,6 @@ on:
         required: false
         type: number
         default: 8
-      spot:
-        description: Try AWS Spot before falling back to on-demand (default is on-demand only)
-        required: false
-        type: boolean
-        default: false
 permissions:
   contents: write
   id-token: write
@@ -169,7 +164,6 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
           START_INSTANCE: ${{ inputs.instance || '' }}
           START_LIMIT: ${{ inputs.limit || '8' }}
-          AWS_TRY_SPOT: ${{ inputs.spot || 'false' }}
         run: |
           set -euo pipefail
           limit="${START_LIMIT:-8}"
