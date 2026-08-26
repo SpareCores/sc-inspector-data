@@ -5,11 +5,13 @@ on:
   workflow_dispatch:
     inputs:
       vendor:
-        description: Vendor to start DBaaS benchmarks for (azure disabled for now)
+        description: Vendor to start DBaaS benchmarks for (all = every vendor not on the skiplist; azure disabled for now)
         required: true
-        default: gcp
+        default: all
         type: choice
         options:
+          - all
+          - aws
           - gcp
       instance:
         description: Managed DB instance key to start (optional; e.g. db-perf-optimized-N-8/postgres/18/standalone)
@@ -25,10 +27,44 @@ permissions:
   contents: write
   id-token: write
 jobs:
-  start-dbaas:
+  setup:
     runs-on: ubuntu-latest
+    outputs:
+      vendors: ${{ steps.matrix.outputs.vendors }}
+    steps:
+      - id: matrix
+        run: |
+          # Vendor matrix (keep in sync with workflow_dispatch options except "all"):
+          #   aws,
+          #   gcp    # ran out of credits at Aug 3, 2026 → skiplist
+          all_vendors='["aws","gcp"]'
+          # Skiplist for schedule and manual "all". A manual run for a specific vendor ignores this.
+          skiplist='["gcp"]'
+          if [ -n "${{ inputs.instance }}" ]; then
+            if [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+              echo "::error::instance input is only valid for workflow_dispatch" >&2
+              exit 1
+            fi
+            if [ "${{ inputs.vendor }}" = "all" ]; then
+              echo "::error::When instance is set, vendor must be a specific vendor, not \"all\"" >&2
+              exit 1
+            fi
+            echo "vendors=[\"${{ inputs.vendor }}\"]" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.vendor }}" != "all" ]; then
+            echo "vendors=[\"${{ inputs.vendor }}\"]" >> "$GITHUB_OUTPUT"
+          else
+            vendors="$(python3 -c "import json; all_v=json.loads('${all_vendors}'); skip=set(json.loads('${skiplist}')); print(json.dumps([v for v in all_v if v not in skip]))")"
+            echo "vendors=$vendors" >> "$GITHUB_OUTPUT"
+          fi
+  start-dbaas:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        vendor: ${{ fromJson(needs.setup.outputs.vendors) }}
+      fail-fast: false
     concurrency:
-      group: start-dbaas-gcp
+      group: start-dbaas-${{ matrix.vendor }}
       cancel-in-progress: false
     env:
       # Default batch size for scheduled runs; workflow_dispatch can override via inputs.limit.
@@ -41,7 +77,7 @@ jobs:
       TRACKER_STAGE_NAME: ${{ github.workflow }}
       TRACKER_CONTAINER_IMAGE: ghcr.io/sparecores/sc-inspector:main
       TRACKER_LANGUAGE: python
-      TRACKER_JOB_NAME: start-dbaas-gcp
+      TRACKER_JOB_NAME: start-dbaas-${{ matrix.vendor }}
       TRACKER_TASK_NAME: start-dbaas
     container:
       image: ghcr.io/sparecores/sc-inspector:main
@@ -82,12 +118,12 @@ jobs:
       - name: inspector start-dbaas
         shell: bash
         env:
-          START_VENDOR: ${{ inputs.vendor || 'gcp' }}
+          START_VENDOR: ${{ matrix.vendor }}
           START_INSTANCE: ${{ inputs.instance || '' }}
           START_LIMIT: ${{ inputs.limit || '4' }}
         run: |
           set -euo pipefail
-          vendor="${START_VENDOR:-gcp}"
+          vendor="$START_VENDOR"
           instance="${START_INSTANCE:-}"
           limit="${START_LIMIT:-${DBAAS_START_LIMIT:-4}}"
           if [ -n "$instance" ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
