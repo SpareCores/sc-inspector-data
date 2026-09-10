@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       vendor:
-        description: Vendor to start DBaaS benchmarks for (all = every vendor not on the skiplist; azure disabled for now)
+        description: Vendor to start DBaaS benchmarks for (all = every vendor not on the skiplist)
         required: true
         default: all
         type: choice
@@ -13,6 +13,9 @@ on:
           - all
           - aws
           - gcp
+          - ovh
+          - upcloud
+          - vultr
       instance:
         description: Managed DB instance key to start (optional; e.g. db-perf-optimized-N-8/postgres/18/standalone)
         required: false
@@ -36,8 +39,11 @@ jobs:
         run: |
           # Vendor matrix (keep in sync with workflow_dispatch options except "all"):
           #   aws,
-          #   gcp    # ran out of credits at Aug 3, 2026 → skiplist
-          all_vendors='["aws","gcp"]'
+          #   gcp,     # ran out of credits at Aug 3, 2026 → skiplist
+          #   ovh,
+          #   upcloud,
+          #   vultr
+          all_vendors='["aws","gcp","ovh","upcloud","vultr"]'
           # Skiplist for schedule and manual "all". A manual run for a specific vendor ignores this.
           skiplist='["gcp"]'
           if [ -n "${{ inputs.instance }}" ]; then
@@ -87,6 +93,13 @@ jobs:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
         GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+        OVH_CLOUD_PROJECT_SERVICE: ${{ secrets.OVH_CLOUD_PROJECT_SERVICE }}
+        OVH_CLIENT_ID: ${{ secrets.OVH_CLIENT_ID }}
+        OVH_CLIENT_SECRET: ${{ secrets.OVH_CLIENT_SECRET }}
+        OVH_ENDPOINT: ${{ vars.OVH_ENDPOINT }}
+        UPCLOUD_USERNAME: ${{ secrets.UPCLOUD_USERNAME }}
+        UPCLOUD_PASSWORD: ${{ secrets.UPCLOUD_PASSWORD }}
+        VULTR_API_KEY: ${{ secrets.VULTR_API_KEY }}
         SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
         SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
