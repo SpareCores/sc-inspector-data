@@ -1,5 +1,13 @@
 name: Clean up recently started inspector instances
 on:
+  # the inspector commits timing/<run_id>/inspector_end as its last step: use that push
+  # (made over the SSH deploy key, so it does trigger workflows) to start a cleanup
+  push:
+    branches:
+      - main
+    paths:
+      - "data/**/timing/*/inspector_end"
+      - "dbaas/**/timing/*/inspector_end"
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
