@@ -1,0 +1,42 @@
+Traceback (most recent call last):
+  File "/benchmark/benchmark.py", line 1132, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "/benchmark/benchmark.py", line 1040, in main
+    size_result, warmup_done = run_size(
+                               ~~~~~~~~^
+        workload=workload,
+        ^^^^^^^^^^^^^^^^^^
+    ...<17 lines>...
+        search=search,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+  File "/benchmark/benchmark.py", line 882, in run_size
+    measure = pgbench_run(
+        host=host,
+    ...<10 lines>...
+        cpu_scale=cpu_scale,
+    )
+  File "/benchmark/benchmark.py", line 633, in pgbench_run
+    out = run(args, timeout=seconds + 600, env=pg_env(password))
+  File "/benchmark/benchmark.py", line 119, in run
+    proc = subprocess.run(
+        cmd,
+    ...<5 lines>...
+        env=env,
+    )
+  File "/usr/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/subprocess.py", line 2129, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/subprocess.py", line 1269, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['pgbench', '-h', 'postgresql-52278ca0-o6785028c.database.cloud.ovh.net', '-p', '20184', '-U', 'avnadmin', '-c', '8', '-j', '8', '-T', '300', '-M', 'prepared', '-n', '-D', 'scale=1', '-f', '/benchmark/ro_cpu_txn.sql', '-P', '5', '--progress-timestamp', '-l', '--log-prefix=/tmp/pgbench-6reonz6e/meas_8/pgbench_log', '--sampling-rate=0.01', 'pgbench']' timed out after 900 seconds
