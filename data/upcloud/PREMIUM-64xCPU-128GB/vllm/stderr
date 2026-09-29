@@ -1,147 +1,400 @@
-2026-06-15 22:18:39,703 - INFO - arch=amd64
-2026-06-15 22:18:39,703 - INFO - cpu_model=AMD EPYC 9575F 64-Core Processor
-2026-06-15 22:18:39,703 - INFO - cpu_flag_avx512f=yes
-2026-06-15 22:18:39,703 - INFO - cpu_flag_avx2=yes
-2026-06-15 22:18:39,703 - INFO - ram_total_gb=135.02 ram_available_gb=132.15
-2026-06-15 22:18:39,703 - INFO - mode=cpu arch=amd64 vllm=0.22.1 guidellm=0.6.0
-2026-06-15 22:18:39,703 - INFO - memory check smol-135m: need~0.3 GiB have~112.3 GiB
-2026-06-15 22:18:39,703 - INFO - memory check qwen-0.5b: need~1.2 GiB have~112.3 GiB
-2026-06-15 22:18:39,703 - INFO - memory check gemma-2b: need~4.8 GiB have~112.3 GiB
-2026-06-15 22:18:39,703 - INFO - memory check llama-8b: need~19.2 GiB have~112.3 GiB
-2026-06-15 22:18:39,703 - INFO - memory check phi-4: need~33.6 GiB have~112.3 GiB
-2026-06-15 22:18:39,703 - INFO - benchmark budget overall=7200s reserve=1800s runs=10 per_run=240s
-2026-06-15 22:18:39,703 - INFO - memory check smol-135m: need~0.3 GiB have~112.3 GiB
-2026-06-15 22:18:39,704 - INFO - memory check smol-135m: need~0.3 GiB have~112.3 GiB
-2026-06-15 22:18:39,704 - INFO - memory check qwen-0.5b: need~1.2 GiB have~112.3 GiB
-2026-06-15 22:18:39,704 - INFO - memory check gemma-2b: need~4.8 GiB have~112.3 GiB
-2026-06-15 22:18:39,704 - INFO - memory check llama-8b: need~19.2 GiB have~112.3 GiB
-2026-06-15 22:18:39,704 - INFO - memory check phi-4: need~33.6 GiB have~112.3 GiB
-2026-06-15 22:18:41,459 - INFO - autoconfig vcpus=64 budget_per_run=240s sweep=6 max_conc=89 max_req=time-only workers=12 max_sec/strategy=40 max_model_len=2048 per_workload_server=True
-2026-06-15 22:18:41,459 - INFO - Starting server: vllm serve HuggingFaceTB/SmolLM2-135M-Instruct --port 8000 --max-model-len 2048 --dtype bfloat16 --gpu-memory-utilization 0.50 --max-num-seqs 39 --max-num-batched-tokens 2048
-2026-06-15 22:20:21,490 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model HuggingFaceTB/SmolLM2-135M-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=256,output_tokens=128 --profile sweep --random-seed 42 --max-seconds 40 --warmup 10 --output-dir /tmp/guidellm-teeeg8ha --outputs json --disable-console --sample-requests 10 --rate 6
-2026-06-15 22:25:26,319 - WARNING - GuideLLM failed profile=sweep workload=chat: Traceback (most recent call last):
-  File "/opt/venv/bin/guidellm", line 6, in <module>
-    sys.exit(cli())
-             ^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1514, in __call__
-    return self.main(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1435, in main
-    rv = self.invoke(ctx)
-         ^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
-    return _process_result(sub_ctx.command.invoke(sub_ctx))
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
-    return _process_result(sub_ctx.command.invoke(sub_ctx))
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1298, in invoke
-    return ctx.invoke(self.callback, **ctx.params)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 853, in invoke
-    return callback(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/__main__.py", line 476, in run
-    asyncio.run(
-  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
-    return runner.run(main)
-           ^^^^^^^^^^^^^^^^
-  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
-    return self._loop.run_until_complete(task)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/entrypoints.py", line 554, in benchmark_generative_text
-    async for benchmark in benchmarker.run(
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/benchmarker.py", line 172, in run
-    strategy, constraints = strategies_generator.send(benchmark)
-                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/profiles.py", line 182, in strategies_generator
-    strategy := self.next_strategy(prev_strategy, prev_benchmark)
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/profiles.py", line 684, in next_strategy
-    raise RuntimeError(
-RuntimeError: Invalid rates in sweep; aborting. Were there any successful requests?
-
-2026-06-15 22:25:30,446 - INFO - autoconfig vcpus=64 budget_per_run=240s sweep=5 max_conc=89 max_req=time-only workers=12 max_sec/strategy=48 max_model_len=4096 per_workload_server=True
-2026-06-15 22:25:30,446 - INFO - Starting server: vllm serve HuggingFaceTB/SmolLM2-135M-Instruct --port 8000 --max-model-len 4096 --dtype bfloat16 --gpu-memory-utilization 0.39 --max-num-seqs 19 --max-num-batched-tokens 2048
-2026-06-15 22:26:44,468 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model HuggingFaceTB/SmolLM2-135M-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=1024,output_tokens=256 --profile sweep --random-seed 42 --max-seconds 48 --warmup 10 --output-dir /tmp/guidellm-sdybqjy9 --outputs json --disable-console --sample-requests 10 --rate 5
-2026-06-15 22:32:54,598 - WARNING - GuideLLM timed out profile=sweep workload=rag after 370s
-2026-06-15 22:33:24,599 - INFO - memory check qwen-0.5b: need~1.2 GiB have~111.6 GiB
-2026-06-15 22:33:24,600 - INFO - autoconfig vcpus=64 budget_per_run=240s sweep=6 max_conc=89 max_req=time-only workers=12 max_sec/strategy=40 max_model_len=2048 per_workload_server=True
-2026-06-15 22:33:24,600 - INFO - Starting server: vllm serve Qwen/Qwen2.5-0.5B-Instruct --port 8000 --max-model-len 2048 --dtype bfloat16 --gpu-memory-utilization 0.50 --max-num-seqs 39 --max-num-batched-tokens 2048
-2026-06-15 22:35:10,641 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model Qwen/Qwen2.5-0.5B-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=256,output_tokens=128 --profile sweep --random-seed 42 --max-seconds 40 --warmup 10 --output-dir /tmp/guidellm-q5l3loet --outputs json --disable-console --sample-requests 10 --rate 6
-2026-06-15 22:41:20,764 - WARNING - GuideLLM timed out profile=sweep workload=chat after 370s
-2026-06-15 22:41:50,766 - INFO - autoconfig vcpus=64 budget_per_run=240s sweep=5 max_conc=89 max_req=time-only workers=12 max_sec/strategy=48 max_model_len=4096 per_workload_server=True
-2026-06-15 22:41:50,766 - INFO - Starting server: vllm serve Qwen/Qwen2.5-0.5B-Instruct --port 8000 --max-model-len 4096 --dtype bfloat16 --gpu-memory-utilization 0.38 --max-num-seqs 19 --max-num-batched-tokens 2048
-2026-06-15 22:43:16,797 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model Qwen/Qwen2.5-0.5B-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=1024,output_tokens=256 --profile sweep --random-seed 42 --max-seconds 48 --warmup 10 --output-dir /tmp/guidellm-yggm8rgj --outputs json --disable-console --sample-requests 10 --rate 5
-2026-06-15 22:49:26,917 - WARNING - GuideLLM timed out profile=sweep workload=rag after 370s
-2026-06-15 22:49:56,919 - INFO - memory check gemma-2b: need~4.8 GiB have~110.2 GiB
-2026-06-15 22:49:56,919 - INFO - autoconfig vcpus=64 budget_per_run=240s sweep=6 max_conc=89 max_req=time-only workers=12 max_sec/strategy=40 max_model_len=2048 per_workload_server=True
-2026-06-15 22:49:56,919 - INFO - Starting server: vllm serve google/gemma-2-2b-it --port 8000 --max-model-len 2048 --dtype bfloat16 --gpu-memory-utilization 0.50 --max-num-seqs 39 --max-num-batched-tokens 2048
-2026-06-15 22:52:44,982 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model google/gemma-2-2b-it --backend openai_http --request-format /v1/completions --data prompt_tokens=256,output_tokens=128 --profile sweep --random-seed 42 --max-seconds 40 --warmup 10 --output-dir /tmp/guidellm-_pv1w0mu --outputs json --disable-console --sample-requests 10 --rate 6
-2026-06-15 22:58:55,111 - WARNING - GuideLLM timed out profile=sweep workload=chat after 370s
-2026-06-15 22:59:25,113 - INFO - autoconfig vcpus=64 budget_per_run=240s sweep=5 max_conc=89 max_req=time-only workers=12 max_sec/strategy=48 max_model_len=4096 per_workload_server=True
-2026-06-15 22:59:25,120 - INFO - Starting server: vllm serve google/gemma-2-2b-it --port 8000 --max-model-len 4096 --dtype bfloat16 --gpu-memory-utilization 0.36 --max-num-seqs 19 --max-num-batched-tokens 2048
-2026-06-15 23:01:41,183 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model google/gemma-2-2b-it --backend openai_http --request-format /v1/completions --data prompt_tokens=1024,output_tokens=256 --profile sweep --random-seed 42 --max-seconds 48 --warmup 10 --output-dir /tmp/guidellm-2qdvwftc --outputs json --disable-console --sample-requests 10 --rate 5
-2026-06-15 23:07:51,298 - WARNING - GuideLLM timed out profile=sweep workload=rag after 370s
-2026-06-15 23:08:21,300 - INFO - memory check llama-8b: need~19.2 GiB have~107.8 GiB
-2026-06-15 23:08:21,301 - INFO - autoconfig vcpus=64 budget_per_run=240s sweep=6 max_conc=89 max_req=time-only workers=12 max_sec/strategy=40 max_model_len=2048 per_workload_server=True
-2026-06-15 23:08:21,301 - INFO - Starting server: vllm serve meta-llama/Llama-3.1-8B-Instruct --port 8000 --max-model-len 2048 --dtype bfloat16 --gpu-memory-utilization 0.50 --max-num-seqs 39 --max-num-batched-tokens 2048
-2026-06-15 23:12:43,419 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model meta-llama/Llama-3.1-8B-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=256,output_tokens=128 --profile sweep --random-seed 42 --max-seconds 40 --warmup 10 --output-dir /tmp/guidellm-nc04fo9t --outputs json --disable-console --sample-requests 10 --rate 6
-2026-06-15 23:18:53,546 - WARNING - GuideLLM timed out profile=sweep workload=chat after 370s
-2026-06-15 23:19:23,549 - INFO - autoconfig vcpus=64 budget_per_run=240s sweep=5 max_conc=89 max_req=time-only workers=12 max_sec/strategy=48 max_model_len=4096 per_workload_server=True
-2026-06-15 23:19:23,558 - INFO - Starting server: vllm serve meta-llama/Llama-3.1-8B-Instruct --port 8000 --max-model-len 4096 --dtype bfloat16 --gpu-memory-utilization 0.30 --max-num-seqs 19 --max-num-batched-tokens 2048
-2026-06-15 23:21:21,606 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model meta-llama/Llama-3.1-8B-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=1024,output_tokens=256 --profile sweep --random-seed 42 --max-seconds 48 --warmup 10 --output-dir /tmp/guidellm-5n9136ai --outputs json --disable-console --sample-requests 10 --rate 5
-2026-06-15 23:26:10,564 - WARNING - GuideLLM failed profile=sweep workload=rag: ay.
-[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
-Traceback (most recent call last):
-  File "/opt/venv/bin/guidellm", line 6, in <module>
-    sys.exit(cli())
-             ^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1514, in __call__
-    return self.main(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1435, in main
-    rv = self.invoke(ctx)
-         ^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
-    return _process_result(sub_ctx.command.invoke(sub_ctx))
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
-    return _process_result(sub_ctx.command.invoke(sub_ctx))
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1298, in invoke
-    return ctx.invoke(self.callback, **ctx.params)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 853, in invoke
-    return callback(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/__main__.py", line 476, in run
-    asyncio.run(
-  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
-    return runner.run(main)
-           ^^^^^^^^^^^^^^^^
-  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
-    return self._loop.run_until_complete(task)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/entrypoints.py", line 554, in benchmark_generative_text
-    async for benchmark in benchmarker.run(
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/benchmarker.py", line 172, in run
-    strategy, constraints = strategies_generator.send(benchmark)
-                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/profiles.py", line 182, in strategies_generator
-    strategy := self.next_strategy(prev_strategy, prev_benchmark)
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/profiles.py", line 684, in next_strategy
-    raise RuntimeError(
-RuntimeError: Invalid rates in sweep; aborting. Were there any successful requests?
-
-2026-06-15 23:26:11,531 - INFO - memory check phi-4: need~33.6 GiB have~108.5 GiB
-2026-06-15 23:26:11,531 - INFO - autoconfig vcpus=64 budget_per_run=240s sweep=6 max_conc=89 max_req=time-only workers=12 max_sec/strategy=40 max_model_len=2048 per_workload_server=True
-2026-06-15 23:26:11,531 - INFO - Starting server: vllm serve microsoft/phi-4 --port 8000 --max-model-len 2048 --dtype bfloat16 --gpu-memory-utilization 0.50 --max-num-seqs 39 --max-num-batched-tokens 2048
-2026-06-15 23:32:45,672 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model microsoft/phi-4 --backend openai_http --request-format /v1/completions --data prompt_tokens=256,output_tokens=128 --profile sweep --random-seed 42 --max-seconds 40 --warmup 10 --output-dir /tmp/guidellm-z9t_5y57 --outputs json --disable-console --sample-requests 10 --rate 6
-2026-06-15 23:38:55,803 - WARNING - GuideLLM timed out profile=sweep workload=chat after 370s
-2026-06-15 23:39:25,806 - INFO - autoconfig vcpus=64 budget_per_run=240s sweep=5 max_conc=89 max_req=time-only workers=12 max_sec/strategy=48 max_model_len=4096 per_workload_server=True
-2026-06-15 23:39:25,806 - INFO - KV check phi-4 max_model_len=4096: budget~-10.7 GiB need~5.6 GiB (util=0.24)
-2026-06-15 23:39:25,806 - INFO - Skipping phi-4 workload=rag — insufficient KV cache headroom
+2026-09-29 16:12:06,458 - INFO - arch=amd64
+2026-09-29 16:12:06,459 - INFO - cpu_model=AMD EPYC 9575F 64-Core Processor
+2026-09-29 16:12:06,460 - INFO - cpu_flag_avx512f=yes
+2026-09-29 16:12:06,460 - INFO - cpu_flag_avx512_bf16=yes
+2026-09-29 16:12:06,460 - INFO - cpu_flag_avx2=yes
+2026-09-29 16:12:06,460 - INFO - cpu_bf16=True
+2026-09-29 16:12:06,460 - INFO - ram_total_gb=135.02 ram_available_gb=132.66
+2026-09-29 16:12:06,460 - INFO - mode=cpu arch=amd64 vllm=0.27.1 guidellm=0.7.3
+2026-09-29 16:12:07,112 - DEBUG - connect_tcp.started host='huggingface.co' port=443 local_address=None timeout=3 socket_options=None
+2026-09-29 16:12:08,375 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x796ef807a270>
+2026-09-29 16:12:08,375 - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x796ef76727d0> server_hostname='huggingface.co' timeout=3
+2026-09-29 16:12:08,583 - DEBUG - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x796ef7a26930>
+2026-09-29 16:12:08,583 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:08,583 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:08,583 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-09-29 16:12:08,583 - DEBUG - send_request_body.complete
+2026-09-29 16:12:08,583 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:09,276 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:09 GMT'), (b'content-encoding', b'gzip'), (b'ETag', b'W/"1576-P6io7QC3jFOB3QM4BbGHzDy+4To"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe359-42750cf43237bab452ac5dd9;c8079b7d-2013-4a7d-bf32-b267a206a07b'), (b'RateLimit', b'"api";r=499;t=299'), (b'RateLimit-Policy', b'"fixed window";"api";q=500;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'vary', b'Accept-Encoding'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'cqOdGed1EIoHR8V0FwQjP272zyjv4YDr3prWzAaiBoSqAV4zHindTA=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:09,277 - INFO - HTTP Request: GET https://huggingface.co/api/agent-harnesses "HTTP/1.1 200 OK"
+2026-09-29 16:12:09,277 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-09-29 16:12:09,278 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:09,278 - DEBUG - response_closed.started
+2026-09-29 16:12:09,278 - DEBUG - response_closed.complete
+2026-09-29 16:12:09,279 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:09,279 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:09,279 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-09-29 16:12:09,279 - DEBUG - send_request_body.complete
+2026-09-29 16:12:09,279 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:10,350 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:10 GMT'), (b'content-encoding', b'gzip'), (b'ETag', b'W/"23ba-bSpNrchJnzy1uQkfDw1FHJiUUxo"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe35a-143850a403f9d7c87c591226;6d80f665-299d-42d5-9ff6-3a673e93195b'), (b'RateLimit', b'"api";r=856;t=196'), (b'RateLimit-Policy', b'"fixed window";"api";q=1000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'vary', b'Accept-Encoding'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'9C1LbIZd7UQsmRiI9ktkpyKlo5zmCy_bPM7dbNlQ_skOhcHM5Mq99Q=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:10,350 - INFO - HTTP Request: GET https://huggingface.co/api/models/HuggingFaceTB/SmolLM2-135M-Instruct?blobs=true "HTTP/1.1 200 OK"
+2026-09-29 16:12:10,350 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-09-29 16:12:10,360 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:10,360 - DEBUG - response_closed.started
+2026-09-29 16:12:10,360 - DEBUG - response_closed.complete
+2026-09-29 16:12:10,366 - DEBUG - send_request_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:10,366 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:10,366 - DEBUG - send_request_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:10,367 - DEBUG - send_request_body.complete
+2026-09-29 16:12:10,367 - DEBUG - receive_response_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:10,942 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'274'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:10 GMT'), (b'Location', b'/api/resolve-cache/models/HuggingFaceTB/SmolLM2-135M-Instruct/12fd25f77366fa6b3b4b768ec3050bf629380bac/config.json?%2FHuggingFaceTB%2FSmolLM2-135M-Instruct%2Fresolve%2Fmain%2Fconfig.json=&etag=%2236293b6099200eb8aeb55ae2c01bca2ba46d80d0%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe35a-4bdb419170c0547a39b20956;a7131b6f-e7d3-499d-989c-fa10c013742b'), (b'RateLimit', b'"resolvers";r=4788;t=196'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'12fd25f77366fa6b3b4b768ec3050bf629380bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"36293b6099200eb8aeb55ae2c01bca2ba46d80d0"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'D4tGbWzIcsOg7yePMjLUFYOsJW4S5c7MohtAfxrjlUvf87RGv5SKSg=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:10,943 - INFO - HTTP Request: HEAD https://huggingface.co/HuggingFaceTB/SmolLM2-135M-Instruct/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-09-29 16:12:10,943 - DEBUG - receive_response_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:10,943 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:10,943 - DEBUG - response_closed.started
+2026-09-29 16:12:10,943 - DEBUG - response_closed.complete
+2026-09-29 16:12:10,943 - DEBUG - send_request_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:10,943 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:10,943 - DEBUG - send_request_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:10,944 - DEBUG - send_request_body.complete
+2026-09-29 16:12:10,944 - DEBUG - receive_response_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:11,660 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'861'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 14:48:12 GMT'), (b'ETag', b'"36293b6099200eb8aeb55ae2c01bca2ba46d80d0"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbcfac-38f6fea306e9302b16d7a1bb;5c18f54f-d20d-4ee2-a34c-f238ccc4f2d3'), (b'RateLimit', b'"resolvers";r=4998;t=134'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'12fd25f77366fa6b3b4b768ec3050bf629380bac'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'H0YSahWoqU4OgSqkoLLL-Io5Y9KCssrSsHXSBQHk--xZnXDNhx85FA=='), (b'Age', b'5039'), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:11,660 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/HuggingFaceTB/SmolLM2-135M-Instruct/12fd25f77366fa6b3b4b768ec3050bf629380bac/config.json "HTTP/1.1 200 OK"
+2026-09-29 16:12:11,660 - DEBUG - receive_response_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:11,660 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:11,660 - DEBUG - response_closed.started
+2026-09-29 16:12:11,661 - DEBUG - response_closed.complete
+2026-09-29 16:12:11,661 - DEBUG - Attempting to acquire lock 133517505354144 on /models/.locks/models--HuggingFaceTB--SmolLM2-135M-Instruct/36293b6099200eb8aeb55ae2c01bca2ba46d80d0.lock
+2026-09-29 16:12:11,662 - DEBUG - Lock 133517505354144 acquired on /models/.locks/models--HuggingFaceTB--SmolLM2-135M-Instruct/36293b6099200eb8aeb55ae2c01bca2ba46d80d0.lock
+2026-09-29 16:12:11,662 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:11,662 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:11,662 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-09-29 16:12:11,662 - DEBUG - send_request_body.complete
+2026-09-29 16:12:11,662 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:11,874 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'861'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 14:48:12 GMT'), (b'ETag', b'"36293b6099200eb8aeb55ae2c01bca2ba46d80d0"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbcfac-226606c32b7f380121a39109;5d47b92d-7bde-419a-b2cf-5a81d61ee9a8'), (b'RateLimit', b'"resolvers";r=4997;t=134'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'12fd25f77366fa6b3b4b768ec3050bf629380bac'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'AqZ5gMQsgh92P_1amNTOMSRVSBY0ej6RCByG3zUTq7CmgGe2SGpw9A=='), (b'Age', b'5039'), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:11,874 - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/models/HuggingFaceTB/SmolLM2-135M-Instruct/12fd25f77366fa6b3b4b768ec3050bf629380bac/config.json "HTTP/1.1 200 OK"
+2026-09-29 16:12:11,875 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-09-29 16:12:11,875 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:11,875 - DEBUG - response_closed.started
+2026-09-29 16:12:11,875 - DEBUG - response_closed.complete
+2026-09-29 16:12:11,876 - DEBUG - Attempting to release lock 133517505354144 on /models/.locks/models--HuggingFaceTB--SmolLM2-135M-Instruct/36293b6099200eb8aeb55ae2c01bca2ba46d80d0.lock
+2026-09-29 16:12:11,876 - DEBUG - Lock 133517505354144 released on /models/.locks/models--HuggingFaceTB--SmolLM2-135M-Instruct/36293b6099200eb8aeb55ae2c01bca2ba46d80d0.lock
+2026-09-29 16:12:11,882 - INFO - memory check smol-135m: weights=0.3 GB aggregate_available=112.9 GB runnable=True source=huggingface:file-metadata+config native_dtype=bfloat16 serve_dtype=bfloat16
+2026-09-29 16:12:11,883 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:11,883 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:11,883 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-09-29 16:12:11,883 - DEBUG - send_request_body.complete
+2026-09-29 16:12:11,883 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:12,827 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:12 GMT'), (b'content-encoding', b'gzip'), (b'ETag', b'W/"200b-SdoiYyQp7PJZCWxT2Z5nl7wN2/g"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe35c-2bdf3cbd2ca0809348b3e505;cd028cb0-3501-472e-9654-7f45854fe755'), (b'RateLimit', b'"api";r=855;t=194'), (b'RateLimit-Policy', b'"fixed window";"api";q=1000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'vary', b'Accept-Encoding'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'cWn7W8-OLrfwo7LUha97FEf6aQ-2SmAHZCt0Jc6-0mvxMUalG2v8pA=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:12,827 - INFO - HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-0.5B-Instruct?blobs=true "HTTP/1.1 200 OK"
+2026-09-29 16:12:12,827 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-09-29 16:12:12,837 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:12,837 - DEBUG - response_closed.started
+2026-09-29 16:12:12,837 - DEBUG - response_closed.complete
+2026-09-29 16:12:12,838 - DEBUG - send_request_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:12,839 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:12,839 - DEBUG - send_request_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:12,839 - DEBUG - send_request_body.complete
+2026-09-29 16:12:12,839 - DEBUG - receive_response_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:14,682 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'256'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:14 GMT'), (b'Location', b'/api/resolve-cache/models/Qwen/Qwen2.5-0.5B-Instruct/7ae557604adf67be50417f59c2c2f167def9a775/config.json?%2FQwen%2FQwen2.5-0.5B-Instruct%2Fresolve%2Fmain%2Fconfig.json=&etag=%220dbb161213629a23f0fc00ef286e6b1e366d180f%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe35e-17fc43b143a424ce52de3756;08de2b35-85c1-4460-99cd-14fcb8d8f8f3'), (b'RateLimit', b'"resolvers";r=4787;t=192'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'7ae557604adf67be50417f59c2c2f167def9a775'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"0dbb161213629a23f0fc00ef286e6b1e366d180f"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'FBvQyV0x6NPrQq1yVbEcvxvH4nGFcK02axZuyo6WBe_Xo3DBpaIHVA=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:14,683 - INFO - HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-09-29 16:12:14,683 - DEBUG - receive_response_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:14,683 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:14,683 - DEBUG - response_closed.started
+2026-09-29 16:12:14,683 - DEBUG - response_closed.complete
+2026-09-29 16:12:14,683 - DEBUG - send_request_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:14,684 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:14,684 - DEBUG - send_request_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:14,684 - DEBUG - send_request_body.complete
+2026-09-29 16:12:14,684 - DEBUG - receive_response_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:15,789 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'659'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 14:48:12 GMT'), (b'ETag', b'"0dbb161213629a23f0fc00ef286e6b1e366d180f"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbcfac-0e2a44241982c27356f57411;e29e9a6f-864a-4936-b198-c8241f5c2828'), (b'RateLimit', b'"resolvers";r=4995;t=134'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'7ae557604adf67be50417f59c2c2f167def9a775'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'YToDl9RvFO06rF23gasZ-3nEH_X4YbCqF4_ejCQZjhqMUDQ1Y7laVw=='), (b'Age', b'5043'), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:15,789 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-0.5B-Instruct/7ae557604adf67be50417f59c2c2f167def9a775/config.json "HTTP/1.1 200 OK"
+2026-09-29 16:12:15,790 - DEBUG - receive_response_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:15,790 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:15,790 - DEBUG - response_closed.started
+2026-09-29 16:12:15,790 - DEBUG - response_closed.complete
+2026-09-29 16:12:15,791 - DEBUG - Attempting to acquire lock 133517505137792 on /models/.locks/models--Qwen--Qwen2.5-0.5B-Instruct/0dbb161213629a23f0fc00ef286e6b1e366d180f.lock
+2026-09-29 16:12:15,791 - DEBUG - Lock 133517505137792 acquired on /models/.locks/models--Qwen--Qwen2.5-0.5B-Instruct/0dbb161213629a23f0fc00ef286e6b1e366d180f.lock
+2026-09-29 16:12:15,791 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:15,792 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:15,792 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-09-29 16:12:15,792 - DEBUG - send_request_body.complete
+2026-09-29 16:12:15,792 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:16,002 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'659'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 14:48:12 GMT'), (b'ETag', b'"0dbb161213629a23f0fc00ef286e6b1e366d180f"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbcfac-33e31c2609465d3105951cdf;5324ceac-75e8-42b0-b700-0e6d33f6727e'), (b'RateLimit', b'"resolvers";r=4994;t=134'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'7ae557604adf67be50417f59c2c2f167def9a775'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'uAC2AksMfhSEx_EJ8ph_GqftE0DpzJdf8f19hV8VwpN6H7sOL7rUCg=='), (b'Age', b'5043'), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:16,002 - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-0.5B-Instruct/7ae557604adf67be50417f59c2c2f167def9a775/config.json "HTTP/1.1 200 OK"
+2026-09-29 16:12:16,003 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-09-29 16:12:16,003 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:16,003 - DEBUG - response_closed.started
+2026-09-29 16:12:16,003 - DEBUG - response_closed.complete
+2026-09-29 16:12:16,004 - DEBUG - Attempting to release lock 133517505137792 on /models/.locks/models--Qwen--Qwen2.5-0.5B-Instruct/0dbb161213629a23f0fc00ef286e6b1e366d180f.lock
+2026-09-29 16:12:16,004 - DEBUG - Lock 133517505137792 released on /models/.locks/models--Qwen--Qwen2.5-0.5B-Instruct/0dbb161213629a23f0fc00ef286e6b1e366d180f.lock
+2026-09-29 16:12:16,008 - INFO - memory check qwen-0.5b: weights=0.9 GB aggregate_available=112.9 GB runnable=True source=huggingface:file-metadata+config native_dtype=bfloat16 serve_dtype=bfloat16
+2026-09-29 16:12:16,009 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:16,009 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:16,009 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-09-29 16:12:16,009 - DEBUG - send_request_body.complete
+2026-09-29 16:12:16,009 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:16,890 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:16 GMT'), (b'content-encoding', b'gzip'), (b'ETag', b'W/"1c9a-8151590o3hoWnJ67/Q0u0gSbUo8"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe360-0f9f844014437a723d9dc904;cfeb217b-b69b-426b-a36c-300988810c91'), (b'RateLimit', b'"api";r=854;t=190'), (b'RateLimit-Policy', b'"fixed window";"api";q=1000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'vary', b'Accept-Encoding'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'0SrV66lxbCu7cWtwfJzgpvyB6Q7X2DOHmQ18icmr4uovBVQUfnmN3g=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:16,891 - INFO - HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-2b-it?blobs=true "HTTP/1.1 200 OK"
+2026-09-29 16:12:16,891 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-09-29 16:12:16,901 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:16,901 - DEBUG - response_closed.started
+2026-09-29 16:12:16,901 - DEBUG - response_closed.complete
+2026-09-29 16:12:16,902 - DEBUG - send_request_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:16,903 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:16,903 - DEBUG - send_request_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:16,903 - DEBUG - send_request_body.complete
+2026-09-29 16:12:16,903 - DEBUG - receive_response_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:18,662 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'838'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:18 GMT'), (b'ETag', b'"05131f6b339647ddff99327b199ac3d34a50bf2e"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe362-6fffdeea1a567e396cb442cc;c3b7264a-86fb-4bd9-878b-0326d6ff6ba6'), (b'RateLimit', b'"resolvers";r=4785;t=188'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'f3objLHCWzHQvc9hSvzYt8Bkqy7xTvDcrubHSSVpyPIerVLVJ0gJ4A=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:18,662 - INFO - HTTP Request: HEAD https://huggingface.co/google/gemma-2-2b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-09-29 16:12:18,662 - DEBUG - receive_response_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:18,662 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:18,662 - DEBUG - response_closed.started
+2026-09-29 16:12:18,662 - DEBUG - response_closed.complete
+2026-09-29 16:12:18,663 - DEBUG - Attempting to acquire lock 133517505149552 on /models/.locks/models--google--gemma-2-2b-it/05131f6b339647ddff99327b199ac3d34a50bf2e.lock
+2026-09-29 16:12:18,663 - DEBUG - Lock 133517505149552 acquired on /models/.locks/models--google--gemma-2-2b-it/05131f6b339647ddff99327b199ac3d34a50bf2e.lock
+2026-09-29 16:12:18,663 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:18,664 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:18,664 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-09-29 16:12:18,664 - DEBUG - send_request_body.complete
+2026-09-29 16:12:18,664 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:19,536 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'838'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:19 GMT'), (b'ETag', b'"05131f6b339647ddff99327b199ac3d34a50bf2e"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe363-0143c7ca5813f74c350a2274;dabb803c-50ef-460f-bdb4-92c693b22ae0'), (b'RateLimit', b'"resolvers";r=4784;t=187'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'WBcIPeMTY849Hiq-T5vE6TBHKKnEgvWaOgM3QTJMwntQiHxCEuj5aA=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:19,536 - INFO - HTTP Request: GET https://huggingface.co/google/gemma-2-2b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-09-29 16:12:19,537 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-09-29 16:12:19,537 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:19,537 - DEBUG - response_closed.started
+2026-09-29 16:12:19,537 - DEBUG - response_closed.complete
+2026-09-29 16:12:19,537 - DEBUG - Attempting to release lock 133517505149552 on /models/.locks/models--google--gemma-2-2b-it/05131f6b339647ddff99327b199ac3d34a50bf2e.lock
+2026-09-29 16:12:19,538 - DEBUG - Lock 133517505149552 released on /models/.locks/models--google--gemma-2-2b-it/05131f6b339647ddff99327b199ac3d34a50bf2e.lock
+2026-09-29 16:12:19,538 - DEBUG - send_request_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:19,538 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:19,538 - DEBUG - send_request_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:19,538 - DEBUG - send_request_body.complete
+2026-09-29 16:12:19,538 - DEBUG - receive_response_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:20,407 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'24223'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:20 GMT'), (b'ETag', b'"022daff51a2616bf88f5f0d0eac5dbd525e7cd24"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe364-5b9a5bfe0fdd669f0787189b;572bec5a-f5da-4dbe-9e73-29ded6bf964b'), (b'RateLimit', b'"resolvers";r=4783;t=186'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'model.safetensors.index.json; filename="model.safetensors.index.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'zyusaQc2TovxEGZmW4dHxFVLuVS7N3ORGfuFnXfazJ2Gbu2lryUSRg=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:20,407 - INFO - HTTP Request: HEAD https://huggingface.co/google/gemma-2-2b-it/resolve/main/model.safetensors.index.json "HTTP/1.1 200 OK"
+2026-09-29 16:12:20,407 - DEBUG - receive_response_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:20,407 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:20,407 - DEBUG - response_closed.started
+2026-09-29 16:12:20,407 - DEBUG - response_closed.complete
+2026-09-29 16:12:20,408 - DEBUG - Attempting to acquire lock 133517505146480 on /models/.locks/models--google--gemma-2-2b-it/022daff51a2616bf88f5f0d0eac5dbd525e7cd24.lock
+2026-09-29 16:12:20,408 - DEBUG - Lock 133517505146480 acquired on /models/.locks/models--google--gemma-2-2b-it/022daff51a2616bf88f5f0d0eac5dbd525e7cd24.lock
+2026-09-29 16:12:20,409 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:20,409 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:20,409 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-09-29 16:12:20,409 - DEBUG - send_request_body.complete
+2026-09-29 16:12:20,409 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:20,855 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:20 GMT'), (b'content-encoding', b'gzip'), (b'ETag', b'W/"022daff51a2616bf88f5f0d0eac5dbd525e7cd24"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe364-7b85cdc53391ed584c46c4cc;6d0c5391-6026-42a1-988e-1998ed76f08d'), (b'RateLimit', b'"resolvers";r=4781;t=186'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'vary', b'Accept-Encoding'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'model.safetensors.index.json; filename="model.safetensors.index.json";'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'YORJ2SUsbTzK4xlqfCG5D5GlapSBMEoL93BpEW8XWk45h1z6Pb0xmg=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:20,856 - INFO - HTTP Request: GET https://huggingface.co/google/gemma-2-2b-it/resolve/main/model.safetensors.index.json "HTTP/1.1 200 OK"
+2026-09-29 16:12:20,856 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-09-29 16:12:20,858 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:20,858 - DEBUG - response_closed.started
+2026-09-29 16:12:20,858 - DEBUG - response_closed.complete
+2026-09-29 16:12:20,859 - DEBUG - Attempting to release lock 133517505146480 on /models/.locks/models--google--gemma-2-2b-it/022daff51a2616bf88f5f0d0eac5dbd525e7cd24.lock
+2026-09-29 16:12:20,859 - DEBUG - Lock 133517505146480 released on /models/.locks/models--google--gemma-2-2b-it/022daff51a2616bf88f5f0d0eac5dbd525e7cd24.lock
+2026-09-29 16:12:20,862 - INFO - memory check gemma-2b: weights=4.9 GB aggregate_available=112.9 GB runnable=True source=huggingface:file-metadata+config native_dtype=bfloat16 serve_dtype=bfloat16
+2026-09-29 16:12:20,863 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:20,863 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:20,863 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-09-29 16:12:20,863 - DEBUG - send_request_body.complete
+2026-09-29 16:12:20,863 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:21,332 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:21 GMT'), (b'content-encoding', b'gzip'), (b'ETag', b'W/"616c-33pFMDL8So3W4xK93pf8K/3qIYQ"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe365-230988df01997e89768a0db2;7a2b730a-967e-41d7-94e1-94098594d776'), (b'RateLimit', b'"api";r=841;t=185'), (b'RateLimit-Policy', b'"fixed window";"api";q=1000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'vary', b'Accept-Encoding'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'YHKX6e7DKTlN-UWAzy7GnXoKMwBV3dcfJpdldJIkKdEhMGVALYcE7A=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:21,332 - INFO - HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.1-8B-Instruct?blobs=true "HTTP/1.1 200 OK"
+2026-09-29 16:12:21,332 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-09-29 16:12:21,360 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:21,360 - DEBUG - response_closed.started
+2026-09-29 16:12:21,360 - DEBUG - response_closed.complete
+2026-09-29 16:12:21,361 - DEBUG - send_request_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:21,362 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:21,362 - DEBUG - send_request_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:21,362 - DEBUG - send_request_body.complete
+2026-09-29 16:12:21,362 - DEBUG - receive_response_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:21,797 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'855'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:21 GMT'), (b'ETag', b'"0bb6fd75b3ad2fe988565929f329945262c2814e"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe365-30ca535542bac92674fcca7d;c0f9ef1a-054e-4b51-975d-7814a84cf7ae'), (b'RateLimit', b'"resolvers";r=4780;t=185'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'0e9e39f249a16976918f6564b8830bc894c89659'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'kSMQhUHrjOtYAL0XwA7ProbtGO9PsnpO0-P34Qj2h0dCOSEtmKyCVw=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:21,797 - INFO - HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-09-29 16:12:21,797 - DEBUG - receive_response_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:21,797 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:21,797 - DEBUG - response_closed.started
+2026-09-29 16:12:21,797 - DEBUG - response_closed.complete
+2026-09-29 16:12:21,798 - DEBUG - Attempting to acquire lock 133517505424528 on /models/.locks/models--meta-llama--Llama-3.1-8B-Instruct/0bb6fd75b3ad2fe988565929f329945262c2814e.lock
+2026-09-29 16:12:21,798 - DEBUG - Lock 133517505424528 acquired on /models/.locks/models--meta-llama--Llama-3.1-8B-Instruct/0bb6fd75b3ad2fe988565929f329945262c2814e.lock
+2026-09-29 16:12:21,799 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:21,799 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:21,799 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-09-29 16:12:21,799 - DEBUG - send_request_body.complete
+2026-09-29 16:12:21,799 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:22,242 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'855'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:22 GMT'), (b'ETag', b'"0bb6fd75b3ad2fe988565929f329945262c2814e"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe366-6c4b6eb64ec954e7418cd4b5;99f6e866-5b7f-4a60-a3ca-e4585970b365'), (b'RateLimit', b'"resolvers";r=4779;t=184'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'0e9e39f249a16976918f6564b8830bc894c89659'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'Fa7RbR-Yx1U9fqsfYJu4ten3yF7RYGahjhP2O4RNW38Sqr3zjJaByw=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:22,242 - INFO - HTTP Request: GET https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-09-29 16:12:22,242 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-09-29 16:12:22,243 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:22,243 - DEBUG - response_closed.started
+2026-09-29 16:12:22,243 - DEBUG - response_closed.complete
+2026-09-29 16:12:22,243 - DEBUG - Attempting to release lock 133517505424528 on /models/.locks/models--meta-llama--Llama-3.1-8B-Instruct/0bb6fd75b3ad2fe988565929f329945262c2814e.lock
+2026-09-29 16:12:22,244 - DEBUG - Lock 133517505424528 released on /models/.locks/models--meta-llama--Llama-3.1-8B-Instruct/0bb6fd75b3ad2fe988565929f329945262c2814e.lock
+2026-09-29 16:12:22,244 - DEBUG - send_request_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:22,245 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:22,245 - DEBUG - send_request_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:22,245 - DEBUG - send_request_body.complete
+2026-09-29 16:12:22,245 - DEBUG - receive_response_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:29,350 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'23950'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:29 GMT'), (b'ETag', b'"0fd8120f1c6acddc268ebc2583058efaf699a771"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe36d-0afa6d4d361343c57c4a153d;3ab22d50-ee35-4417-8ee6-22b90865c8e2'), (b'RateLimit', b'"resolvers";r=4778;t=177'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'0e9e39f249a16976918f6564b8830bc894c89659'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'model.safetensors.index.json; filename="model.safetensors.index.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'nGIzdNWce0KdtODI_CkcZ20DBjnMKlFw34DRYe0gdJ7NAZrO75BV4g=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:29,350 - INFO - HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/resolve/main/model.safetensors.index.json "HTTP/1.1 200 OK"
+2026-09-29 16:12:29,350 - DEBUG - receive_response_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:29,350 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:29,350 - DEBUG - response_closed.started
+2026-09-29 16:12:29,350 - DEBUG - response_closed.complete
+2026-09-29 16:12:29,351 - DEBUG - Attempting to acquire lock 133517505420256 on /models/.locks/models--meta-llama--Llama-3.1-8B-Instruct/0fd8120f1c6acddc268ebc2583058efaf699a771.lock
+2026-09-29 16:12:29,351 - DEBUG - Lock 133517505420256 acquired on /models/.locks/models--meta-llama--Llama-3.1-8B-Instruct/0fd8120f1c6acddc268ebc2583058efaf699a771.lock
+2026-09-29 16:12:29,351 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:29,352 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:29,352 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-09-29 16:12:29,352 - DEBUG - send_request_body.complete
+2026-09-29 16:12:29,352 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:30,235 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:30 GMT'), (b'content-encoding', b'gzip'), (b'ETag', b'W/"0fd8120f1c6acddc268ebc2583058efaf699a771"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe36d-0913b90749b05da63b5227c8;770159e3-0ffd-48eb-bc56-c2b8eb8dc09e'), (b'RateLimit', b'"resolvers";r=4770;t=176'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'vary', b'Accept-Encoding'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'0e9e39f249a16976918f6564b8830bc894c89659'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'model.safetensors.index.json; filename="model.safetensors.index.json";'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'WGx3e0r2x4zc4a6DFsSEndtDpZ_RXT6VayTH_0A3ePxirCDQ8vsoHA=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:30,235 - INFO - HTTP Request: GET https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/resolve/main/model.safetensors.index.json "HTTP/1.1 200 OK"
+2026-09-29 16:12:30,235 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-09-29 16:12:30,235 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:30,235 - DEBUG - response_closed.started
+2026-09-29 16:12:30,235 - DEBUG - response_closed.complete
+2026-09-29 16:12:30,236 - DEBUG - Attempting to release lock 133517505420256 on /models/.locks/models--meta-llama--Llama-3.1-8B-Instruct/0fd8120f1c6acddc268ebc2583058efaf699a771.lock
+2026-09-29 16:12:30,236 - DEBUG - Lock 133517505420256 released on /models/.locks/models--meta-llama--Llama-3.1-8B-Instruct/0fd8120f1c6acddc268ebc2583058efaf699a771.lock
+2026-09-29 16:12:30,240 - INFO - memory check llama-8b: weights=15.0 GB aggregate_available=112.9 GB runnable=True source=huggingface:file-metadata+config native_dtype=bfloat16 serve_dtype=bfloat16
+2026-09-29 16:12:30,240 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:30,241 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:30,241 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-09-29 16:12:30,241 - DEBUG - send_request_body.complete
+2026-09-29 16:12:30,241 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:30,775 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:30 GMT'), (b'content-encoding', b'gzip'), (b'ETag', b'W/"1e0b-hCGXsdcsdQnCjU2aWeRGY1SFp8I"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe36e-3e22d6d169b34cf963203490;14f5e9bc-87f7-4eaa-8ebf-74f3c00cb6a5'), (b'RateLimit', b'"api";r=822;t=176'), (b'RateLimit-Policy', b'"fixed window";"api";q=1000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'vary', b'Accept-Encoding'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'rIRx980zC_BDSlNkUgnouy3Al6tVQ9t2Vew9Dk-L0o5DP-GDXWXcSA=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:30,775 - INFO - HTTP Request: GET https://huggingface.co/api/models/microsoft/phi-4?blobs=true "HTTP/1.1 200 OK"
+2026-09-29 16:12:30,775 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-09-29 16:12:30,785 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:30,785 - DEBUG - response_closed.started
+2026-09-29 16:12:30,785 - DEBUG - response_closed.complete
+2026-09-29 16:12:30,786 - DEBUG - send_request_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:30,786 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:30,786 - DEBUG - send_request_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:30,786 - DEBUG - send_request_body.complete
+2026-09-29 16:12:30,787 - DEBUG - receive_response_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:31,229 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'234'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:31 GMT'), (b'Location', b'/api/resolve-cache/models/microsoft/phi-4/2db69c1c3e91a05d2c64a3185acfbaf36f744e25/config.json?%2Fmicrosoft%2Fphi-4%2Fresolve%2Fmain%2Fconfig.json=&etag=%22ab17e0b5838762a837102af7269223b5a20d52fd%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe36f-28d833ed2f5de491326756f3;84de5e32-1b0a-48f7-8583-55c3f3b7e7ae'), (b'RateLimit', b'"resolvers";r=4764;t=175'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'2db69c1c3e91a05d2c64a3185acfbaf36f744e25'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"ab17e0b5838762a837102af7269223b5a20d52fd"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'rHSxL-cUsuEg4T-x8dSxDMhHlTY8hv3zKOwEc9SZjpOLsF0XqahAWQ=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:31,229 - INFO - HTTP Request: HEAD https://huggingface.co/microsoft/phi-4/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-09-29 16:12:31,229 - DEBUG - receive_response_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:31,229 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:31,229 - DEBUG - response_closed.started
+2026-09-29 16:12:31,229 - DEBUG - response_closed.complete
+2026-09-29 16:12:31,230 - DEBUG - send_request_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:31,230 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:31,230 - DEBUG - send_request_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:31,230 - DEBUG - send_request_body.complete
+2026-09-29 16:12:31,230 - DEBUG - receive_response_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:31,441 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'802'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 14:48:12 GMT'), (b'ETag', b'"ab17e0b5838762a837102af7269223b5a20d52fd"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbcfac-376c8fb044df075300b3e43a;182fa6eb-99c4-4c2c-9eaa-575697b1f05a'), (b'RateLimit', b'"resolvers";r=4984;t=134'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'2db69c1c3e91a05d2c64a3185acfbaf36f744e25'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'ugykNfHXTQc-gEP_h7TjZPpm3E82U2JXB3ASIWTYof6IZkGhZsrHqg=='), (b'Age', b'5059'), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:31,441 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/phi-4/2db69c1c3e91a05d2c64a3185acfbaf36f744e25/config.json "HTTP/1.1 200 OK"
+2026-09-29 16:12:31,442 - DEBUG - receive_response_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:31,442 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:31,442 - DEBUG - response_closed.started
+2026-09-29 16:12:31,442 - DEBUG - response_closed.complete
+2026-09-29 16:12:31,443 - DEBUG - Attempting to acquire lock 133517505425152 on /models/.locks/models--microsoft--phi-4/ab17e0b5838762a837102af7269223b5a20d52fd.lock
+2026-09-29 16:12:31,443 - DEBUG - Lock 133517505425152 acquired on /models/.locks/models--microsoft--phi-4/ab17e0b5838762a837102af7269223b5a20d52fd.lock
+2026-09-29 16:12:31,443 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:31,443 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:31,443 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-09-29 16:12:31,443 - DEBUG - send_request_body.complete
+2026-09-29 16:12:31,443 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:32,485 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'802'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 14:48:12 GMT'), (b'ETag', b'"ab17e0b5838762a837102af7269223b5a20d52fd"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbcfac-1a0927935b3661912e5a593a;672bd937-5643-4a2f-9aa0-a3edebf01e34'), (b'RateLimit', b'"resolvers";r=4983;t=134'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'2db69c1c3e91a05d2c64a3185acfbaf36f744e25'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'JQDPghlFrytWcgwMCDTNevVkemJx3iFu8AZ9f5QNfGncFBM7uSR9Ug=='), (b'Age', b'5060'), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:32,485 - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/models/microsoft/phi-4/2db69c1c3e91a05d2c64a3185acfbaf36f744e25/config.json "HTTP/1.1 200 OK"
+2026-09-29 16:12:32,485 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-09-29 16:12:32,485 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:32,485 - DEBUG - response_closed.started
+2026-09-29 16:12:32,485 - DEBUG - response_closed.complete
+2026-09-29 16:12:32,486 - DEBUG - Attempting to release lock 133517505425152 on /models/.locks/models--microsoft--phi-4/ab17e0b5838762a837102af7269223b5a20d52fd.lock
+2026-09-29 16:12:32,486 - DEBUG - Lock 133517505425152 released on /models/.locks/models--microsoft--phi-4/ab17e0b5838762a837102af7269223b5a20d52fd.lock
+2026-09-29 16:12:32,487 - DEBUG - send_request_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:32,487 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:32,487 - DEBUG - send_request_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:32,487 - DEBUG - send_request_body.complete
+2026-09-29 16:12:32,487 - DEBUG - receive_response_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:33,343 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'268'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 16:12:33 GMT'), (b'Location', b'/api/resolve-cache/models/microsoft/phi-4/2db69c1c3e91a05d2c64a3185acfbaf36f744e25/model.safetensors.index.json?%2Fmicrosoft%2Fphi-4%2Fresolve%2Fmain%2Fmodel.safetensors.index.json=&etag=%22d9c4e28d4f7cc72949fdc86940c8a67583750436%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbe371-5177f26c33d34cd95e59e332;d72d51ad-799b-46d8-b675-676f15d993d5'), (b'RateLimit', b'"resolvers";r=4753;t=173'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'2db69c1c3e91a05d2c64a3185acfbaf36f744e25'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'model.safetensors.index.json; filename="model.safetensors.index.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"d9c4e28d4f7cc72949fdc86940c8a67583750436"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'bMrsuQK_cRSRtcyyJhNDY1YnyXHWiHLbYqCreuDI58_L2OWM_pZB5g=='), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:33,343 - INFO - HTTP Request: HEAD https://huggingface.co/microsoft/phi-4/resolve/main/model.safetensors.index.json "HTTP/1.1 307 Temporary Redirect"
+2026-09-29 16:12:33,344 - DEBUG - receive_response_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:33,344 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:33,344 - DEBUG - response_closed.started
+2026-09-29 16:12:33,344 - DEBUG - response_closed.complete
+2026-09-29 16:12:33,344 - DEBUG - send_request_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:33,345 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:33,345 - DEBUG - send_request_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:33,345 - DEBUG - send_request_body.complete
+2026-09-29 16:12:33,345 - DEBUG - receive_response_headers.started request=<Request [b'HEAD']>
+2026-09-29 16:12:33,556 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'20364'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 14:48:12 GMT'), (b'ETag', b'"d9c4e28d4f7cc72949fdc86940c8a67583750436"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbcfac-5acf47982d4c635f2f90e667;5cd0d13f-44a7-492a-8ab5-67c05c2f3c47'), (b'RateLimit', b'"resolvers";r=4981;t=134'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'2db69c1c3e91a05d2c64a3185acfbaf36f744e25'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'model.safetensors.index.json; filename="model.safetensors.index.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'viQ0PN8J2LwyIzqytizgdFoR7u-XvsYEZ5IvFkBMuh9wnIDrUrzK6A=='), (b'Age', b'5061'), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:33,556 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/phi-4/2db69c1c3e91a05d2c64a3185acfbaf36f744e25/model.safetensors.index.json "HTTP/1.1 200 OK"
+2026-09-29 16:12:33,556 - DEBUG - receive_response_body.started request=<Request [b'HEAD']>
+2026-09-29 16:12:33,556 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:33,556 - DEBUG - response_closed.started
+2026-09-29 16:12:33,556 - DEBUG - response_closed.complete
+2026-09-29 16:12:33,557 - DEBUG - Attempting to acquire lock 133517504476512 on /models/.locks/models--microsoft--phi-4/d9c4e28d4f7cc72949fdc86940c8a67583750436.lock
+2026-09-29 16:12:33,557 - DEBUG - Lock 133517504476512 acquired on /models/.locks/models--microsoft--phi-4/d9c4e28d4f7cc72949fdc86940c8a67583750436.lock
+2026-09-29 16:12:33,558 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:33,558 - DEBUG - send_request_headers.complete
+2026-09-29 16:12:33,558 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-09-29 16:12:33,558 - DEBUG - send_request_body.complete
+2026-09-29 16:12:33,558 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-09-29 16:12:33,769 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Date', b'Tue, 29 Sep 2026 14:48:12 GMT'), (b'Content-Encoding', b'gzip'), (b'ETag', b'W/"d9c4e28d4f7cc72949fdc86940c8a67583750436"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6abbcfac-088730485eb9d5e818d775c9;2c69ce82-c7e4-4fd4-b1d3-d75ab663c081'), (b'RateLimit', b'"resolvers";r=4980;t=134'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=5000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'2db69c1c3e91a05d2c64a3185acfbaf36f744e25'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'model.safetensors.index.json; filename="model.safetensors.index.json";'), (b'Vary', b'Origin,Accept-Encoding'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 2ed8b9e5e9e8dd68644e8565796cf93a.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'SIN3-P1'), (b'Alt-Svc', b'h3=":443"; ma=86400'), (b'X-Amz-Cf-Id', b'hROqtIJoKz7mtmEC8WLlq-KmA7Yvb3a42Ljno6pKD4eCciaFd8DZrQ=='), (b'Age', b'5061'), (b'Strict-Transport-Security', b'max-age=31536000')])
+2026-09-29 16:12:33,770 - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/models/microsoft/phi-4/2db69c1c3e91a05d2c64a3185acfbaf36f744e25/model.safetensors.index.json "HTTP/1.1 200 OK"
+2026-09-29 16:12:33,770 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-09-29 16:12:33,773 - DEBUG - receive_response_body.complete
+2026-09-29 16:12:33,773 - DEBUG - response_closed.started
+2026-09-29 16:12:33,773 - DEBUG - response_closed.complete
+2026-09-29 16:12:33,773 - DEBUG - Attempting to release lock 133517504476512 on /models/.locks/models--microsoft--phi-4/d9c4e28d4f7cc72949fdc86940c8a67583750436.lock
+2026-09-29 16:12:33,773 - DEBUG - Lock 133517504476512 released on /models/.locks/models--microsoft--phi-4/d9c4e28d4f7cc72949fdc86940c8a67583750436.lock
+2026-09-29 16:12:33,779 - INFO - memory check phi-4: weights=27.3 GB aggregate_available=112.9 GB runnable=True source=huggingface:file-metadata+config native_dtype=bfloat16 serve_dtype=bfloat16
+2026-09-29 16:12:33,779 - INFO - benchmark budget overall=7200s reserve=1800s runs=10 per_run=240s
+2026-09-29 16:12:33,783 - INFO - memory check smol-135m: weights=0.3 GB aggregate_available=112.9 GB runnable=True source=huggingface:file-metadata+config native_dtype=bfloat16 serve_dtype=bfloat16
+2026-09-29 16:12:33,788 - INFO - memory check smol-135m: weights=0.3 GB aggregate_available=112.9 GB runnable=True source=huggingface:file-metadata+config native_dtype=bfloat16 serve_dtype=bfloat16
+2026-09-29 16:12:33,793 - INFO - memory check qwen-0.5b: weights=0.9 GB aggregate_available=112.9 GB runnable=True source=huggingface:file-metadata+config native_dtype=bfloat16 serve_dtype=bfloat16
+2026-09-29 16:12:33,797 - INFO - memory check gemma-2b: weights=4.9 GB aggregate_available=112.9 GB runnable=True source=huggingface:file-metadata+config native_dtype=bfloat16 serve_dtype=bfloat16
+2026-09-29 16:12:33,802 - INFO - memory check llama-8b: weights=15.0 GB aggregate_available=112.9 GB runnable=True source=huggingface:file-metadata+config native_dtype=bfloat16 serve_dtype=bfloat16
+2026-09-29 16:12:33,806 - INFO - memory check phi-4: weights=27.3 GB aggregate_available=112.9 GB runnable=True source=huggingface:file-metadata+config native_dtype=bfloat16 serve_dtype=bfloat16
+2026-09-29 16:12:33,807 - INFO - autoconfig vcpus=64 numa=1 cpu_tp=1 cpu_dp=4 budget_per_run=240s sweep=4 max_conc=89 max_req=time-only workers=11 rampup=8.0s max_sec/strategy=60 max_model_len=2048 max_num_seqs=16 per_workload_server=True
+2026-09-29 16:12:36,176 - INFO - Starting server: vllm serve HuggingFaceTB/SmolLM2-135M-Instruct --port 8000 --max-model-len 2048 --dtype bfloat16 --gpu-memory-utilization 0.15 --data-parallel-size 4 --max-num-seqs 16 --max-num-batched-tokens 2048
+2026-09-29 16:12:36,176 - INFO - cpu parallel: numa=1 tp=1 dp=4 ranks/node=4 mem_util=0.15 omp_bind=0-15|16-31|32-47|48-62
+2026-09-29 16:15:44,233 - INFO - GuideLLM: guidellm run --backend kind=openai_http,target=http://127.0.0.1:8000,model=HuggingFaceTB/SmolLM2-135M-Instruct,request_format=/v1/completions --data kind=synthetic_text,prompt_tokens=256,output_tokens=128 --profile kind=sweep,sweep_size=4,max_concurrency=89,rampup_duration=8.0,warmup=10 --seed kind=static,value=42 --constraint kind=max_duration,seconds=60 --output kind=json,path=/tmp/guidellm-8a72t1ge/benchmarks.json --metrics kind=generative,sample_size=10 --disable-console
+2026-09-29 16:20:07,331 - INFO - GuideLLM emitted 76 rows model=smol-135m workload=chat profile=sweep
+2026-09-29 16:20:13,557 - INFO - autoconfig vcpus=64 numa=1 cpu_tp=1 cpu_dp=4 budget_per_run=240s sweep=4 max_conc=89 max_req=time-only workers=11 rampup=8.0s max_sec/strategy=60 max_model_len=4096 max_num_seqs=16 per_workload_server=True
+2026-09-29 16:20:13,558 - INFO - Starting server: vllm serve HuggingFaceTB/SmolLM2-135M-Instruct --port 8000 --max-model-len 4096 --dtype bfloat16 --gpu-memory-utilization 0.15 --data-parallel-size 4 --max-num-seqs 16 --max-num-batched-tokens 2048
+2026-09-29 16:20:13,558 - INFO - cpu parallel: numa=1 tp=1 dp=4 ranks/node=4 mem_util=0.15 omp_bind=0-15|16-31|32-47|48-62
+2026-09-29 16:22:57,613 - INFO - GuideLLM: guidellm run --backend kind=openai_http,target=http://127.0.0.1:8000,model=HuggingFaceTB/SmolLM2-135M-Instruct,request_format=/v1/completions --data kind=synthetic_text,prompt_tokens=1024,output_tokens=256 --profile kind=sweep,sweep_size=4,max_concurrency=89,rampup_duration=8.0,warmup=10 --seed kind=static,value=42 --constraint kind=max_duration,seconds=60 --output kind=json,path=/tmp/guidellm-07zbeumu/benchmarks.json --metrics kind=generative,sample_size=10 --disable-console
+2026-09-29 16:27:47,246 - INFO - GuideLLM emitted 76 rows model=smol-135m workload=rag profile=sweep
+2026-09-29 16:27:50,138 - INFO - memory check qwen-0.5b: weights=0.9 GB aggregate_available=112.8 GB runnable=True source=huggingface:file-metadata+config native_dtype=bfloat16 serve_dtype=bfloat16
+2026-09-29 16:27:50,139 - INFO - autoconfig vcpus=64 numa=1 cpu_tp=1 cpu_dp=4 budget_per_run=240s sweep=4 max_conc=89 max_req=time-only workers=11 rampup=8.0s max_sec/strategy=60 max_model_len=2048 max_num_seqs=16 per_workload_server=True
+2026-09-29 16:27:50,140 - INFO - Starting server: vllm serve Qwen/Qwen2.5-0.5B-Instruct --port 8000 --max-model-len 2048 --dtype bfloat16 --gpu-memory-utilization 0.15 --data-parallel-size 4 --max-num-seqs 16 --max-num-batched-tokens 2048
+2026-09-29 16:27:50,140 - INFO - cpu parallel: numa=1 tp=1 dp=4 ranks/node=4 mem_util=0.15 omp_bind=0-15|16-31|32-47|48-62
+2026-09-29 16:30:54,205 - INFO - GuideLLM: guidellm run --backend kind=openai_http,target=http://127.0.0.1:8000,model=Qwen/Qwen2.5-0.5B-Instruct,request_format=/v1/completions --data kind=synthetic_text,prompt_tokens=256,output_tokens=128 --profile kind=sweep,sweep_size=4,max_concurrency=89,rampup_duration=8.0,warmup=10 --seed kind=static,value=42 --constraint kind=max_duration,seconds=60 --output kind=json,path=/tmp/guidellm-d2m1h_8j/benchmarks.json --metrics kind=generative,sample_size=10 --disable-console
+2026-09-29 16:35:15,355 - INFO - GuideLLM emitted 76 rows model=qwen-0.5b workload=chat profile=sweep
+2026-09-29 16:35:21,268 - INFO - autoconfig vcpus=64 numa=1 cpu_tp=1 cpu_dp=4 budget_per_run=240s sweep=4 max_conc=89 max_req=time-only workers=11 rampup=8.0s max_sec/strategy=60 max_model_len=4096 max_num_seqs=16 per_workload_server=True
+2026-09-29 16:35:21,269 - INFO - Starting server: vllm serve Qwen/Qwen2.5-0.5B-Instruct --port 8000 --max-model-len 4096 --dtype bfloat16 --gpu-memory-utilization 0.15 --data-parallel-size 4 --max-num-seqs 16 --max-num-batched-tokens 2048
+2026-09-29 16:35:21,270 - INFO - cpu parallel: numa=1 tp=1 dp=4 ranks/node=4 mem_util=0.15 omp_bind=0-15|16-31|32-47|48-62
+2026-09-29 16:37:49,320 - INFO - GuideLLM: guidellm run --backend kind=openai_http,target=http://127.0.0.1:8000,model=Qwen/Qwen2.5-0.5B-Instruct,request_format=/v1/completions --data kind=synthetic_text,prompt_tokens=1024,output_tokens=256 --profile kind=sweep,sweep_size=4,max_concurrency=89,rampup_duration=8.0,warmup=10 --seed kind=static,value=42 --constraint kind=max_duration,seconds=60 --output kind=json,path=/tmp/guidellm-evp62l1y/benchmarks.json --metrics kind=generative,sample_size=10 --disable-console
+2026-09-29 16:42:33,066 - INFO - GuideLLM emitted 76 rows model=qwen-0.5b workload=rag profile=sweep
+2026-09-29 16:42:39,321 - INFO - memory check gemma-2b: weights=4.9 GB aggregate_available=112.8 GB runnable=True source=huggingface:file-metadata+config native_dtype=bfloat16 serve_dtype=bfloat16
+2026-09-29 16:42:39,321 - INFO - autoconfig vcpus=64 numa=1 cpu_tp=1 cpu_dp=2 budget_per_run=240s sweep=4 max_conc=89 max_req=time-only workers=11 rampup=8.0s max_sec/strategy=60 max_model_len=2048 max_num_seqs=32 per_workload_server=True
+2026-09-29 16:42:39,322 - INFO - Starting server: vllm serve google/gemma-2-2b-it --port 8000 --max-model-len 2048 --dtype bfloat16 --gpu-memory-utilization 0.31 --data-parallel-size 2 --max-num-seqs 32 --max-num-batched-tokens 2048
+2026-09-29 16:42:39,323 - INFO - cpu parallel: numa=1 tp=1 dp=2 ranks/node=2 mem_util=0.31 omp_bind=0-31|32-62
+2026-09-29 16:46:23,397 - INFO - GuideLLM: guidellm run --backend kind=openai_http,target=http://127.0.0.1:8000,model=google/gemma-2-2b-it,request_format=/v1/completions --data kind=synthetic_text,prompt_tokens=256,output_tokens=128 --profile kind=sweep,sweep_size=4,max_concurrency=89,rampup_duration=8.0,warmup=10 --seed kind=static,value=42 --constraint kind=max_duration,seconds=60 --output kind=json,path=/tmp/guidellm-pm5g_2f0/benchmarks.json --metrics kind=generative,sample_size=10 --disable-console
+2026-09-29 16:51:33,167 - INFO - GuideLLM emitted 57 rows model=gemma-2b workload=chat profile=sweep
+2026-09-29 16:51:36,058 - INFO - autoconfig vcpus=64 numa=1 cpu_tp=1 cpu_dp=2 budget_per_run=240s sweep=4 max_conc=89 max_req=time-only workers=11 rampup=8.0s max_sec/strategy=60 max_model_len=4096 max_num_seqs=16 per_workload_server=True
+2026-09-29 16:51:36,059 - INFO - Starting server: vllm serve google/gemma-2-2b-it --port 8000 --max-model-len 4096 --dtype bfloat16 --gpu-memory-utilization 0.31 --data-parallel-size 2 --max-num-seqs 16 --max-num-batched-tokens 2048
+2026-09-29 16:51:36,059 - INFO - cpu parallel: numa=1 tp=1 dp=2 ranks/node=2 mem_util=0.31 omp_bind=0-31|32-62
+2026-09-29 16:53:42,101 - INFO - GuideLLM: guidellm run --backend kind=openai_http,target=http://127.0.0.1:8000,model=google/gemma-2-2b-it,request_format=/v1/completions --data kind=synthetic_text,prompt_tokens=1024,output_tokens=256 --profile kind=sweep,sweep_size=4,max_concurrency=89,rampup_duration=8.0,warmup=10 --seed kind=static,value=42 --constraint kind=max_duration,seconds=60 --output kind=json,path=/tmp/guidellm-tiedmuqw/benchmarks.json --metrics kind=generative,sample_size=10 --disable-console
+2026-09-29 17:01:01,076 - INFO - GuideLLM emitted 57 rows model=gemma-2b workload=rag profile=sweep
+2026-09-29 17:01:04,379 - INFO - memory check llama-8b: weights=15.0 GB aggregate_available=112.7 GB runnable=True source=huggingface:file-metadata+config native_dtype=bfloat16 serve_dtype=bfloat16
+2026-09-29 17:01:04,380 - INFO - autoconfig vcpus=64 numa=1 cpu_tp=1 cpu_dp=1 budget_per_run=240s sweep=4 max_conc=89 max_req=time-only workers=11 rampup=8.0s max_sec/strategy=60 max_model_len=2048 max_num_seqs=39 per_workload_server=True
+2026-09-29 17:01:04,380 - INFO - Starting server: vllm serve meta-llama/Llama-3.1-8B-Instruct --port 8000 --max-model-len 2048 --dtype bfloat16 --gpu-memory-utilization 0.50 --max-num-seqs 39 --max-num-batched-tokens 2048
+2026-09-29 17:01:04,380 - INFO - cpu parallel: numa=1 tp=1 dp=1 ranks/node=1 mem_util=0.50 omp_bind=0-62
+2026-09-29 17:05:34,483 - INFO - GuideLLM: guidellm run --backend kind=openai_http,target=http://127.0.0.1:8000,model=meta-llama/Llama-3.1-8B-Instruct,request_format=/v1/completions --data kind=synthetic_text,prompt_tokens=256,output_tokens=128 --profile kind=sweep,sweep_size=4,max_concurrency=89,rampup_duration=8.0,warmup=10 --seed kind=static,value=42 --constraint kind=max_duration,seconds=60 --output kind=json,path=/tmp/guidellm-297_vq5t/benchmarks.json --metrics kind=generative,sample_size=10 --disable-console
+2026-09-29 17:13:52,597 - WARNING - GuideLLM timed out profile=sweep workload=chat after 498s
+2026-09-29 17:14:22,609 - INFO - autoconfig vcpus=64 numa=1 cpu_tp=1 cpu_dp=1 budget_per_run=240s sweep=4 max_conc=89 max_req=time-only workers=11 rampup=8.0s max_sec/strategy=60 max_model_len=4096 max_num_seqs=19 per_workload_server=True
+2026-09-29 17:14:22,610 - INFO - Starting server: vllm serve meta-llama/Llama-3.1-8B-Instruct --port 8000 --max-model-len 4096 --dtype bfloat16 --gpu-memory-utilization 0.50 --max-num-seqs 19 --max-num-batched-tokens 2048
+2026-09-29 17:14:22,610 - INFO - cpu parallel: numa=1 tp=1 dp=1 ranks/node=1 mem_util=0.50 omp_bind=0-62
+2026-09-29 17:16:40,660 - INFO - GuideLLM: guidellm run --backend kind=openai_http,target=http://127.0.0.1:8000,model=meta-llama/Llama-3.1-8B-Instruct,request_format=/v1/completions --data kind=synthetic_text,prompt_tokens=1024,output_tokens=256 --profile kind=sweep,sweep_size=4,max_concurrency=89,rampup_duration=8.0,warmup=10 --seed kind=static,value=42 --constraint kind=max_duration,seconds=60 --output kind=json,path=/tmp/guidellm-cgcbfh99/benchmarks.json --metrics kind=generative,sample_size=10 --disable-console
+2026-09-29 17:24:58,784 - WARNING - GuideLLM timed out profile=sweep workload=rag after 498s
+2026-09-29 17:25:28,793 - INFO - memory check phi-4: weights=27.3 GB aggregate_available=110.6 GB runnable=True source=huggingface:file-metadata+config native_dtype=bfloat16 serve_dtype=bfloat16
+2026-09-29 17:25:28,794 - INFO - autoconfig vcpus=64 numa=1 cpu_tp=1 cpu_dp=1 budget_per_run=240s sweep=4 max_conc=89 max_req=time-only workers=11 rampup=8.0s max_sec/strategy=60 max_model_len=2048 max_num_seqs=39 per_workload_server=True
+2026-09-29 17:25:28,794 - INFO - Starting server: vllm serve microsoft/phi-4 --port 8000 --max-model-len 2048 --dtype bfloat16 --gpu-memory-utilization 0.50 --max-num-seqs 39 --max-num-batched-tokens 2048
+2026-09-29 17:25:28,794 - INFO - cpu parallel: numa=1 tp=1 dp=1 ranks/node=1 mem_util=0.50 omp_bind=0-62
+2026-09-29 17:32:22,939 - INFO - GuideLLM: guidellm run --backend kind=openai_http,target=http://127.0.0.1:8000,model=microsoft/phi-4,request_format=/v1/completions --data kind=synthetic_text,prompt_tokens=256,output_tokens=128 --profile kind=sweep,sweep_size=4,max_concurrency=89,rampup_duration=8.0,warmup=10 --seed kind=static,value=42 --constraint kind=max_duration,seconds=60 --output kind=json,path=/tmp/guidellm-wjlo1ii5/benchmarks.json --metrics kind=generative,sample_size=10 --disable-console
+2026-09-29 17:40:41,056 - WARNING - GuideLLM timed out profile=sweep workload=chat after 498s
+2026-09-29 17:41:11,065 - INFO - autoconfig vcpus=64 numa=1 cpu_tp=1 cpu_dp=1 budget_per_run=240s sweep=4 max_conc=89 max_req=time-only workers=11 rampup=8.0s max_sec/strategy=60 max_model_len=4096 max_num_seqs=19 per_workload_server=True
+2026-09-29 17:41:11,066 - INFO - Starting server: vllm serve microsoft/phi-4 --port 8000 --max-model-len 4096 --dtype bfloat16 --gpu-memory-utilization 0.50 --max-num-seqs 19 --max-num-batched-tokens 2048
+2026-09-29 17:41:11,066 - INFO - cpu parallel: numa=1 tp=1 dp=1 ranks/node=1 mem_util=0.50 omp_bind=0-62
+2026-09-29 17:41:55,083 - WARNING - vLLM server exited with code 1
+2026-09-29 17:41:55,083 - WARNING - Server health check failed for microsoft/phi-4 workload=rag
+2026-09-29 17:41:55,084 - ERROR - vLLM cpu server failed for phi-4 workload=rag. | exit_code=1 | Try --privileged --shm-size=4g | stderr: (APIServer pid=20550)     raise RuntimeError( | stderr: (APIServer pid=20550) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {} | stderr: (APIServer pid=20550)          ^^^^^^^^^^^^^^^^^^^^ | stderr: (APIServer pid=20550)   File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/contextlib.py", line 144, in __exit__ | stderr: (APIServer pid=20550)     next(self.gen) | stderr: (APIServer pid=20550)   File "/opt/venv/lib/python3.12/site-packages/vllm/v1/engine/utils.py", line 1194, in launch_core_engines | stderr: (APIServer pid=20550)     wait_for_engine_startup( | stderr: (APIServer pid=20550)   File "/opt/venv/lib/python3.12/site-packages/vllm/v1/engine/utils.py", line 1253, in wait_for_engine_startup
+2026-09-29 17:41:55,084 - WARNING - Server failed to become healthy for phi-4; stopping ladder
+2026-09-29 17:41:55,084 - DEBUG - close.started
+2026-09-29 17:41:55,085 - DEBUG - close.complete
