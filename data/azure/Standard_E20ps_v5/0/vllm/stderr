@@ -1,0 +1,351 @@
+2026-07-14 16:30:59,070 - INFO - arch=arm64
+2026-07-14 16:30:59,070 - INFO - cpu_model=unknown
+2026-07-14 16:30:59,070 - INFO - ram_total_gb=168.45 ram_available_gb=165.73
+2026-07-14 16:30:59,071 - INFO - mode=cpu arch=arm64 vllm=0.22.1 guidellm=0.6.0
+2026-07-14 16:30:59,071 - INFO - memory check smol-135m: need~0.3 GiB have~140.9 GiB
+2026-07-14 16:30:59,071 - INFO - memory check qwen-0.5b: need~1.2 GiB have~140.9 GiB
+2026-07-14 16:30:59,071 - INFO - memory check gemma-2b: need~4.8 GiB have~140.9 GiB
+2026-07-14 16:30:59,071 - INFO - memory check llama-8b: need~19.2 GiB have~140.9 GiB
+2026-07-14 16:30:59,071 - INFO - memory check phi-4: need~33.6 GiB have~140.9 GiB
+2026-07-14 16:30:59,071 - INFO - benchmark budget overall=7200s reserve=1800s runs=10 per_run=240s
+2026-07-14 16:30:59,071 - INFO - memory check smol-135m: need~0.3 GiB have~140.9 GiB
+2026-07-14 16:30:59,071 - INFO - memory check smol-135m: need~0.3 GiB have~140.9 GiB
+2026-07-14 16:30:59,071 - INFO - memory check qwen-0.5b: need~1.2 GiB have~140.9 GiB
+2026-07-14 16:30:59,071 - INFO - memory check gemma-2b: need~4.8 GiB have~140.9 GiB
+2026-07-14 16:30:59,071 - INFO - memory check llama-8b: need~19.2 GiB have~140.9 GiB
+2026-07-14 16:30:59,072 - INFO - memory check phi-4: need~33.6 GiB have~140.9 GiB
+2026-07-14 16:31:03,223 - INFO - autoconfig vcpus=20 budget_per_run=240s sweep=5 max_conc=42 max_req=time-only workers=7 max_sec/strategy=48 max_model_len=2048 per_workload_server=True
+2026-07-14 16:31:03,223 - INFO - Starting server: vllm serve HuggingFaceTB/SmolLM2-135M-Instruct --port 8000 --max-model-len 2048 --dtype bfloat16 --gpu-memory-utilization 0.50 --max-num-seqs 20 --max-num-batched-tokens 2048
+2026-07-14 16:33:27,257 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model HuggingFaceTB/SmolLM2-135M-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=256,output_tokens=128 --profile sweep --random-seed 42 --max-seconds 48 --warmup 10 --output-dir /tmp/guidellm-xipljmsi --outputs json --disable-console --sample-requests 10 --rate 5 --rampup 5.0
+2026-07-14 16:35:15,590 - WARNING - GuideLLM failed profile=sweep workload=chat:  raise RuntimeError(
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/worker.py", line 160, in run
+    raise RuntimeError(
+RuntimeError: Worker process 6 encountered an error: Worker process 6 encountered an error: Backend validation request failed. Could not connect to the server or validate the backend configuration.
+RuntimeError: Worker process 4 encountered an error: Worker process 4 encountered an error: Backend validation request failed. Could not connect to the server or validate the backend configuration.
+Traceback (most recent call last):
+  File "/opt/venv/bin/guidellm", line 6, in <module>
+    sys.exit(cli())
+             ^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/__main__.py", line 476, in run
+    asyncio.run(
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/entrypoints.py", line 554, in benchmark_generative_text
+    async for benchmark in benchmarker.run(
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/benchmarker.py", line 133, in run
+    async for (
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/scheduler.py", line 143, in run
+    raise err
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/scheduler.py", line 126, in run
+    await worker_group.create_processes()
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/worker_group.py", line 265, in create_processes
+    raise RuntimeError(
+RuntimeError: Worker process group startup failed: error_event is set
+
+2026-07-14 16:35:15,591 - INFO - autoconfig vcpus=20 budget_per_run=240s sweep=5 max_conc=42 max_req=time-only workers=7 max_sec/strategy=48 max_model_len=4096 per_workload_server=True
+2026-07-14 16:35:15,591 - INFO - Starting server: vllm serve HuggingFaceTB/SmolLM2-135M-Instruct --port 8000 --max-model-len 4096 --dtype bfloat16 --gpu-memory-utilization 0.39 --max-num-seqs 10 --max-num-batched-tokens 2048
+2026-07-14 16:37:03,614 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model HuggingFaceTB/SmolLM2-135M-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=1024,output_tokens=256 --profile sweep --random-seed 42 --max-seconds 48 --warmup 10 --output-dir /tmp/guidellm-9cuyazs1 --outputs json --disable-console --sample-requests 10 --rate 5 --rampup 5.0
+2026-07-14 16:38:51,247 - WARNING - GuideLLM failed profile=sweep workload=rag: ng/process.py", line 314, in _bootstrap
+    self.run()
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/worker.py", line 160, in run
+    raise RuntimeError(
+RuntimeError: Worker process 1 encountered an error: Worker process 1 encountered an error: Backend validation request failed. Could not connect to the server or validate the backend configuration.
+Traceback (most recent call last):
+  File "/opt/venv/bin/guidellm", line 6, in <module>
+    sys.exit(cli())
+             ^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/__main__.py", line 476, in run
+    asyncio.run(
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/entrypoints.py", line 554, in benchmark_generative_text
+    async for benchmark in benchmarker.run(
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/benchmarker.py", line 133, in run
+    async for (
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/scheduler.py", line 143, in run
+    raise err
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/scheduler.py", line 126, in run
+    await worker_group.create_processes()
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/worker_group.py", line 265, in create_processes
+    raise RuntimeError(
+RuntimeError: Worker process group startup failed: error_event is set
+
+2026-07-14 16:38:51,247 - INFO - memory check qwen-0.5b: need~1.2 GiB have~140.9 GiB
+2026-07-14 16:38:51,247 - INFO - autoconfig vcpus=20 budget_per_run=240s sweep=5 max_conc=42 max_req=time-only workers=7 max_sec/strategy=48 max_model_len=2048 per_workload_server=True
+2026-07-14 16:38:51,248 - INFO - Starting server: vllm serve Qwen/Qwen2.5-0.5B-Instruct --port 8000 --max-model-len 2048 --dtype bfloat16 --gpu-memory-utilization 0.50 --max-num-seqs 20 --max-num-batched-tokens 2048
+2026-07-14 16:41:31,284 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model Qwen/Qwen2.5-0.5B-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=256,output_tokens=128 --profile sweep --random-seed 42 --max-seconds 48 --warmup 10 --output-dir /tmp/guidellm-mu8fdehy --outputs json --disable-console --sample-requests 10 --rate 5 --rampup 5.0
+2026-07-14 16:43:20,288 - WARNING - GuideLLM failed profile=sweep workload=chat: ng/process.py", line 314, in _bootstrap
+    self.run()
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/worker.py", line 160, in run
+    raise RuntimeError(
+RuntimeError: Worker process 6 encountered an error: Worker process 6 encountered an error: Backend validation request failed. Could not connect to the server or validate the backend configuration.
+Traceback (most recent call last):
+  File "/opt/venv/bin/guidellm", line 6, in <module>
+    sys.exit(cli())
+             ^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/__main__.py", line 476, in run
+    asyncio.run(
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/entrypoints.py", line 554, in benchmark_generative_text
+    async for benchmark in benchmarker.run(
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/benchmarker.py", line 133, in run
+    async for (
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/scheduler.py", line 143, in run
+    raise err
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/scheduler.py", line 126, in run
+    await worker_group.create_processes()
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/worker_group.py", line 265, in create_processes
+    raise RuntimeError(
+RuntimeError: Worker process group startup failed: error_event is set
+
+2026-07-14 16:43:20,289 - INFO - autoconfig vcpus=20 budget_per_run=240s sweep=5 max_conc=42 max_req=time-only workers=7 max_sec/strategy=48 max_model_len=4096 per_workload_server=True
+2026-07-14 16:43:20,289 - INFO - Starting server: vllm serve Qwen/Qwen2.5-0.5B-Instruct --port 8000 --max-model-len 4096 --dtype bfloat16 --gpu-memory-utilization 0.39 --max-num-seqs 10 --max-num-batched-tokens 2048
+2026-07-14 16:45:42,321 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model Qwen/Qwen2.5-0.5B-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=1024,output_tokens=256 --profile sweep --random-seed 42 --max-seconds 48 --warmup 10 --output-dir /tmp/guidellm-9apr9lv0 --outputs json --disable-console --sample-requests 10 --rate 5 --rampup 5.0
+2026-07-14 16:47:29,815 - WARNING - GuideLLM failed profile=sweep workload=rag: ng/process.py", line 314, in _bootstrap
+    self.run()
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/worker.py", line 160, in run
+    raise RuntimeError(
+RuntimeError: Worker process 2 encountered an error: Worker process 2 encountered an error: Backend validation request failed. Could not connect to the server or validate the backend configuration.
+Traceback (most recent call last):
+  File "/opt/venv/bin/guidellm", line 6, in <module>
+    sys.exit(cli())
+             ^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/__main__.py", line 476, in run
+    asyncio.run(
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/entrypoints.py", line 554, in benchmark_generative_text
+    async for benchmark in benchmarker.run(
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/benchmarker.py", line 133, in run
+    async for (
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/scheduler.py", line 143, in run
+    raise err
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/scheduler.py", line 126, in run
+    await worker_group.create_processes()
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/worker_group.py", line 265, in create_processes
+    raise RuntimeError(
+RuntimeError: Worker process group startup failed: error_event is set
+
+2026-07-14 16:47:29,815 - INFO - memory check gemma-2b: need~4.8 GiB have~140.9 GiB
+2026-07-14 16:47:29,815 - INFO - autoconfig vcpus=20 budget_per_run=240s sweep=5 max_conc=42 max_req=time-only workers=7 max_sec/strategy=48 max_model_len=2048 per_workload_server=True
+2026-07-14 16:47:29,816 - INFO - Starting server: vllm serve google/gemma-2-2b-it --port 8000 --max-model-len 2048 --dtype bfloat16 --gpu-memory-utilization 0.50 --max-num-seqs 20 --max-num-batched-tokens 2048
+2026-07-14 16:55:43,933 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model google/gemma-2-2b-it --backend openai_http --request-format /v1/completions --data prompt_tokens=256,output_tokens=128 --profile sweep --random-seed 42 --max-seconds 48 --warmup 10 --output-dir /tmp/guidellm-f1r_sjn6 --outputs json --disable-console --sample-requests 10 --rate 5 --rampup 5.0
+2026-07-14 16:57:33,679 - WARNING - GuideLLM failed profile=sweep workload=chat: ng/process.py", line 314, in _bootstrap
+    self.run()
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/worker.py", line 160, in run
+    raise RuntimeError(
+RuntimeError: Worker process 6 encountered an error: Worker process 6 encountered an error: Backend validation request failed. Could not connect to the server or validate the backend configuration.
+Traceback (most recent call last):
+  File "/opt/venv/bin/guidellm", line 6, in <module>
+    sys.exit(cli())
+             ^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/__main__.py", line 476, in run
+    asyncio.run(
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/entrypoints.py", line 554, in benchmark_generative_text
+    async for benchmark in benchmarker.run(
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/benchmarker.py", line 133, in run
+    async for (
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/scheduler.py", line 143, in run
+    raise err
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/scheduler.py", line 126, in run
+    await worker_group.create_processes()
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/worker_group.py", line 265, in create_processes
+    raise RuntimeError(
+RuntimeError: Worker process group startup failed: error_event is set
+
+2026-07-14 16:57:33,679 - INFO - autoconfig vcpus=20 budget_per_run=240s sweep=5 max_conc=42 max_req=time-only workers=7 max_sec/strategy=48 max_model_len=4096 per_workload_server=True
+2026-07-14 16:57:33,680 - INFO - Starting server: vllm serve google/gemma-2-2b-it --port 8000 --max-model-len 4096 --dtype bfloat16 --gpu-memory-utilization 0.38 --max-num-seqs 10 --max-num-batched-tokens 2048
+2026-07-14 17:04:29,785 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model google/gemma-2-2b-it --backend openai_http --request-format /v1/completions --data prompt_tokens=1024,output_tokens=256 --profile sweep --random-seed 42 --max-seconds 48 --warmup 10 --output-dir /tmp/guidellm-8396tlsr --outputs json --disable-console --sample-requests 10 --rate 5 --rampup 5.0
+2026-07-14 17:06:17,575 - WARNING - GuideLLM failed profile=sweep workload=rag: ng/process.py", line 314, in _bootstrap
+    self.run()
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/worker.py", line 160, in run
+    raise RuntimeError(
+RuntimeError: Worker process 6 encountered an error: Worker process 6 encountered an error: Backend validation request failed. Could not connect to the server or validate the backend configuration.
+Traceback (most recent call last):
+  File "/opt/venv/bin/guidellm", line 6, in <module>
+    sys.exit(cli())
+             ^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/__main__.py", line 476, in run
+    asyncio.run(
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/entrypoints.py", line 554, in benchmark_generative_text
+    async for benchmark in benchmarker.run(
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/benchmarker.py", line 133, in run
+    async for (
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/scheduler.py", line 143, in run
+    raise err
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/scheduler.py", line 126, in run
+    await worker_group.create_processes()
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/scheduler/worker_group.py", line 265, in create_processes
+    raise RuntimeError(
+RuntimeError: Worker process group startup failed: error_event is set
+
+2026-07-14 17:06:17,575 - INFO - memory check llama-8b: need~19.2 GiB have~140.9 GiB
+2026-07-14 17:06:17,576 - INFO - autoconfig vcpus=20 budget_per_run=240s sweep=5 max_conc=42 max_req=time-only workers=7 max_sec/strategy=48 max_model_len=2048 per_workload_server=True
+2026-07-14 17:06:17,576 - INFO - Starting server: vllm serve meta-llama/Llama-3.1-8B-Instruct --port 8000 --max-model-len 2048 --dtype bfloat16 --gpu-memory-utilization 0.50 --max-num-seqs 20 --max-num-batched-tokens 2048
+2026-07-14 17:16:17,706 - WARNING - Server health check failed for meta-llama/Llama-3.1-8B-Instruct workload=chat
+2026-07-14 17:16:17,707 - ERROR - vLLM cpu server failed for llama-8b workload=chat. | Try --privileged --shm-size=4g | stderr: (Worker pid=3326) frame #55: Py_RunMain + 0x3d4 (0xb9b79c710c14 in VLLM::Worker) | stderr: (Worker pid=3326) frame #56: <unknown function> + 0x531198 (0xb9b79c711198 in VLLM::Worker) | stderr: (Worker pid=3326) frame #57: <unknown function> + 0x418590 (0xb9b79c5f8590 in VLLM::Worker) | stderr: (Worker pid=3326) frame #58: <unknown function> + 0x27400 (0xe0e251457400 in /lib/aarch64-linux-gnu/libc.so.6) | stderr: (Worker pid=3326) frame #59: __libc_start_main + 0x98 (0xe0e2514574d8 in /lib/aarch64-linux-gnu/libc.so.6) | stderr: (Worker pid=3326) frame #60: <unknown function> + 0x418478 (0xb9b79c5f8478 in VLLM::Worker) | stderr: (Worker pid=3326)  (Triggered internally at /pytorch/aten/src/ATen/native/LinearAlgebra.cpp:1531.) | stderr: (Worker pid=3326)   extern_kernels.mm(buf1, reinterpret_tensor(arg4_1, (4096, 6144), (1, 4096), 0), out=buf2)
+2026-07-14 17:16:47,710 - INFO - autoconfig vcpus=20 budget_per_run=240s sweep=5 max_conc=42 max_req=time-only workers=7 max_sec/strategy=48 max_model_len=4096 per_workload_server=True
+2026-07-14 17:16:47,710 - INFO - Starting server: vllm serve meta-llama/Llama-3.1-8B-Instruct --port 8000 --max-model-len 4096 --dtype bfloat16 --gpu-memory-utilization 0.28 --max-num-seqs 10 --max-num-batched-tokens 2048
+2026-07-14 17:26:47,854 - WARNING - Server health check failed for meta-llama/Llama-3.1-8B-Instruct workload=rag
+2026-07-14 17:26:47,854 - ERROR - vLLM cpu server failed for llama-8b workload=rag. | Try --privileged --shm-size=4g | stderr: (Worker pid=3758) frame #55: Py_RunMain + 0x3d4 (0xb91f950a0c14 in VLLM::Worker) | stderr: (Worker pid=3758) frame #56: <unknown function> + 0x531198 (0xb91f950a1198 in VLLM::Worker) | stderr: (Worker pid=3758) frame #57: <unknown function> + 0x418590 (0xb91f94f88590 in VLLM::Worker) | stderr: (Worker pid=3758) frame #58: <unknown function> + 0x27400 (0xec09c2427400 in /lib/aarch64-linux-gnu/libc.so.6) | stderr: (Worker pid=3758) frame #59: __libc_start_main + 0x98 (0xec09c24274d8 in /lib/aarch64-linux-gnu/libc.so.6) | stderr: (Worker pid=3758) frame #60: <unknown function> + 0x418478 (0xb91f94f88478 in VLLM::Worker) | stderr: (Worker pid=3758)  (Triggered internally at /pytorch/aten/src/ATen/native/LinearAlgebra.cpp:1531.) | stderr: (Worker pid=3758)   extern_kernels.mm(buf1, reinterpret_tensor(arg4_1, (4096, 6144), (1, 4096), 0), out=buf2)
+2026-07-14 17:27:17,856 - INFO - memory check phi-4: need~33.6 GiB have~125.2 GiB
+2026-07-14 17:27:17,856 - INFO - autoconfig vcpus=20 budget_per_run=240s sweep=5 max_conc=42 max_req=time-only workers=7 max_sec/strategy=48 max_model_len=2048 per_workload_server=True
+2026-07-14 17:27:17,857 - INFO - Starting server: vllm serve microsoft/phi-4 --port 8000 --max-model-len 2048 --dtype bfloat16 --gpu-memory-utilization 0.49 --max-num-seqs 20 --max-num-batched-tokens 2048
+2026-07-14 17:37:17,987 - WARNING - Server health check failed for microsoft/phi-4 workload=chat
+2026-07-14 17:37:17,987 - ERROR - vLLM cpu server failed for phi-4 workload=chat. | Try --privileged --shm-size=4g | stderr: (Worker pid=4100) frame #55: Py_RunMain + 0x3d4 (0xc1effd6f0c14 in VLLM::Worker) | stderr: (Worker pid=4100) frame #56: <unknown function> + 0x531198 (0xc1effd6f1198 in VLLM::Worker) | stderr: (Worker pid=4100) frame #57: <unknown function> + 0x418590 (0xc1effd5d8590 in VLLM::Worker) | stderr: (Worker pid=4100) frame #58: <unknown function> + 0x27400 (0xfd0019747400 in /lib/aarch64-linux-gnu/libc.so.6) | stderr: (Worker pid=4100) frame #59: __libc_start_main + 0x98 (0xfd00197474d8 in /lib/aarch64-linux-gnu/libc.so.6) | stderr: (Worker pid=4100) frame #60: <unknown function> + 0x418478 (0xc1effd5d8478 in VLLM::Worker) | stderr: (Worker pid=4100)  (Triggered internally at /pytorch/aten/src/ATen/native/LinearAlgebra.cpp:1531.) | stderr: (Worker pid=4100)   extern_kernels.mm(buf1, reinterpret_tensor(arg4_1, (5120, 7680), (1, 5120), 0), out=buf2)
+2026-07-14 17:37:47,990 - INFO - autoconfig vcpus=20 budget_per_run=240s sweep=5 max_conc=42 max_req=time-only workers=7 max_sec/strategy=48 max_model_len=4096 per_workload_server=True
+2026-07-14 17:37:47,990 - INFO - KV check phi-4 max_model_len=4096: budget~-10.0 GiB need~5.6 GiB (util=0.20)
+2026-07-14 17:37:47,990 - INFO - Skipping phi-4 workload=rag — insufficient KV cache headroom

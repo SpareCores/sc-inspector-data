@@ -1,0 +1,54 @@
+2026-07-08 17:32:59,541 - INFO - CPU model: AMD EPYC 9V45 96-Core Processor
+2026-07-08 17:32:59,541 - INFO - CPU flags: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves user_shstk avx_vnni avx512_bf16 clzero xsaveerptr rdpru arat npt nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm avx512_vp2intersect
+2026-07-08 17:32:59,543 - DEBUG - GPU llama.cpp probe stderr:
+./llama-cli: error while loading shared libraries: libcuda.so.1: cannot open shared object file: No such file or directory
+2026-07-08 17:32:59,543 - INFO - Using CPU-build of llama.cpp
+2026-07-08 17:32:59,563 - INFO - Benchmarking model SmolLM-135M.Q4_K_M.gguf ...
+2026-07-08 17:32:59,906 - DEBUG - Downloading model SmolLM-135M.Q4_K_M.gguf from https://huggingface.co/QuantFactory/SmolLM-135M-GGUF/resolve/b35f229108e4c5a4deeccccf9bf75cd46006fa7b/SmolLM-135M.Q4_K_M.gguf
+2026-07-08 17:33:11,480 - DEBUG - Downloaded model SmolLM-135M.Q4_K_M.gguf (100.57 MB) in 11.57 sec (8.69 MB/s)
+2026-07-08 17:33:11,481 - DEBUG - Model SmolLM-135M.Q4_K_M.gguf found at /models/SmolLM-135M.Q4_K_M.gguf (0.10 GB)
+2026-07-08 17:33:11,482 - DEBUG - Using ngl 0 for model SmolLM-135M.Q4_K_M.gguf
+2026-07-08 17:33:11,482 - DEBUG - Benchmarking prompt processing with 16 tokens for max 41 sec
+2026-07-08 17:33:11,686 - DEBUG - Benchmarking prompt processing with 128 tokens for max 65 sec
+2026-07-08 17:33:11,756 - DEBUG - Downloading model qwen1_5-0_5b-chat-q4_k_m.gguf from https://huggingface.co/Qwen/Qwen1.5-0.5B-Chat-GGUF/resolve/cfab082d2fef4a8736ef384dc764c2fb6887f387/qwen1_5-0_5b-chat-q4_k_m.gguf
+2026-07-08 17:33:12,691 - DEBUG - Benchmarking prompt processing with 512 tokens for max 104 sec
+2026-07-08 17:33:17,510 - DEBUG - Benchmarking prompt processing with 1024 tokens for max 104 sec
+2026-07-08 17:33:23,096 - DEBUG - Downloaded model qwen1_5-0_5b-chat-q4_k_m.gguf (388.29 MB) in 11.34 sec (34.24 MB/s)
+2026-07-08 17:33:23,476 - DEBUG - Downloading model gemma-2b.Q4_K_M.gguf from https://huggingface.co/mlabonne/gemma-2b-GGUF/resolve/8dd617a80664da2853999b6b1206595f1c33daa2/gemma-2b.Q4_K_M.gguf
+2026-07-08 17:33:29,465 - DEBUG - Benchmarking prompt processing with 4096 tokens for max 83 sec
+Process Process-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.10/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/benchmark.py", line 213, in download_models
+    urlretrieve(model_url, temp_path)
+  File "/usr/lib/python3.10/urllib/request.py", line 280, in urlretrieve
+    raise ContentTooShortError(
+urllib.error.ContentTooShortError: <urlopen error retrieval incomplete: got only 693738942 out of 1495094368 bytes>
+2026-07-08 17:34:52,482 - ERROR - Error: Command '['./llama-bench', '-t', '2', '-sm', 'layer', '-fa', '1', '-ub', '512', '-b', '2048', '-o', 'jsonl', '-m', '/models/SmolLM-135M.Q4_K_M.gguf', '-ngl', '0', '-p', '4096', '-n', '0']' timed out after 83 seconds
+2026-07-08 17:34:52,482 - ERROR - llama-bench partial stderr before timeout:
+b'load_backend: loaded CPU backend from ./libggml-cpu-icelake.so'
+2026-07-08 17:34:52,482 - INFO - Skipping prompt processing benchmarks with 4096+ tokens due to time constraints.
+2026-07-08 17:34:52,482 - DEBUG - Benchmarking text generation with 16 tokens for max 81 sec
+2026-07-08 17:34:52,894 - DEBUG - Benchmarking text generation with 128 tokens for max 129 sec
+2026-07-08 17:34:55,712 - DEBUG - Benchmarking text generation with 512 tokens for max 104 sec
+2026-07-08 17:35:07,942 - DEBUG - Benchmarking text generation with 1024 tokens for max 104 sec
+2026-07-08 17:35:34,993 - ERROR - Skipping text generation benchmarks with 1024+ tokens as it's unlikely to hit the expected 250 tokens/sec.
+2026-07-08 17:35:34,993 - INFO - Benchmarking model qwen1_5-0_5b-chat-q4_k_m.gguf ...
+2026-07-08 17:35:34,994 - DEBUG - Model qwen1_5-0_5b-chat-q4_k_m.gguf found at /models/qwen1_5-0_5b-chat-q4_k_m.gguf (0.38 GB)
+2026-07-08 17:35:34,994 - DEBUG - Using ngl 0 for model qwen1_5-0_5b-chat-q4_k_m.gguf
+2026-07-08 17:35:34,994 - DEBUG - Benchmarking prompt processing with 16 tokens for max 43 sec
+2026-07-08 17:35:35,565 - DEBUG - Benchmarking prompt processing with 128 tokens for max 67 sec
+2026-07-08 17:35:38,433 - DEBUG - Benchmarking prompt processing with 512 tokens for max 105 sec
+2026-07-08 17:35:50,485 - DEBUG - Benchmarking prompt processing with 1024 tokens for max 105 sec
+2026-07-08 17:36:17,917 - ERROR - Skipping prompt processing benchmarks with 1024+ tokens as it's unlikely to hit the expected 250 tokens/sec.
+2026-07-08 17:36:17,917 - DEBUG - Benchmarking text generation with 16 tokens for max 83 sec
+2026-07-08 17:36:18,965 - DEBUG - Benchmarking text generation with 128 tokens for max 131 sec
+2026-07-08 17:36:26,033 - DEBUG - Benchmarking text generation with 512 tokens for max 105 sec
+2026-07-08 17:36:55,163 - DEBUG - Benchmarking text generation with 1024 tokens for max 105 sec
+2026-07-08 17:37:56,139 - ERROR - Skipping text generation benchmarks with 1024+ tokens as it's unlikely to hit the expected 250 tokens/sec.
+2026-07-08 17:37:56,139 - INFO - Benchmarking model gemma-2b.Q4_K_M.gguf ...
+2026-07-08 17:37:56,456 - INFO - Waiting for gemma-2b.Q4_K_M.gguf to be downloaded (764.23 MB) ... ETA: 35.60 sec
+2026-07-08 17:52:56,457 - ERROR - gemma-2b.Q4_K_M.gguf was not downloaded in time.

@@ -1,0 +1,96 @@
+2026-06-21 01:01:55,644 - INFO - CPU model: Intel(R) Xeon(R) 6973P-C
+2026-06-21 01:01:55,645 - INFO - CPU flags: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves user_shstk avx_vnni avx512_bf16 vnmi avx512vbmi umip waitpkg avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq la57 rdpid cldemote movdiri movdir64b fsrm serialize tsxldtrk ibt amx_bf16 avx512_fp16 amx_tile amx_int8 arch_capabilities
+2026-06-21 01:01:55,646 - DEBUG - GPU llama.cpp probe stderr:
+./llama-cli: error while loading shared libraries: libcuda.so.1: cannot open shared object file: No such file or directory
+2026-06-21 01:01:55,646 - INFO - Using CPU-build of llama.cpp
+2026-06-21 01:01:55,675 - INFO - Benchmarking model SmolLM-135M.Q4_K_M.gguf ...
+warn: sentinel start_run failed: start_run POST failed: io: Connection reset by peer (os error 104); streaming disabled
+2026-06-21 01:01:55,869 - DEBUG - Downloading model SmolLM-135M.Q4_K_M.gguf from https://huggingface.co/QuantFactory/SmolLM-135M-GGUF/resolve/b35f229108e4c5a4deeccccf9bf75cd46006fa7b/SmolLM-135M.Q4_K_M.gguf
+2026-06-21 01:01:56,392 - DEBUG - Downloaded model SmolLM-135M.Q4_K_M.gguf (100.57 MB) in 0.52 sec (192.78 MB/s)
+2026-06-21 01:01:56,395 - DEBUG - Model SmolLM-135M.Q4_K_M.gguf found at /models/SmolLM-135M.Q4_K_M.gguf (0.10 GB)
+2026-06-21 01:01:56,395 - DEBUG - Using ngl 0 for model SmolLM-135M.Q4_K_M.gguf
+2026-06-21 01:01:56,395 - DEBUG - Benchmarking prompt processing with 16 tokens for max 41 sec
+2026-06-21 01:01:56,573 - DEBUG - Downloading model qwen1_5-0_5b-chat-q4_k_m.gguf from https://huggingface.co/Qwen/Qwen1.5-0.5B-Chat-GGUF/resolve/cfab082d2fef4a8736ef384dc764c2fb6887f387/qwen1_5-0_5b-chat-q4_k_m.gguf
+2026-06-21 01:01:56,601 - DEBUG - Benchmarking prompt processing with 128 tokens for max 65 sec
+2026-06-21 01:01:56,929 - DEBUG - Benchmarking prompt processing with 512 tokens for max 104 sec
+2026-06-21 01:01:58,035 - DEBUG - Benchmarking prompt processing with 1024 tokens for max 104 sec
+2026-06-21 01:02:00,680 - DEBUG - Benchmarking prompt processing with 4096 tokens for max 83 sec
+2026-06-21 01:02:11,936 - DEBUG - Downloaded model qwen1_5-0_5b-chat-q4_k_m.gguf (388.29 MB) in 15.36 sec (25.28 MB/s)
+2026-06-21 01:02:12,138 - DEBUG - Downloading model gemma-2b.Q4_K_M.gguf from https://huggingface.co/mlabonne/gemma-2b-GGUF/resolve/8dd617a80664da2853999b6b1206595f1c33daa2/gemma-2b.Q4_K_M.gguf
+Process Process-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/urllib/request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "/usr/lib/python3.10/http/client.py", line 1283, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.10/http/client.py", line 1329, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.10/http/client.py", line 1278, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.10/http/client.py", line 1038, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.10/http/client.py", line 976, in send
+    self.connect()
+  File "/usr/lib/python3.10/http/client.py", line 1455, in connect
+    self.sock = self._context.wrap_socket(self.sock,
+  File "/usr/lib/python3.10/ssl.py", line 513, in wrap_socket
+    return self.sslsocket_class._create(
+  File "/usr/lib/python3.10/ssl.py", line 1100, in _create
+    self.do_handshake()
+  File "/usr/lib/python3.10/ssl.py", line 1371, in do_handshake
+    self._sslobj.do_handshake()
+ConnectionResetError: [Errno 104] Connection reset by peer
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.10/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/benchmark.py", line 213, in download_models
+    urlretrieve(model_url, temp_path)
+  File "/usr/lib/python3.10/urllib/request.py", line 241, in urlretrieve
+    with contextlib.closing(urlopen(url, data)) as fp:
+  File "/usr/lib/python3.10/urllib/request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.10/urllib/request.py", line 519, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.10/urllib/request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "/usr/lib/python3.10/urllib/request.py", line 496, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.10/urllib/request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "/usr/lib/python3.10/urllib/request.py", line 1351, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno 104] Connection reset by peer>
+2026-06-21 01:02:18,950 - DEBUG - Benchmarking prompt processing with 16384 tokens for max 83 sec
+2026-06-21 01:03:42,039 - ERROR - Error: Command '['./llama-bench', '-t', '24', '-sm', 'layer', '-fa', '1', '-ub', '512', '-b', '2048', '-o', 'jsonl', '-m', '/models/SmolLM-135M.Q4_K_M.gguf', '-ngl', '0', '-p', '16384', '-n', '0']' timed out after 83 seconds
+2026-06-21 01:03:42,039 - ERROR - llama-bench partial stderr before timeout:
+b'load_backend: loaded CPU backend from ./libggml-cpu-sapphirerapids.so'
+2026-06-21 01:03:42,039 - DEBUG - Benchmarking text generation with 16 tokens for max 81 sec
+2026-06-21 01:03:42,366 - DEBUG - Benchmarking text generation with 128 tokens for max 129 sec
+2026-06-21 01:03:44,359 - DEBUG - Benchmarking text generation with 512 tokens for max 104 sec
+2026-06-21 01:03:52,383 - DEBUG - Benchmarking text generation with 1024 tokens for max 104 sec
+2026-06-21 01:04:09,425 - DEBUG - Benchmarking text generation with 4096 tokens for max 83 sec
+2026-06-21 01:05:32,512 - ERROR - Error: Command '['./llama-bench', '-t', '24', '-sm', 'layer', '-fa', '1', '-ub', '512', '-b', '2048', '-o', 'jsonl', '-m', '/models/SmolLM-135M.Q4_K_M.gguf', '-ngl', '0', '-n', '4096', '-p', '0']' timed out after 83 seconds
+2026-06-21 01:05:32,513 - ERROR - llama-bench partial stderr before timeout:
+b'load_backend: loaded CPU backend from ./libggml-cpu-sapphirerapids.so'
+2026-06-21 01:05:32,513 - INFO - Benchmarking model qwen1_5-0_5b-chat-q4_k_m.gguf ...
+2026-06-21 01:05:32,515 - DEBUG - Model qwen1_5-0_5b-chat-q4_k_m.gguf found at /models/qwen1_5-0_5b-chat-q4_k_m.gguf (0.38 GB)
+2026-06-21 01:05:32,515 - DEBUG - Using ngl 0 for model qwen1_5-0_5b-chat-q4_k_m.gguf
+2026-06-21 01:05:32,515 - DEBUG - Benchmarking prompt processing with 16 tokens for max 43 sec
+2026-06-21 01:05:32,896 - DEBUG - Benchmarking prompt processing with 128 tokens for max 67 sec
+2026-06-21 01:05:33,613 - DEBUG - Benchmarking prompt processing with 512 tokens for max 105 sec
+2026-06-21 01:05:35,676 - DEBUG - Benchmarking prompt processing with 1024 tokens for max 105 sec
+2026-06-21 01:05:40,226 - DEBUG - Benchmarking prompt processing with 4096 tokens for max 84 sec
+2026-06-21 01:06:14,265 - ERROR - Skipping prompt processing benchmarks with 4096+ tokens as it's unlikely to hit the expected 1000 tokens/sec.
+2026-06-21 01:06:14,265 - DEBUG - Benchmarking text generation with 16 tokens for max 83 sec
+2026-06-21 01:06:14,945 - DEBUG - Benchmarking text generation with 128 tokens for max 131 sec
+2026-06-21 01:06:18,312 - DEBUG - Benchmarking text generation with 512 tokens for max 105 sec
+2026-06-21 01:06:32,109 - DEBUG - Benchmarking text generation with 1024 tokens for max 105 sec
+2026-06-21 01:07:01,871 - ERROR - Skipping text generation benchmarks with 1024+ tokens as it's unlikely to hit the expected 250 tokens/sec.
+2026-06-21 01:07:01,871 - INFO - Benchmarking model gemma-2b.Q4_K_M.gguf ...
+2026-06-21 01:07:02,081 - INFO - Waiting for gemma-2b.Q4_K_M.gguf to be downloaded (1425.83 MB) ... ETA: 13.08 sec
+2026-06-21 01:22:02,083 - ERROR - gemma-2b.Q4_K_M.gguf was not downloaded in time.

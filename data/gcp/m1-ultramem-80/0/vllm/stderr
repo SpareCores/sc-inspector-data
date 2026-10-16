@@ -1,0 +1,315 @@
+2026-07-08 20:23:41,849 - INFO - arch=amd64
+2026-07-08 20:23:41,849 - INFO - cpu_model=Intel(R) Xeon(R) CPU @ 2.20GHz
+2026-07-08 20:23:41,849 - INFO - cpu_flag_avx2=yes
+2026-07-08 20:23:41,850 - INFO - ram_total_gb=2031.33 ram_available_gb=2017.15
+2026-07-08 20:23:41,850 - INFO - mode=cpu arch=amd64 vllm=0.22.1 guidellm=0.6.0
+2026-07-08 20:23:41,850 - INFO - memory check smol-135m: need~0.3 GiB have~1714.6 GiB
+2026-07-08 20:23:41,850 - INFO - memory check qwen-0.5b: need~1.2 GiB have~1714.6 GiB
+2026-07-08 20:23:41,851 - INFO - memory check gemma-2b: need~4.8 GiB have~1714.6 GiB
+2026-07-08 20:23:41,851 - INFO - memory check llama-8b: need~19.2 GiB have~1714.6 GiB
+2026-07-08 20:23:41,851 - INFO - memory check phi-4: need~33.6 GiB have~1714.6 GiB
+2026-07-08 20:23:41,851 - INFO - benchmark budget overall=7200s reserve=1800s runs=10 per_run=240s
+2026-07-08 20:23:41,851 - INFO - memory check smol-135m: need~0.3 GiB have~1714.6 GiB
+2026-07-08 20:23:41,851 - INFO - memory check smol-135m: need~0.3 GiB have~1714.6 GiB
+2026-07-08 20:23:41,851 - INFO - memory check qwen-0.5b: need~1.2 GiB have~1714.6 GiB
+2026-07-08 20:23:41,852 - INFO - memory check gemma-2b: need~4.8 GiB have~1714.6 GiB
+2026-07-08 20:23:41,852 - INFO - memory check llama-8b: need~19.2 GiB have~1714.6 GiB
+2026-07-08 20:23:41,852 - INFO - memory check phi-4: need~33.6 GiB have~1714.6 GiB
+2026-07-08 20:23:46,500 - INFO - autoconfig vcpus=80 budget_per_run=240s sweep=6 max_conc=103 max_req=time-only workers=14 max_sec/strategy=40 max_model_len=2048 per_workload_server=True
+2026-07-08 20:23:46,500 - INFO - Starting server: vllm serve HuggingFaceTB/SmolLM2-135M-Instruct --port 8000 --max-model-len 2048 --dtype float16 --gpu-memory-utilization 0.50 --max-num-seqs 44 --max-num-batched-tokens 2048
+2026-07-08 20:30:28,654 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model HuggingFaceTB/SmolLM2-135M-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=256,output_tokens=128 --profile sweep --random-seed 42 --max-seconds 40 --warmup 10 --output-dir /tmp/guidellm-sxqwzsfq --outputs json --disable-console --sample-requests 10 --rate 6 --rampup 20.0
+2026-07-08 20:34:59,061 - WARNING - GuideLLM failed profile=sweep workload=chat: Traceback (most recent call last):
+  File "/opt/venv/bin/guidellm", line 6, in <module>
+    sys.exit(cli())
+             ^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/__main__.py", line 476, in run
+    asyncio.run(
+  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/entrypoints.py", line 554, in benchmark_generative_text
+    async for benchmark in benchmarker.run(
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/benchmarker.py", line 172, in run
+    strategy, constraints = strategies_generator.send(benchmark)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/profiles.py", line 182, in strategies_generator
+    strategy := self.next_strategy(prev_strategy, prev_benchmark)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/profiles.py", line 684, in next_strategy
+    raise RuntimeError(
+RuntimeError: Invalid rates in sweep; aborting. Were there any successful requests?
+
+2026-07-08 20:34:59,828 - INFO - autoconfig vcpus=80 budget_per_run=240s sweep=5 max_conc=103 max_req=time-only workers=14 max_sec/strategy=48 max_model_len=4096 per_workload_server=True
+2026-07-08 20:34:59,828 - INFO - Starting server: vllm serve HuggingFaceTB/SmolLM2-135M-Instruct --port 8000 --max-model-len 4096 --dtype float16 --gpu-memory-utilization 0.30 --max-num-seqs 22 --max-num-batched-tokens 2048
+2026-07-08 20:39:35,934 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model HuggingFaceTB/SmolLM2-135M-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=1024,output_tokens=256 --profile sweep --random-seed 42 --max-seconds 48 --warmup 10 --output-dir /tmp/guidellm-pmn4xffp --outputs json --disable-console --sample-requests 10 --rate 5 --rampup 20.0
+2026-07-08 20:43:33,755 - WARNING - GuideLLM failed profile=sweep workload=rag: Traceback (most recent call last):
+  File "/opt/venv/bin/guidellm", line 6, in <module>
+    sys.exit(cli())
+             ^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/__main__.py", line 476, in run
+    asyncio.run(
+  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/entrypoints.py", line 554, in benchmark_generative_text
+    async for benchmark in benchmarker.run(
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/benchmarker.py", line 172, in run
+    strategy, constraints = strategies_generator.send(benchmark)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/profiles.py", line 182, in strategies_generator
+    strategy := self.next_strategy(prev_strategy, prev_benchmark)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/profiles.py", line 684, in next_strategy
+    raise RuntimeError(
+RuntimeError: Invalid rates in sweep; aborting. Were there any successful requests?
+
+2026-07-08 20:43:34,521 - INFO - memory check qwen-0.5b: need~1.2 GiB have~1455.3 GiB
+2026-07-08 20:43:34,522 - INFO - autoconfig vcpus=80 budget_per_run=240s sweep=6 max_conc=103 max_req=time-only workers=14 max_sec/strategy=40 max_model_len=2048 per_workload_server=True
+2026-07-08 20:43:34,523 - INFO - Starting server: vllm serve Qwen/Qwen2.5-0.5B-Instruct --port 8000 --max-model-len 2048 --dtype float16 --gpu-memory-utilization 0.50 --max-num-seqs 44 --max-num-batched-tokens 2048
+2026-07-08 20:49:22,653 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model Qwen/Qwen2.5-0.5B-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=256,output_tokens=128 --profile sweep --random-seed 42 --max-seconds 40 --warmup 10 --output-dir /tmp/guidellm-3aii1re3 --outputs json --disable-console --sample-requests 10 --rate 6 --rampup 20.0
+2026-07-08 20:52:38,096 - WARNING - GuideLLM failed profile=sweep workload=chat: Traceback (most recent call last):
+  File "/opt/venv/bin/guidellm", line 6, in <module>
+    sys.exit(cli())
+             ^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/__main__.py", line 476, in run
+    asyncio.run(
+  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/entrypoints.py", line 554, in benchmark_generative_text
+    async for benchmark in benchmarker.run(
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/benchmarker.py", line 172, in run
+    strategy, constraints = strategies_generator.send(benchmark)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/profiles.py", line 182, in strategies_generator
+    strategy := self.next_strategy(prev_strategy, prev_benchmark)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/profiles.py", line 684, in next_strategy
+    raise RuntimeError(
+RuntimeError: Invalid rates in sweep; aborting. Were there any successful requests?
+
+2026-07-08 20:52:38,963 - INFO - autoconfig vcpus=80 budget_per_run=240s sweep=5 max_conc=103 max_req=time-only workers=14 max_sec/strategy=48 max_model_len=4096 per_workload_server=True
+2026-07-08 20:52:38,963 - INFO - Starting server: vllm serve Qwen/Qwen2.5-0.5B-Instruct --port 8000 --max-model-len 4096 --dtype float16 --gpu-memory-utilization 0.30 --max-num-seqs 22 --max-num-batched-tokens 2048
+2026-07-08 20:56:47,059 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model Qwen/Qwen2.5-0.5B-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=1024,output_tokens=256 --profile sweep --random-seed 42 --max-seconds 48 --warmup 10 --output-dir /tmp/guidellm-hwg6bufx --outputs json --disable-console --sample-requests 10 --rate 5 --rampup 20.0
+2026-07-08 21:05:05,141 - WARNING - GuideLLM timed out profile=sweep workload=rag after 498s
+2026-07-08 21:05:06,007 - INFO - memory check gemma-2b: need~4.8 GiB have~1457.8 GiB
+2026-07-08 21:05:06,008 - INFO - autoconfig vcpus=80 budget_per_run=240s sweep=6 max_conc=103 max_req=time-only workers=14 max_sec/strategy=40 max_model_len=2048 per_workload_server=True
+2026-07-08 21:05:06,009 - INFO - Starting server: vllm serve google/gemma-2-2b-it --port 8000 --max-model-len 2048 --dtype bfloat16 --gpu-memory-utilization 0.50 --max-num-seqs 44 --max-num-batched-tokens 2048
+2026-07-08 21:12:24,169 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model google/gemma-2-2b-it --backend openai_http --request-format /v1/completions --data prompt_tokens=256,output_tokens=128 --profile sweep --random-seed 42 --max-seconds 40 --warmup 10 --output-dir /tmp/guidellm-zz0x67o5 --outputs json --disable-console --sample-requests 10 --rate 6 --rampup 20.0
+2026-07-08 21:16:05,677 - WARNING - GuideLLM failed profile=sweep workload=chat: Traceback (most recent call last):
+  File "/opt/venv/bin/guidellm", line 6, in <module>
+    sys.exit(cli())
+             ^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/__main__.py", line 476, in run
+    asyncio.run(
+  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/entrypoints.py", line 554, in benchmark_generative_text
+    async for benchmark in benchmarker.run(
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/benchmarker.py", line 172, in run
+    strategy, constraints = strategies_generator.send(benchmark)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/profiles.py", line 182, in strategies_generator
+    strategy := self.next_strategy(prev_strategy, prev_benchmark)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/profiles.py", line 684, in next_strategy
+    raise RuntimeError(
+RuntimeError: Invalid rates in sweep; aborting. Were there any successful requests?
+
+2026-07-08 21:16:06,695 - INFO - autoconfig vcpus=80 budget_per_run=240s sweep=5 max_conc=103 max_req=time-only workers=14 max_sec/strategy=48 max_model_len=4096 per_workload_server=True
+2026-07-08 21:16:06,696 - INFO - Starting server: vllm serve google/gemma-2-2b-it --port 8000 --max-model-len 4096 --dtype bfloat16 --gpu-memory-utilization 0.30 --max-num-seqs 22 --max-num-batched-tokens 2048
+2026-07-08 21:20:28,799 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model google/gemma-2-2b-it --backend openai_http --request-format /v1/completions --data prompt_tokens=1024,output_tokens=256 --profile sweep --random-seed 42 --max-seconds 48 --warmup 10 --output-dir /tmp/guidellm-h1jfngun --outputs json --disable-console --sample-requests 10 --rate 5 --rampup 20.0
+2026-07-08 21:24:36,943 - WARNING - GuideLLM failed profile=sweep workload=rag: Traceback (most recent call last):
+  File "/opt/venv/bin/guidellm", line 6, in <module>
+    sys.exit(cli())
+             ^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/__main__.py", line 476, in run
+    asyncio.run(
+  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/entrypoints.py", line 554, in benchmark_generative_text
+    async for benchmark in benchmarker.run(
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/benchmarker.py", line 172, in run
+    strategy, constraints = strategies_generator.send(benchmark)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/profiles.py", line 182, in strategies_generator
+    strategy := self.next_strategy(prev_strategy, prev_benchmark)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/profiles.py", line 684, in next_strategy
+    raise RuntimeError(
+RuntimeError: Invalid rates in sweep; aborting. Were there any successful requests?
+
+2026-07-08 21:24:37,962 - INFO - memory check llama-8b: need~19.2 GiB have~1454.6 GiB
+2026-07-08 21:24:37,963 - INFO - autoconfig vcpus=80 budget_per_run=240s sweep=6 max_conc=103 max_req=time-only workers=14 max_sec/strategy=40 max_model_len=2048 per_workload_server=True
+2026-07-08 21:24:37,963 - INFO - Starting server: vllm serve meta-llama/Llama-3.1-8B-Instruct --port 8000 --max-model-len 2048 --dtype float16 --gpu-memory-utilization 0.50 --max-num-seqs 44 --max-num-batched-tokens 2048
+2026-07-08 21:34:38,174 - WARNING - Server health check failed for meta-llama/Llama-3.1-8B-Instruct workload=chat
+2026-07-08 21:34:38,175 - ERROR - vLLM cpu server failed for llama-8b workload=chat. | Try --privileged --shm-size=4g | BENCHMARK_VLLM_ALLOW_AVX2_ONLY on AVX2-only amd64 | stderr: Loading safetensors checkpoint shards:  50% Completed | 2/4 [00:01<00:01,  1.67it/s] | stderr: (Worker pid=7970) | stderr: Loading safetensors checkpoint shards:  75% Completed | 3/4 [00:01<00:00,  1.61it/s] | stderr: (Worker pid=7970) | stderr: Loading safetensors checkpoint shards: 100% Completed | 4/4 [00:02<00:00,  1.48it/s] | stderr: (Worker pid=7970) | stderr: Loading safetensors checkpoint shards: 100% Completed | 4/4 [00:02<00:00,  1.54it/s] | stderr: (Worker pid=7970)
+2026-07-08 21:35:08,182 - INFO - autoconfig vcpus=80 budget_per_run=240s sweep=5 max_conc=103 max_req=time-only workers=14 max_sec/strategy=48 max_model_len=4096 per_workload_server=True
+2026-07-08 21:35:08,184 - INFO - Starting server: vllm serve meta-llama/Llama-3.1-8B-Instruct --port 8000 --max-model-len 4096 --dtype float16 --gpu-memory-utilization 0.39 --max-num-seqs 22 --max-num-batched-tokens 2048
+2026-07-08 21:44:58,413 - INFO - GuideLLM: guidellm benchmark run --target http://127.0.0.1:8000 --model meta-llama/Llama-3.1-8B-Instruct --backend openai_http --request-format /v1/completions --data prompt_tokens=1024,output_tokens=256 --profile sweep --random-seed 42 --max-seconds 48 --warmup 10 --output-dir /tmp/guidellm-s3x6mfbp --outputs json --disable-console --sample-requests 10 --rate 5 --rampup 20.0
+2026-07-08 21:50:20,297 - WARNING - GuideLLM failed profile=sweep workload=rag: ay.
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+Traceback (most recent call last):
+  File "/opt/venv/bin/guidellm", line 6, in <module>
+    sys.exit(cli())
+             ^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1902, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/__main__.py", line 476, in run
+    asyncio.run(
+  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/entrypoints.py", line 554, in benchmark_generative_text
+    async for benchmark in benchmarker.run(
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/benchmarker.py", line 172, in run
+    strategy, constraints = strategies_generator.send(benchmark)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/profiles.py", line 182, in strategies_generator
+    strategy := self.next_strategy(prev_strategy, prev_benchmark)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/guidellm/benchmark/profiles.py", line 684, in next_strategy
+    raise RuntimeError(
+RuntimeError: Invalid rates in sweep; aborting. Were there any successful requests?
+
+2026-07-08 21:50:21,114 - INFO - memory check phi-4: need~33.6 GiB have~1376.6 GiB
+2026-07-08 21:50:21,115 - INFO - autoconfig vcpus=80 budget_per_run=240s sweep=6 max_conc=103 max_req=time-only workers=14 max_sec/strategy=40 max_model_len=2048 per_workload_server=True
+2026-07-08 21:50:21,116 - INFO - Starting server: vllm serve microsoft/phi-4 --port 8000 --max-model-len 2048 --dtype float16 --gpu-memory-utilization 0.50 --max-num-seqs 44 --max-num-batched-tokens 2048
+2026-07-08 22:00:21,325 - WARNING - Server health check failed for microsoft/phi-4 workload=chat
+2026-07-08 22:00:21,325 - ERROR - vLLM cpu server failed for phi-4 workload=chat. | Try --privileged --shm-size=4g | BENCHMARK_VLLM_ALLOW_AVX2_ONLY on AVX2-only amd64 | stderr: Loading safetensors checkpoint shards:  67% Completed | 4/6 [00:03<00:01,  1.00it/s] | stderr: (Worker pid=9978) | stderr: Loading safetensors checkpoint shards:  83% Completed | 5/6 [00:04<00:01,  1.05s/it] | stderr: (Worker pid=9978) | stderr: Loading safetensors checkpoint shards: 100% Completed | 6/6 [00:06<00:00,  1.13s/it] | stderr: (Worker pid=9978) | stderr: Loading safetensors checkpoint shards: 100% Completed | 6/6 [00:06<00:00,  1.03s/it] | stderr: (Worker pid=9978)
+2026-07-08 22:00:51,332 - INFO - autoconfig vcpus=80 budget_per_run=240s sweep=5 max_conc=103 max_req=time-only workers=14 max_sec/strategy=48 max_model_len=4096 per_workload_server=True
+2026-07-08 22:00:51,332 - INFO - Starting server: vllm serve microsoft/phi-4 --port 8000 --max-model-len 4096 --dtype float16 --gpu-memory-utilization 0.39 --max-num-seqs 22 --max-num-batched-tokens 2048
+2026-07-08 22:10:51,544 - WARNING - Server health check failed for microsoft/phi-4 workload=rag
+2026-07-08 22:10:51,545 - ERROR - vLLM cpu server failed for phi-4 workload=rag. | Try --privileged --shm-size=4g | BENCHMARK_VLLM_ALLOW_AVX2_ONLY on AVX2-only amd64 | stderr: Loading safetensors checkpoint shards:  67% Completed | 4/6 [00:02<00:01,  1.33it/s] | stderr: (Worker pid=10711) | stderr: Loading safetensors checkpoint shards:  83% Completed | 5/6 [00:03<00:00,  1.09it/s] | stderr: (Worker pid=10711) | stderr: Loading safetensors checkpoint shards: 100% Completed | 6/6 [00:05<00:00,  1.25s/it] | stderr: (Worker pid=10711) | stderr: Loading safetensors checkpoint shards: 100% Completed | 6/6 [00:05<00:00,  1.02it/s] | stderr: (Worker pid=10711)
