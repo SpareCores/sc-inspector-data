@@ -13,6 +13,7 @@ on:
           - all
           - aws
           - gcp
+          - azure
           - ovh
           - upcloud
           - vultr
@@ -40,10 +41,11 @@ jobs:
           # Vendor matrix (keep in sync with workflow_dispatch options except "all"):
           #   aws,
           #   gcp,     # ran out of credits at Aug 3, 2026 → skiplist
+          #   azure,
           #   ovh,
           #   upcloud,
           #   vultr
-          all_vendors='["aws","gcp","ovh","upcloud","vultr"]'
+          all_vendors='["aws","gcp","azure","ovh","upcloud","vultr"]'
           # Skiplist for schedule and manual "all". A manual run for a specific vendor ignores this.
           skiplist='["aws","gcp","vultr"]'
           if [ -n "${{ inputs.instance }}" ]; then
@@ -93,6 +95,10 @@ jobs:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
         GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
         OVH_CLOUD_PROJECT_SERVICE: ${{ secrets.OVH_CLOUD_PROJECT_SERVICE }}
         OVH_CLIENT_ID: ${{ secrets.OVH_CLIENT_ID }}
         OVH_CLIENT_SECRET: ${{ secrets.OVH_CLIENT_SECRET }}
