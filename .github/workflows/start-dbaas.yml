@@ -22,6 +22,11 @@ on:
         required: false
         type: string
         default: ""
+      force:
+        description: Bypass keeper eligibility (requires instance)
+        required: false
+        type: boolean
+        default: false
       limit:
         description: Max DBaaS stacks to start this round (ignored when instance is set)
         required: false
@@ -48,6 +53,10 @@ jobs:
           all_vendors='["aws","gcp","azure","ovh","upcloud","vultr"]'
           # Skiplist for schedule and manual "all". A manual run for a specific vendor ignores this.
           skiplist='["aws","gcp","vultr"]'
+          if [ "${{ inputs.force }}" = "true" ] && [ -z "${{ inputs.instance }}" ]; then
+            echo "::error::force requires instance" >&2
+            exit 1
+          fi
           if [ -n "${{ inputs.instance }}" ]; then
             if [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
               echo "::error::instance input is only valid for workflow_dispatch" >&2
@@ -139,6 +148,7 @@ jobs:
         env:
           START_VENDOR: ${{ matrix.vendor }}
           START_INSTANCE: ${{ inputs.instance || '' }}
+          START_FORCE: ${{ inputs.force || false }}
           START_LIMIT: ${{ inputs.limit || '4' }}
         run: |
           set -euo pipefail
@@ -152,6 +162,9 @@ jobs:
           args=(start-dbaas --vendor "$vendor")
           if [ -n "$instance" ]; then
             args+=(--instance-key "$instance")
+            if [ "${START_FORCE}" = "true" ]; then
+              args+=(--force)
+            fi
           else
             args+=(--limit "$limit")
           fi
