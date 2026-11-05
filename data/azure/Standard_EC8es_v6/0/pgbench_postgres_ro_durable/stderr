@@ -1,0 +1,72 @@
+Traceback (most recent call last):
+  File "/benchmark/benchmark.py", line 1135, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "/benchmark/benchmark.py", line 1043, in main
+    size_result, warmup_done = run_size(
+                               ~~~~~~~~^
+        workload=workload,
+        ^^^^^^^^^^^^^^^^^^
+    ...<17 lines>...
+        search=search,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+  File "/benchmark/benchmark.py", line 869, in run_size
+    pgbench_run(
+    ~~~~~~~~~~~^
+        host=host,
+        ^^^^^^^^^^
+    ...<10 lines>...
+        cpu_scale=cpu_scale,
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/benchmark/benchmark.py", line 636, in pgbench_run
+    out = run(args, timeout=seconds + 600, env=pg_env(password))
+  File "/benchmark/benchmark.py", line 130, in run
+    raise RuntimeError(f"command failed ({proc.returncode}): {' '.join(cmd)}\n{out[-4000:]}")
+RuntimeError: command failed (2): pgbench -h 127.0.0.1 -p 5432 -U postgres -c 8 -j 8 -T 60 -M prepared -n -D scale=1 -f /benchmark/ro_cpu_txn.sql pgbench
+pgbench (18.6 (Debian 18.6-1.pgdg13+2))
+transaction type: /benchmark/ro_cpu_txn.sql
+scaling factor: 1
+query mode: prepared
+number of clients: 8
+number of threads: 8
+maximum number of tries: 1
+duration: 60 s
+number of transactions actually processed: 0
+pgbench: error: ERROR:  relation "ro_cpu_order" does not exist
+LINE 29:         FROM ro_cpu_order o
+                      ^
+pgbench: error: ERROR:  relation "ro_cpu_order" does not exist
+LINE 29:         FROM ro_cpu_order o
+                      ^
+pgbench:pgbench:pgbench:  error: ERROR:  relation "ro_cpu_order" does not exist
+LINE 29:         FROM ro_cpu_order o
+                      ^
+pgbench:  error: ERROR:  relation "ro_cpu_order" does not exist
+LINE 29:         FROM ro_cpu_order o
+                      ^
+error: ERROR:  relation "ro_cpu_order" does not exist
+LINE 29:         FROM ro_cpu_order o
+                      ^
+error: ERROR:  relation "ro_cpu_order" does not exist
+LINE 29:         FROM ro_cpu_order o
+                      ^
+pgbench: error: client 2 script 0 aborted in command 20 query 0: ERROR:  prepared statement "P_0" does not exist
+pgbench: error: ERROR:  relation "ro_cpu_order" does not exist
+LINE 29:         FROM ro_cpu_order o
+                      ^
+pgbench:pgbench:pgbench: error: client 1 script 0 aborted in command 20 query 0: ERROR:  prepared statement "P_0" does not exist
+  error: error: client 7 script 0 aborted in command 20 query 0: ERROR:  prepared statement "P_0" does not exist
+client 0 script 0 aborted in command 20 query 0: ERROR:  prepared statement "P_0" does not exist
+pgbench:pgbench: error: pgbench: error: ERROR:  relation "ro_cpu_order" does not exist
+LINE 29:         FROM ro_cpu_order o
+                      ^
+pgbench: error: client 4 script 0 aborted in command 20 query 0: ERROR:  prepared statement "P_0" does not exist
+client 3 script 0 aborted in command 20 query 0: ERROR:  prepared statement "P_0" does not exist
+ error: client 6 script 0 aborted in command 20 query 0: ERROR:  prepared statement "P_0" does not exist
+pgbench: error: client 5 script 0 aborted in command 20 query 0: ERROR:  prepared statement "P_0" does not exist
+pgbench: error: Run was aborted; the above results are incomplete.
+
