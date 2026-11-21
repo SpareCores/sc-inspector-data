@@ -1,0 +1,1075 @@
+{
+  "schema_version": 1,
+  "fio_version": "fio-3.43",
+  "lsblk_version": "2.39.3",
+  "smartctl_version": "smartctl 7.4 2023-08-01 r5530 [x86_64-linux-6.12.114-flatcar] (local build)",
+  "nvme_cli_version": "nvme version 2.8 (git 2.8)",
+  "started_at": "2026-11-21T19:55:12+00:00",
+  "host": {
+    "kernel": "6.12.114-flatcar",
+    "arch": "x86_64",
+    "nproc": 2,
+    "mem_bytes": 8313401344
+  },
+  "config": {
+    "ioengine": "libaio",
+    "ramp_time_s": 2,
+    "runtime_s": 10,
+    "write_runtime_s": 30,
+    "fill_cap_s": 300,
+    "fill_budget_s": 300,
+    "ws_target_bytes": 0,
+    "rand_precondition_s": 120,
+    "purge": true,
+    "budget_s": 2400,
+    "log_avg_msec": 500,
+    "inflight_cap_bytes": 268435456,
+    "percentiles": [
+      1,
+      5,
+      10,
+      25,
+      50,
+      75,
+      90,
+      95,
+      99,
+      99.9,
+      99.99
+    ],
+    "estimated_s": 140
+  },
+  "inventory": {
+    "sda": {
+      "path": "/dev/sda",
+      "model": "PersistentDisk",
+      "vendor": "Google",
+      "serial": null,
+      "rev": "1",
+      "size": 137438953472,
+      "subsystems": "block:scsi:virtio:pci",
+      "tran": null,
+      "rota": false,
+      "ro": false,
+      "log_sec": 512,
+      "phy_sec": 4096,
+      "min_io": 4096,
+      "opt_io": 0,
+      "mq": 1,
+      "rq_size": 256,
+      "sched": "mq-deadline",
+      "disc_max": 4294966784,
+      "write_cache": "write back",
+      "max_sectors_kb": 256,
+      "mountpoints": [
+        "/"
+      ],
+      "swap": false,
+      "holders": [
+        "dm-0"
+      ],
+      "mode": "read_only",
+      "mode_reason": "has holders: dm-0",
+      "unmounted": [],
+      "group": "g0"
+    }
+  },
+  "excluded": {
+    "loop0": {
+      "reason": "type=loop"
+    },
+    "loop1": {
+      "reason": "type=loop"
+    },
+    "loop2": {
+      "reason": "type=loop"
+    },
+    "loop3": {
+      "reason": "type=loop"
+    },
+    "loop4": {
+      "reason": "type=loop"
+    },
+    "loop5": {
+      "reason": "type=loop"
+    },
+    "loop6": {
+      "reason": "type=loop"
+    }
+  },
+  "groups": {
+    "g0": {
+      "key": {
+        "model": "PersistentDisk",
+        "size": 137438953472,
+        "subsystems": "block:scsi:virtio:pci"
+      },
+      "members": [
+        "sda"
+      ],
+      "representative": "sda",
+      "mode": "read_only"
+    }
+  },
+  "benchmarks": [
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "sda"
+      ],
+      "test": "randread_4k_qd1",
+      "rw": "randread",
+      "bs": 4096,
+      "rwmixread": null,
+      "numjobs": 1,
+      "iodepth": 1,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "sda": 137438953472
+      },
+      "error": null,
+      "elapsed_s": 13.4,
+      "read": {
+        "iops": 3477.952205,
+        "bw_bytes": 14245692,
+        "io_bytes": 142471168,
+        "total_ios": 34783,
+        "runtime_ms": 10001,
+        "iops_interval": {
+          "min": 3248.0,
+          "p5": 3354.0,
+          "p50": 3486.0,
+          "p95": 3633.0,
+          "max": 3641.0,
+          "mean": 3480.2,
+          "tail_mean": 3505.4,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 13303808.0,
+          "p5": 13737984.0,
+          "p50": 14278656.0,
+          "p95": 14881792.0,
+          "max": 14914560.0,
+          "mean": 14255411.2,
+          "tail_mean": 14358323.2,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 48159,
+          "max": 15565811,
+          "mean": 286103.333611,
+          "stddev": 190251.53533699998,
+          "samples": 34783,
+          "percentiles": {
+            "1": 65280,
+            "5": 79360,
+            "10": 87552,
+            "25": 115200,
+            "50": 329728,
+            "75": 382976,
+            "90": 436224,
+            "95": 477184,
+            "99": 618496,
+            "99.9": 1712128,
+            "99.99": 2310144
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 0.98,
+        "sys": 5.01
+      },
+      "disk_util": {
+        "sda": {
+          "util": 92.905562,
+          "read_ios": 43826,
+          "write_ios": 12,
+          "in_queue": 12153
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "sda"
+      ],
+      "test": "randread_512_qd256",
+      "rw": "randread",
+      "bs": 512,
+      "rwmixread": null,
+      "numjobs": 2,
+      "iodepth": 128,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "sda": 137438953472
+      },
+      "error": null,
+      "elapsed_s": 13.4,
+      "read": {
+        "iops": 3730.4464310000003,
+        "bw_bytes": 1922904,
+        "io_bytes": 19360768,
+        "total_ios": 37560,
+        "runtime_ms": 10069,
+        "iops_interval": {
+          "min": 3682.0,
+          "p5": 3702.0,
+          "p50": 3766.0,
+          "p95": 3772.0,
+          "max": 3772.0,
+          "mean": 3757.4,
+          "tail_mean": 3767.2,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 1884160.0,
+          "p5": 1894400.0,
+          "p50": 1928192.0,
+          "p95": 1931264.0,
+          "max": 1931264.0,
+          "mean": 1923430.4,
+          "tail_mean": 1928499.2,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 57742141,
+          "max": 135608485,
+          "mean": 68380601.96358515,
+          "stddev": 3253165.605980427,
+          "samples": 37814,
+          "percentiles": {
+            "1": 66846720,
+            "5": 67633152,
+            "10": 67633152,
+            "25": 67633152,
+            "50": 67633152,
+            "75": 68681728,
+            "90": 68681728,
+            "95": 69730304,
+            "99": 72876032,
+            "99.9": 124256256,
+            "99.99": 135266304
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 1.638931,
+        "sys": 4.658564
+      },
+      "disk_util": {
+        "sda": {
+          "util": 99.283734,
+          "read_ios": 55043,
+          "write_ios": 117,
+          "in_queue": 3289884
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "sda"
+      ],
+      "test": "randread_4k_qd256",
+      "rw": "randread",
+      "bs": 4096,
+      "rwmixread": null,
+      "numjobs": 2,
+      "iodepth": 128,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "sda": 137438953472
+      },
+      "error": null,
+      "elapsed_s": 13.4,
+      "read": {
+        "iops": 3741.855383,
+        "bw_bytes": 15429975,
+        "io_bytes": 155348992,
+        "total_ios": 37673,
+        "runtime_ms": 10068,
+        "iops_interval": {
+          "min": 3760.0,
+          "p5": 3764.0,
+          "p50": 3769.0,
+          "p95": 3774.0,
+          "max": 3776.0,
+          "mean": 3768.85,
+          "tail_mean": 3768.8,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 15406080.0,
+          "p5": 15417344.0,
+          "p50": 15440896.0,
+          "p95": 15458304.0,
+          "max": 15466496.0,
+          "mean": 15438796.8,
+          "tail_mean": 15438745.6,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 66313277,
+          "max": 135596602,
+          "mean": 68179088.17484051,
+          "stddev": 3193458.9922535405,
+          "samples": 37926,
+          "percentiles": {
+            "1": 66846720,
+            "5": 67633152,
+            "10": 67633152,
+            "25": 67633152,
+            "50": 67633152,
+            "75": 68681728,
+            "90": 68681728,
+            "95": 68681728,
+            "99": 69730304,
+            "99.9": 125304832,
+            "99.99": 135266304
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 1.2615470000000002,
+        "sys": 5.066057
+      },
+      "disk_util": {
+        "sda": {
+          "util": 99.976898,
+          "read_ios": 49823,
+          "write_ios": 217,
+          "in_queue": 3291083
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "sda"
+      ],
+      "test": "randread_16k_qd256",
+      "rw": "randread",
+      "bs": 16384,
+      "rwmixread": null,
+      "numjobs": 2,
+      "iodepth": 128,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "sda": 137438953472
+      },
+      "error": null,
+      "elapsed_s": 13.4,
+      "read": {
+        "iops": 3741.7560590000003,
+        "bw_bytes": 61718273,
+        "io_bytes": 621379584,
+        "total_ios": 37672,
+        "runtime_ms": 10068,
+        "iops_interval": {
+          "min": 3730.0,
+          "p5": 3762.0,
+          "p50": 3770.0,
+          "p95": 3774.0,
+          "max": 3798.0,
+          "mean": 3769.0,
+          "tail_mean": 3768.4,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 61112320.0,
+          "p5": 61660160.0,
+          "p50": 61767680.0,
+          "p95": 61833216.0,
+          "max": 62252032.0,
+          "mean": 61759795.2,
+          "tail_mean": 61751296.0,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 63156262,
+          "max": 135039331,
+          "mean": 68177067.91288273,
+          "stddev": 3172210.6149735707,
+          "samples": 37926,
+          "percentiles": {
+            "1": 66846720,
+            "5": 67633152,
+            "10": 67633152,
+            "25": 67633152,
+            "50": 67633152,
+            "75": 68681728,
+            "90": 68681728,
+            "95": 68681728,
+            "99": 69730304,
+            "99.9": 124256256,
+            "99.99": 135266304
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 1.450283,
+        "sys": 5.413728000000001
+      },
+      "disk_util": {
+        "sda": {
+          "util": 99.291436,
+          "read_ios": 50189,
+          "write_ios": 10,
+          "in_queue": 3290459
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "sda"
+      ],
+      "test": "randread_64k_qd256",
+      "rw": "randread",
+      "bs": 65536,
+      "rwmixread": null,
+      "numjobs": 2,
+      "iodepth": 128,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "sda": 137438953472
+      },
+      "error": null,
+      "elapsed_s": 13.4,
+      "read": {
+        "iops": 2792.5251799999996,
+        "bw_bytes": 184662663,
+        "io_bytes": 1861025792,
+        "total_ios": 28143,
+        "runtime_ms": 10091,
+        "iops_interval": {
+          "min": 2692.0,
+          "p5": 2692.0,
+          "p50": 2930.0,
+          "p95": 2938.0,
+          "max": 2940.0,
+          "mean": 2815.5,
+          "tail_mean": 2816.4,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 176422912.0,
+          "p5": 176468992.0,
+          "p50": 192080896.0,
+          "p95": 192544768.0,
+          "max": 192738304.0,
+          "mean": 184551577.6,
+          "tail_mean": 184611942.4,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 84649080,
+          "max": 180340774,
+          "mean": 91379940.96756692,
+          "stddev": 4766192.9965734705,
+          "samples": 28397,
+          "percentiles": {
+            "1": 89653248,
+            "5": 90701824,
+            "10": 90701824,
+            "25": 90701824,
+            "50": 90701824,
+            "75": 91750400,
+            "90": 91750400,
+            "95": 91750400,
+            "99": 92798976,
+            "99.9": 168820736,
+            "99.99": 179306496
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 1.15124,
+        "sys": 4.326461
+      },
+      "disk_util": {
+        "sda": {
+          "util": 100.0,
+          "read_ios": 36667,
+          "write_ios": 34,
+          "in_queue": 3294725
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "sda"
+      ],
+      "test": "randread_256k_qd256",
+      "rw": "randread",
+      "bs": 262144,
+      "rwmixread": null,
+      "numjobs": 2,
+      "iodepth": 128,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "sda": 137438953472
+      },
+      "error": null,
+      "elapsed_s": 13.6,
+      "read": {
+        "iops": 680.316124,
+        "bw_bytes": 184771601,
+        "io_bytes": 1913126912,
+        "total_ios": 7044,
+        "runtime_ms": 10363,
+        "iops_interval": {
+          "min": 680.0,
+          "p5": 680.0,
+          "p50": 704.0,
+          "p95": 728.0,
+          "max": 730.0,
+          "mean": 704.3,
+          "tail_mean": 700.8,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 178257920.0,
+          "p5": 178445312.0,
+          "p50": 184716288.0,
+          "p95": 191023104.0,
+          "max": 191547392.0,
+          "mean": 184701747.2,
+          "tail_mean": 183786393.6,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 345410815,
+          "max": 724477352,
+          "mean": 369982979.0813915,
+          "stddev": 37334820.306657,
+          "samples": 7298,
+          "percentiles": {
+            "1": 362807296,
+            "5": 362807296,
+            "10": 362807296,
+            "25": 362807296,
+            "50": 362807296,
+            "75": 362807296,
+            "90": 367001600,
+            "95": 367001600,
+            "99": 624951296,
+            "99.9": 700448768,
+            "99.99": 725614592
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 0.55054,
+        "sys": 1.361933
+      },
+      "disk_util": {
+        "sda": {
+          "util": 99.321574,
+          "read_ios": 9347,
+          "write_ios": 9,
+          "in_queue": 3324982
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "sda"
+      ],
+      "test": "randread_1m_qd256",
+      "rw": "randread",
+      "bs": 1048576,
+      "rwmixread": null,
+      "numjobs": 2,
+      "iodepth": 128,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "sda": 137438953472
+      },
+      "error": null,
+      "elapsed_s": 14.9,
+      "read": {
+        "iops": 170.177229,
+        "bw_bytes": 202248677,
+        "io_bytes": 2280652800,
+        "total_ios": 1919,
+        "runtime_ms": 11295,
+        "iops_interval": {
+          "min": 382.0,
+          "p5": 382.0,
+          "p50": 384.0,
+          "p95": 384.0,
+          "max": 384.0,
+          "mean": 383.6363636363636,
+          "tail_mean": 383.3333333333333,
+          "samples": 11
+        },
+        "bw_bytes_interval": {
+          "min": 400556032.0,
+          "p5": 400556032.0,
+          "p50": 402653184.0,
+          "p95": 403056640.0,
+          "max": 403056640.0,
+          "mean": 402491485.09090906,
+          "tail_mean": 402087765.3333333,
+          "samples": 11
+        },
+        "lat_ns": {
+          "min": 1078216686,
+          "max": 2191867880,
+          "mean": 1455952200.919314,
+          "stddev": 506857263.89189565,
+          "samples": 1983,
+          "percentiles": {
+            "1": 1082130432,
+            "5": 1082130432,
+            "10": 1082130432,
+            "25": 1098907648,
+            "50": 1098907648,
+            "75": 2164260864,
+            "90": 2197815296,
+            "95": 2197815296,
+            "99": 2197815296,
+            "99.9": 2197815296,
+            "99.99": 2197815296
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 0.017767,
+        "sys": 0.815901
+      },
+      "disk_util": {
+        "sda": {
+          "util": 99.373451,
+          "read_ios": 10244,
+          "write_ios": 24,
+          "in_queue": 3646840
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "sda"
+      ],
+      "test": "randread_4m_qd64",
+      "rw": "randread",
+      "bs": 4194304,
+      "rwmixread": null,
+      "numjobs": 2,
+      "iodepth": 32,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "sda": 137438953472
+      },
+      "error": null,
+      "elapsed_s": 14.7,
+      "read": {
+        "iops": 42.579584,
+        "bw_bytes": 202503893,
+        "io_bytes": 2273312768,
+        "total_ios": 478,
+        "runtime_ms": 11261,
+        "iops_interval": {
+          "min": 94.0,
+          "p5": 94.0,
+          "p50": 96.0,
+          "p95": 96.0,
+          "max": 96.0,
+          "mean": 95.4,
+          "tail_mean": 95.6,
+          "samples": 10
+        },
+        "bw_bytes_interval": {
+          "min": 394264576.0,
+          "p5": 394264576.0,
+          "p50": 403056640.0,
+          "p95": 403056640.0,
+          "max": 403056640.0,
+          "mean": 400455884.8,
+          "tail_mean": 401294745.6,
+          "samples": 10
+        },
+        "lat_ns": {
+          "min": 1037305633,
+          "max": 2191068102,
+          "mean": 1454437162.726721,
+          "stddev": 505896279.4585425,
+          "samples": 494,
+          "percentiles": {
+            "1": 1035993088,
+            "5": 1052770304,
+            "10": 1082130432,
+            "25": 1082130432,
+            "50": 1098907648,
+            "75": 2139095040,
+            "90": 2197815296,
+            "95": 2197815296,
+            "99": 2197815296,
+            "99.9": 2197815296,
+            "99.99": 2197815296
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 0.026699,
+        "sys": 0.694996
+      },
+      "disk_util": {
+        "sda": {
+          "util": 100.0,
+          "read_ios": 10047,
+          "write_ios": 9,
+          "in_queue": 3578640
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "sda"
+      ],
+      "test": "randread_16m_qd16",
+      "rw": "randread",
+      "bs": 16777216,
+      "rwmixread": null,
+      "numjobs": 2,
+      "iodepth": 8,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "sda": 137438953472
+      },
+      "error": null,
+      "elapsed_s": 14.6,
+      "read": {
+        "iops": 10.649235000000001,
+        "bw_bytes": 202688306,
+        "io_bytes": 2264924160,
+        "total_ios": 119,
+        "runtime_ms": 11267,
+        "iops_interval": {
+          "min": 22.0,
+          "p5": 22.0,
+          "p50": 24.0,
+          "p95": 24.0,
+          "max": 24.0,
+          "mean": 23.555555555555557,
+          "tail_mean": 23.2,
+          "samples": 9
+        },
+        "bw_bytes_interval": {
+          "min": 369098752.0,
+          "p5": 369098752.0,
+          "p50": 402653184.0,
+          "p95": 403460096.0,
+          "max": 403460096.0,
+          "mean": 395502933.3333333,
+          "tail_mean": 389621350.4,
+          "samples": 9
+        },
+        "lat_ns": {
+          "min": 913500511,
+          "max": 2196918622,
+          "mean": 1456399377.6016254,
+          "stddev": 508061112.98986965,
+          "samples": 123,
+          "percentiles": {
+            "1": 910163968,
+            "5": 1082130432,
+            "10": 1082130432,
+            "25": 1098907648,
+            "50": 1098907648,
+            "75": 2164260864,
+            "90": 2197815296,
+            "95": 2197815296,
+            "99": 2197815296,
+            "99.9": 2197815296,
+            "99.99": 2197815296
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 0.0,
+        "sys": 0.73393
+      },
+      "disk_util": {
+        "sda": {
+          "util": 99.321555,
+          "read_ios": 9978,
+          "write_ios": 12,
+          "in_queue": 3549642
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "sda"
+      ],
+      "test": "seqread_1m_qd64",
+      "rw": "read",
+      "bs": 1048576,
+      "rwmixread": null,
+      "numjobs": 2,
+      "iodepth": 32,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "sda": 137438953472
+      },
+      "error": null,
+      "elapsed_s": 13.6,
+      "read": {
+        "iops": 170.079074,
+        "bw_bytes": 184619736,
+        "io_bytes": 1911554048,
+        "total_ios": 1761,
+        "runtime_ms": 10362,
+        "iops_interval": {
+          "min": 166.0,
+          "p5": 168.0,
+          "p50": 176.0,
+          "p95": 182.0,
+          "max": 182.0,
+          "mean": 175.9,
+          "tail_mean": 175.2,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 174239744.0,
+          "p5": 176340992.0,
+          "p50": 184755200.0,
+          "p95": 191037440.0,
+          "max": 191050752.0,
+          "mean": 184592025.6,
+          "tail_mean": 183863910.4,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 359126350,
+          "max": 705378571,
+          "mean": 369692260.5765221,
+          "stddev": 35935409.76199269,
+          "samples": 1823,
+          "percentiles": {
+            "1": 362807296,
+            "5": 362807296,
+            "10": 362807296,
+            "25": 362807296,
+            "50": 362807296,
+            "75": 362807296,
+            "90": 362807296,
+            "95": 367001600,
+            "99": 599785472,
+            "99.9": 700448768,
+            "99.99": 708837376
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 0.28015,
+        "sys": 0.96586
+      },
+      "disk_util": {
+        "sda": {
+          "util": 99.313932,
+          "read_ios": 9345,
+          "write_ios": 21,
+          "in_queue": 3306902
+        }
+      }
+    }
+  ],
+  "preconditioning": [],
+  "health": {
+    "sda": {
+      "before": {
+        "taken_at": "2026-11-21T19:55:12+00:00",
+        "smartctl": {
+          "smartctl": {
+            "version": [
+              7,
+              4
+            ],
+            "pre_release": false,
+            "svn_revision": "5530",
+            "platform_info": "x86_64-linux-6.12.114-flatcar",
+            "build_info": "(local build)",
+            "argv": [
+              "smartctl",
+              "-x",
+              "-j",
+              "/dev/sda"
+            ],
+            "exit_status": 4
+          },
+          "local_time": {
+            "time_t": 1795290912,
+            "asctime": "Sat Nov 21 19:55:12 2026 UTC"
+          },
+          "device": {
+            "name": "/dev/sda",
+            "info_name": "/dev/sda",
+            "type": "scsi",
+            "protocol": "SCSI"
+          },
+          "scsi_vendor": "Google",
+          "scsi_product": "PersistentDisk",
+          "scsi_model_name": "Google PersistentDisk",
+          "scsi_revision": "1",
+          "scsi_version": "SPC-4",
+          "user_capacity": {
+            "blocks": 268435456,
+            "bytes": 137438953472
+          },
+          "logical_block_size": 512,
+          "physical_block_size": 4096,
+          "scsi_lb_provisioning": {
+            "name": "not reported",
+            "value": 0,
+            "management_enabled": {
+              "name": "LBPME",
+              "value": 1
+            },
+            "read_zeros": {
+              "name": "LBPRZ",
+              "value": 1
+            }
+          },
+          "rotation_rate": 0,
+          "serial_number": "",
+          "device_type": {
+            "scsi_terminology": "Peripheral Device Type [PDT]",
+            "scsi_value": 0,
+            "name": "disk"
+          },
+          "smart_support": {
+            "available": false
+          },
+          "temperature": {
+            "current": 0,
+            "drive_trip": 0
+          },
+          "seagate_farm_log": {
+            "supported": false
+          }
+        }
+      },
+      "after": {
+        "taken_at": "2026-11-21T19:57:30+00:00",
+        "smartctl": {
+          "smartctl": {
+            "version": [
+              7,
+              4
+            ],
+            "pre_release": false,
+            "svn_revision": "5530",
+            "platform_info": "x86_64-linux-6.12.114-flatcar",
+            "build_info": "(local build)",
+            "argv": [
+              "smartctl",
+              "-x",
+              "-j",
+              "/dev/sda"
+            ],
+            "exit_status": 4
+          },
+          "local_time": {
+            "time_t": 1795291050,
+            "asctime": "Sat Nov 21 19:57:30 2026 UTC"
+          },
+          "device": {
+            "name": "/dev/sda",
+            "info_name": "/dev/sda",
+            "type": "scsi",
+            "protocol": "SCSI"
+          },
+          "scsi_vendor": "Google",
+          "scsi_product": "PersistentDisk",
+          "scsi_model_name": "Google PersistentDisk",
+          "scsi_revision": "1",
+          "scsi_version": "SPC-4",
+          "user_capacity": {
+            "blocks": 268435456,
+            "bytes": 137438953472
+          },
+          "logical_block_size": 512,
+          "physical_block_size": 4096,
+          "scsi_lb_provisioning": {
+            "name": "not reported",
+            "value": 0,
+            "management_enabled": {
+              "name": "LBPME",
+              "value": 1
+            },
+            "read_zeros": {
+              "name": "LBPRZ",
+              "value": 1
+            }
+          },
+          "rotation_rate": 0,
+          "serial_number": "",
+          "device_type": {
+            "scsi_terminology": "Peripheral Device Type [PDT]",
+            "scsi_value": 0,
+            "name": "disk"
+          },
+          "smart_support": {
+            "available": false
+          },
+          "temperature": {
+            "current": 0,
+            "drive_trip": 0
+          },
+          "seagate_farm_log": {
+            "supported": false
+          }
+        }
+      },
+      "delta": null
+    }
+  },
+  "skipped": [
+    {
+      "group": "g0",
+      "scope": "single",
+      "test": "write tests",
+      "reason": "read_only: has holders: dm-0"
+    }
+  ],
+  "finished_at": "2026-11-21T19:57:30+00:00"
+}
