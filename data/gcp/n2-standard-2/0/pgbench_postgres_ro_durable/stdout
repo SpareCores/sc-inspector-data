@@ -1,149 +1,375 @@
 {
   "benchmark": "pgbench_postgres",
+  "benchmark_image": "ghcr.io/sparecores/benchmark-pgbench-postgres:main",
   "client_vcpus": 2,
   "cpu_scale": 1,
-  "db_mem_gib": 7.750240325927734,
+  "db_mem_gib": 7.742458343505859,
   "db_vcpus": 2,
   "durability": "durable",
   "improve_pct": null,
-  "latency_avg_ms": 566.772,
+  "latency_avg_ms": 2238.948,
   "latency_ms": {
-    "avg": 960.1915,
-    "p50": 960.1915,
-    "p95": 971.4905,
-    "p99": 972.4949,
-    "samples": 2
+    "avg": 2106.7476,
+    "p50": 1824.6095,
+    "p95": 3903.5603,
+    "p99": 3906.5217,
+    "samples": 10
   },
-  "latency_stddev_ms": 398.914,
+  "latency_stddev_ms": 1656.949,
   "max_connections": 3122,
   "max_connections_client_cap": 3072,
-  "peak_concurrency": 1,
+  "peak_concurrency": 4,
   "peak_cpu_scale": 1,
-  "profile_hard_max_clients": 4,
-  "profile_max_clients": 4,
-  "profile_search": false,
-  "profile_vus": [
-    1,
-    2,
-    4
-  ],
-  "run_seconds": 300,
-  "score": 106,
-  "score_unit": "tpm",
-  "settle_seconds": 60,
-  "sizes": [
-    {
-      "clients_capped_at_scale": false,
-      "concurrency_plan": [
-        1,
-        2,
-        4
-      ],
-      "cpu_scale": 1,
-      "dataset": {
-        "cdn_url": "https://cdn.sparecores.net/sc-inspector/pgbench-ro-cpu-v1.sql.zst",
-        "dataset": "pgbench-ro-cpu-v1.sql.zst",
-        "source": "cdn"
-      },
-      "latency_avg_ms": 566.772,
-      "latency_ms": {
-        "avg": 960.1915,
-        "p50": 960.1915,
-        "p95": 971.4905,
-        "p99": 972.4949,
-        "samples": 2
-      },
-      "latency_stddev_ms": 398.914,
-      "peak_concurrency": 1,
-      "profile": [
-        {
-          "anchor": true,
-          "concurrency": 1,
-          "initial_connection_ms": 17.526,
-          "jobs": 1,
-          "latency_avg_ms": 566.772,
-          "latency_ms": {
-            "avg": 960.1915,
-            "p50": 960.1915,
-            "p95": 971.4905,
-            "p99": 972.4949,
-            "samples": 2
-          },
-          "latency_stddev_ms": 398.914,
-          "run_seconds": 300.5,
-          "score": 106,
-          "tpm": 106,
-          "tpm_vs_final_peak_pct": 100.0,
-          "tx_failed": 0,
-          "tx_processed": 530,
-          "warmup_seconds": 120
-        },
-        {
-          "anchor": true,
-          "concurrency": 2,
-          "initial_connection_ms": 25.394,
-          "jobs": 2,
-          "latency_avg_ms": 1244.777,
-          "latency_ms": {
-            "avg": 1205.274,
-            "p50": 1530.416,
-            "p95": 1807.0832,
-            "p99": 1831.6758,
-            "samples": 3
-          },
-          "latency_stddev_ms": 936.183,
-          "run_seconds": 300.7,
-          "score": 96,
-          "tpm": 96,
-          "tpm_vs_final_peak_pct": 90.57,
-          "tx_failed": 0,
-          "tx_processed": 483,
-          "warmup_seconds": 60
-        },
-        {
-          "anchor": true,
-          "concurrency": 4,
-          "initial_connection_ms": 45.31,
-          "jobs": 4,
-          "latency_avg_ms": 2253.197,
-          "latency_ms": {
-            "avg": 2376.2954,
-            "p50": 3699.651,
-            "p95": 3867.2803,
-            "p99": 3889.2065,
-            "samples": 7
-          },
-          "latency_stddev_ms": 1545.012,
-          "run_seconds": 302.0,
-          "score": 106,
-          "tpm": 106,
-          "tpm_vs_final_peak_pct": 100.0,
-          "tx_failed": 0,
-          "tx_processed": 535,
-          "warmup_seconds": 60
-        }
-      ],
-      "profile_max_clients": 4,
-      "profile_vus": [
-        1,
-        2,
-        4
-      ],
-      "score": 106,
-      "stop_reason": ""
-    }
-  ],
-  "synchronous_commit": "on",
-  "topology": "multi_vm",
-  "warmup_once": true,
-  "warmup_seconds": 120,
-  "workload": "pgbench_ro",
+  "pg_image": "ghcr.io/sparecores/benchmark-pgbench-postgres:main",
+  "pgtune_share_url": "https://pgtune.leopard.in.ua/?dbVersion=18&osType=linux&dbType=web&totalMemory=7&totalMemoryUnit=GB&cpuNum=2&hdType=ssd&dbSize=mid_ram",
   "postgres": {
-    "version": "PostgreSQL 18.4 (Debian 18.4-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
-    "server_version": "18.4 (Debian 18.4-1.pgdg13+1)",
-    "server_version_num": 180004,
+    "extensions": [
+      {
+        "name": "plpgsql",
+        "version": "1.0"
+      }
+    ],
     "in_recovery": false,
+    "nondefault_settings": {
+      "DateStyle": {
+        "category": "Client Connection Defaults / Locale and Formatting",
+        "context": "user",
+        "setting": "ISO, MDY",
+        "short_desc": "Sets the display format for date and time values.",
+        "source": "configuration file",
+        "vartype": "string"
+      },
+      "TimeZone": {
+        "category": "Client Connection Defaults / Locale and Formatting",
+        "context": "user",
+        "setting": "Etc/UTC",
+        "short_desc": "Sets the time zone for displaying and interpreting time stamps.",
+        "source": "configuration file",
+        "vartype": "string"
+      },
+      "autovacuum_worker_slots": {
+        "category": "Vacuuming / Automatic Vacuuming",
+        "context": "postmaster",
+        "setting": "16",
+        "short_desc": "Sets the number of backend slots to allocate for autovacuum workers.",
+        "source": "configuration file",
+        "vartype": "integer"
+      },
+      "checkpoint_completion_target": {
+        "category": "Write-Ahead Log / Checkpoints",
+        "context": "sighup",
+        "setting": "0.9",
+        "short_desc": "Time spent flushing dirty buffers during checkpoint, as fraction of checkpoint interval.",
+        "source": "command line",
+        "vartype": "real"
+      },
+      "config_file": {
+        "category": "File Locations",
+        "context": "postmaster",
+        "setting": "/var/lib/postgresql/18/docker/postgresql.conf",
+        "short_desc": "Sets the server's main configuration file.",
+        "source": "override",
+        "vartype": "string"
+      },
+      "data_directory": {
+        "category": "File Locations",
+        "context": "postmaster",
+        "setting": "/var/lib/postgresql/18/docker",
+        "short_desc": "Sets the server's data directory.",
+        "source": "override",
+        "vartype": "string"
+      },
+      "default_statistics_target": {
+        "category": "Query Tuning / Other Planner Options",
+        "context": "user",
+        "setting": "100",
+        "short_desc": "Sets the default statistics target.",
+        "source": "command line",
+        "vartype": "integer"
+      },
+      "default_text_search_config": {
+        "category": "Client Connection Defaults / Locale and Formatting",
+        "context": "user",
+        "setting": "pg_catalog.english",
+        "short_desc": "Sets default text search configuration.",
+        "source": "configuration file",
+        "vartype": "string"
+      },
+      "dynamic_shared_memory_type": {
+        "category": "Resource Usage / Memory",
+        "context": "postmaster",
+        "setting": "posix",
+        "short_desc": "Selects the dynamic shared memory implementation used.",
+        "source": "configuration file",
+        "vartype": "enum"
+      },
+      "effective_cache_size": {
+        "category": "Query Tuning / Planner Cost Constants",
+        "context": "user",
+        "setting": "5376MB",
+        "setting_raw": "688128",
+        "short_desc": "Sets the planner's assumption about the total size of the data caches.",
+        "source": "command line",
+        "unit": "8kB",
+        "vartype": "integer"
+      },
+      "effective_io_concurrency": {
+        "category": "Resource Usage / I/O",
+        "context": "user",
+        "setting": "200",
+        "short_desc": "Number of simultaneous requests that can be handled efficiently by the disk subsystem.",
+        "source": "command line",
+        "vartype": "integer"
+      },
+      "hba_file": {
+        "category": "File Locations",
+        "context": "postmaster",
+        "setting": "/var/lib/postgresql/18/docker/pg_hba.conf",
+        "short_desc": "Sets the server's \"hba\" configuration file.",
+        "source": "override",
+        "vartype": "string"
+      },
+      "huge_pages": {
+        "category": "Resource Usage / Memory",
+        "context": "postmaster",
+        "setting": "off",
+        "short_desc": "Use of huge pages on Linux or Windows.",
+        "source": "command line",
+        "vartype": "enum"
+      },
+      "ident_file": {
+        "category": "File Locations",
+        "context": "postmaster",
+        "setting": "/var/lib/postgresql/18/docker/pg_ident.conf",
+        "short_desc": "Sets the server's \"ident\" configuration file.",
+        "source": "override",
+        "vartype": "string"
+      },
+      "io_method": {
+        "category": "Resource Usage / I/O",
+        "context": "postmaster",
+        "setting": "io_uring",
+        "short_desc": "Selects the method for executing asynchronous I/O.",
+        "source": "command line",
+        "vartype": "enum"
+      },
+      "jit": {
+        "category": "Query Tuning / Other Planner Options",
+        "context": "user",
+        "setting": "off",
+        "short_desc": "Allow JIT compilation.",
+        "source": "database",
+        "vartype": "bool"
+      },
+      "lc_messages": {
+        "category": "Client Connection Defaults / Locale and Formatting",
+        "context": "superuser",
+        "setting": "en_US.utf8",
+        "short_desc": "Sets the language in which messages are displayed.",
+        "source": "configuration file",
+        "vartype": "string"
+      },
+      "lc_monetary": {
+        "category": "Client Connection Defaults / Locale and Formatting",
+        "context": "user",
+        "setting": "en_US.utf8",
+        "short_desc": "Sets the locale for formatting monetary amounts.",
+        "source": "configuration file",
+        "vartype": "string"
+      },
+      "lc_numeric": {
+        "category": "Client Connection Defaults / Locale and Formatting",
+        "context": "user",
+        "setting": "en_US.utf8",
+        "short_desc": "Sets the locale for formatting numbers.",
+        "source": "configuration file",
+        "vartype": "string"
+      },
+      "lc_time": {
+        "category": "Client Connection Defaults / Locale and Formatting",
+        "context": "user",
+        "setting": "en_US.utf8",
+        "short_desc": "Sets the locale for formatting date and time values.",
+        "source": "configuration file",
+        "vartype": "string"
+      },
+      "listen_addresses": {
+        "category": "Connections and Authentication / Connection Settings",
+        "context": "postmaster",
+        "setting": "*",
+        "short_desc": "Sets the host name or IP address(es) to listen to.",
+        "source": "command line",
+        "vartype": "string"
+      },
+      "log_timezone": {
+        "category": "Reporting and Logging / What to Log",
+        "context": "sighup",
+        "setting": "Etc/UTC",
+        "short_desc": "Sets the time zone to use in log messages.",
+        "source": "configuration file",
+        "vartype": "string"
+      },
+      "maintenance_work_mem": {
+        "category": "Resource Usage / Memory",
+        "context": "user",
+        "setting": "448MB",
+        "setting_raw": "458752",
+        "short_desc": "Sets the maximum memory to be used for maintenance operations.",
+        "source": "command line",
+        "unit": "kB",
+        "vartype": "integer"
+      },
+      "max_connections": {
+        "category": "Connections and Authentication / Connection Settings",
+        "context": "postmaster",
+        "setting": "3122",
+        "short_desc": "Sets the maximum number of concurrent connections.",
+        "source": "command line",
+        "vartype": "integer"
+      },
+      "max_parallel_workers_per_gather": {
+        "category": "Resource Usage / Worker Processes",
+        "context": "user",
+        "setting": "0",
+        "short_desc": "Sets the maximum number of parallel processes per executor node.",
+        "source": "database",
+        "vartype": "integer"
+      },
+      "max_wal_size": {
+        "category": "Write-Ahead Log / Checkpoints",
+        "context": "sighup",
+        "setting": "4GB",
+        "setting_raw": "4096",
+        "short_desc": "Sets the WAL size that triggers a checkpoint.",
+        "source": "command line",
+        "unit": "MB",
+        "vartype": "integer"
+      },
+      "min_wal_size": {
+        "category": "Write-Ahead Log / Checkpoints",
+        "context": "sighup",
+        "setting": "1GB",
+        "setting_raw": "1024",
+        "short_desc": "Sets the minimum size to shrink the WAL to.",
+        "source": "command line",
+        "unit": "MB",
+        "vartype": "integer"
+      },
+      "random_page_cost": {
+        "category": "Query Tuning / Planner Cost Constants",
+        "context": "user",
+        "setting": "1.1",
+        "short_desc": "Sets the planner's estimate of the cost of a nonsequentially fetched disk page.",
+        "source": "command line",
+        "vartype": "real"
+      },
+      "shared_buffers": {
+        "category": "Resource Usage / Memory",
+        "context": "postmaster",
+        "setting": "1792MB",
+        "setting_raw": "229376",
+        "short_desc": "Sets the number of shared memory buffers used by the server.",
+        "source": "command line",
+        "unit": "8kB",
+        "vartype": "integer"
+      },
+      "synchronous_commit": {
+        "category": "Write-Ahead Log / Settings",
+        "context": "user",
+        "setting": "on",
+        "short_desc": "Sets the current transaction's synchronization level.",
+        "source": "command line",
+        "vartype": "enum"
+      },
+      "transaction_deferrable": {
+        "category": "Client Connection Defaults / Statement Behavior",
+        "context": "user",
+        "setting": "off",
+        "short_desc": "Whether to defer a read-only serializable transaction until it can be executed with no possible serialization failures.",
+        "source": "override",
+        "vartype": "bool"
+      },
+      "transaction_isolation": {
+        "category": "Client Connection Defaults / Statement Behavior",
+        "context": "user",
+        "setting": "read committed",
+        "short_desc": "Sets the current transaction's isolation level.",
+        "source": "override",
+        "vartype": "enum"
+      },
+      "transaction_read_only": {
+        "category": "Client Connection Defaults / Statement Behavior",
+        "context": "user",
+        "setting": "off",
+        "short_desc": "Sets the current transaction's read-only status.",
+        "source": "override",
+        "vartype": "bool"
+      },
+      "wal_buffers": {
+        "category": "Write-Ahead Log / Settings",
+        "context": "postmaster",
+        "setting": "16MB",
+        "setting_raw": "2048",
+        "short_desc": "Sets the number of disk-page buffers in shared memory for WAL.",
+        "source": "command line",
+        "unit": "8kB",
+        "vartype": "integer"
+      },
+      "wal_compression": {
+        "category": "Write-Ahead Log / Settings",
+        "context": "superuser",
+        "setting": "lz4",
+        "short_desc": "Compresses full-page writes written in WAL file with specified method.",
+        "source": "command line",
+        "vartype": "enum"
+      },
+      "work_mem": {
+        "category": "Resource Usage / Memory",
+        "context": "user",
+        "setting": "64MB",
+        "setting_raw": "65536",
+        "short_desc": "Sets the maximum memory to be used for query workspaces.",
+        "source": "database",
+        "unit": "kB",
+        "vartype": "integer"
+      }
+    },
+    "requested_gucs": {
+      "checkpoint_completion_target": "0.9",
+      "default_statistics_target": "100",
+      "effective_cache_size": "5376MB",
+      "effective_io_concurrency": "200",
+      "huge_pages": "off",
+      "io_method": "io_uring",
+      "jit": "off",
+      "maintenance_work_mem": "448MB",
+      "max_connections": "3122",
+      "max_wal_size": "4GB",
+      "min_wal_size": "1GB",
+      "random_page_cost": "1.1",
+      "shared_buffers": "1792MB",
+      "synchronous_commit": "on",
+      "wal_buffers": "16MB",
+      "wal_compression": "lz4",
+      "work_mem": "9129kB"
+    },
+    "role_settings": [
+      {
+        "config": [
+          "jit=off",
+          "work_mem=64MB",
+          "max_parallel_workers_per_gather=0"
+        ],
+        "database": "pgbench",
+        "role": "All"
+      }
+    ],
+    "server_version": "18.7 (Debian 18.7-1.pgdg13+2)",
+    "server_version_num": 180007,
     "settings": {
+      "DateStyle": "ISO, MDY",
+      "IntervalStyle": "postgres",
+      "TimeZone": "Etc/UTC",
       "allow_alter_system": "on",
       "allow_in_place_tablespaces": "off",
       "allow_system_table_mods": "off",
@@ -169,8 +395,8 @@
       "autovacuum_vacuum_max_threshold": "100000000",
       "autovacuum_vacuum_scale_factor": "0.2",
       "autovacuum_vacuum_threshold": "50",
-      "autovacuum_worker_slots": "16",
       "autovacuum_work_mem": "-1",
+      "autovacuum_worker_slots": "16",
       "backend_flush_after": "0",
       "backslash_quote": "safe_encoding",
       "backtrace_functions": "",
@@ -194,6 +420,7 @@
       "commit_delay": "0",
       "commit_siblings": "5",
       "commit_timestamp_buffers": "3584kB",
+      "composite_type_mismatch": "error",
       "compute_query_id": "auto",
       "config_file": "/var/lib/postgresql/18/docker/postgresql.conf",
       "constraint_exclusion": "partition",
@@ -206,7 +433,6 @@
       "data_directory": "/var/lib/postgresql/18/docker",
       "data_directory_mode": "0700",
       "data_sync_retry": "off",
-      "DateStyle": "ISO, MDY",
       "deadlock_timeout": "1s",
       "debug_assertions": "off",
       "debug_discard_caches": "0",
@@ -279,8 +505,8 @@
       "hba_file": "/var/lib/postgresql/18/docker/pg_hba.conf",
       "hot_standby": "on",
       "hot_standby_feedback": "off",
-      "huge_pages": "off",
       "huge_page_size": "0",
+      "huge_pages": "off",
       "huge_pages_status": "off",
       "icu_validation_level": "warning",
       "ident_file": "/var/lib/postgresql/18/docker/pg_ident.conf",
@@ -292,7 +518,6 @@
       "ignore_system_indexes": "off",
       "in_hot_standby": "off",
       "integer_datetimes": "on",
-      "IntervalStyle": "postgres",
       "io_combine_limit": "128kB",
       "io_max_combine_limit": "128kB",
       "io_max_concurrency": "64",
@@ -316,9 +541,9 @@
       "lc_numeric": "en_US.utf8",
       "lc_time": "en_US.utf8",
       "listen_addresses": "*",
+      "lo_compat_privileges": "off",
       "local_preload_libraries": "",
       "lock_timeout": "0",
-      "lo_compat_privileges": "off",
       "log_autovacuum_min_duration": "10min",
       "log_checkpoints": "on",
       "log_connections": "",
@@ -330,9 +555,7 @@
       "log_executor_stats": "off",
       "log_file_mode": "0600",
       "log_filename": "postgresql-%Y-%m-%d_%H%M%S.log",
-      "logging_collector": "off",
       "log_hostname": "off",
-      "logical_decoding_work_mem": "64MB",
       "log_line_prefix": "%m [%p] ",
       "log_lock_failures": "off",
       "log_lock_waits": "off",
@@ -356,6 +579,8 @@
       "log_timezone": "Etc/UTC",
       "log_transaction_sample_rate": "0",
       "log_truncate_on_rotation": "off",
+      "logging_collector": "off",
+      "logical_decoding_work_mem": "64MB",
       "maintenance_io_concurrency": "16",
       "maintenance_work_mem": "448MB",
       "max_active_replication_origins": "10",
@@ -370,7 +595,7 @@
       "max_parallel_apply_workers_per_subscription": "2",
       "max_parallel_maintenance_workers": "2",
       "max_parallel_workers": "8",
-      "max_parallel_workers_per_gather": "2",
+      "max_parallel_workers_per_gather": "0",
       "max_pred_locks_per_page": "2",
       "max_pred_locks_per_relation": "-2",
       "max_pred_locks_per_transaction": "64",
@@ -394,6 +619,7 @@
       "notify_buffers": "128kB",
       "num_os_semaphores": "3196",
       "oauth_validator_libraries": "",
+      "output_plugin_libraries": "pgoutput, test_decoding",
       "parallel_leader_participation": "on",
       "parallel_setup_cost": "1000",
       "parallel_tuple_cost": "0.1",
@@ -433,8 +659,8 @@
       "seq_page_cost": "1",
       "serializable_buffers": "256kB",
       "server_encoding": "UTF8",
-      "server_version": "18.4 (Debian 18.4-1.pgdg13+1)",
-      "server_version_num": "180004",
+      "server_version": "18.7 (Debian 18.7-1.pgdg13+2)",
+      "server_version_num": "180007",
       "session_preload_libraries": "",
       "session_replication_role": "origin",
       "shared_buffers": "1792MB",
@@ -464,11 +690,11 @@
       "subtransaction_buffers": "3584kB",
       "summarize_wal": "off",
       "superuser_reserved_connections": "3",
-      "synchronized_standby_slots": "",
+      "sync_replication_slots": "off",
       "synchronize_seqscans": "on",
+      "synchronized_standby_slots": "",
       "synchronous_commit": "on",
       "synchronous_standby_names": "",
-      "sync_replication_slots": "off",
       "syslog_facility": "local0",
       "syslog_ident": "postgres",
       "syslog_sequence_numbers": "on",
@@ -480,7 +706,6 @@
       "temp_buffers": "8MB",
       "temp_file_limit": "-1",
       "temp_tablespaces": "",
-      "TimeZone": "Etc/UTC",
       "timezone_abbreviations": "Default",
       "trace_connection_negotiation": "off",
       "trace_notify": "off",
@@ -538,349 +763,133 @@
       "wal_sync_method": "fdatasync",
       "wal_writer_delay": "200ms",
       "wal_writer_flush_after": "1MB",
-      "work_mem": "9129kB",
+      "work_mem": "64MB",
       "xmlbinary": "base64",
       "xmloption": "content",
       "zero_damaged_pages": "off"
     },
-    "nondefault_settings": {
-      "autovacuum_worker_slots": {
-        "setting": "16",
-        "source": "configuration file",
-        "context": "postmaster",
-        "vartype": "integer",
-        "category": "Vacuuming / Automatic Vacuuming",
-        "short_desc": "Sets the number of backend slots to allocate for autovacuum workers."
-      },
-      "checkpoint_completion_target": {
-        "setting": "0.9",
-        "source": "command line",
-        "context": "sighup",
-        "vartype": "real",
-        "category": "Write-Ahead Log / Checkpoints",
-        "short_desc": "Time spent flushing dirty buffers during checkpoint, as fraction of checkpoint interval."
-      },
-      "config_file": {
-        "setting": "/var/lib/postgresql/18/docker/postgresql.conf",
-        "source": "override",
-        "context": "postmaster",
-        "vartype": "string",
-        "category": "File Locations",
-        "short_desc": "Sets the server's main configuration file."
-      },
-      "data_directory": {
-        "setting": "/var/lib/postgresql/18/docker",
-        "source": "override",
-        "context": "postmaster",
-        "vartype": "string",
-        "category": "File Locations",
-        "short_desc": "Sets the server's data directory."
-      },
-      "DateStyle": {
-        "setting": "ISO, MDY",
-        "source": "configuration file",
-        "context": "user",
-        "vartype": "string",
-        "category": "Client Connection Defaults / Locale and Formatting",
-        "short_desc": "Sets the display format for date and time values."
-      },
-      "default_statistics_target": {
-        "setting": "100",
-        "source": "command line",
-        "context": "user",
-        "vartype": "integer",
-        "category": "Query Tuning / Other Planner Options",
-        "short_desc": "Sets the default statistics target."
-      },
-      "default_text_search_config": {
-        "setting": "pg_catalog.english",
-        "source": "configuration file",
-        "context": "user",
-        "vartype": "string",
-        "category": "Client Connection Defaults / Locale and Formatting",
-        "short_desc": "Sets default text search configuration."
-      },
-      "dynamic_shared_memory_type": {
-        "setting": "posix",
-        "source": "configuration file",
-        "context": "postmaster",
-        "vartype": "enum",
-        "category": "Resource Usage / Memory",
-        "short_desc": "Selects the dynamic shared memory implementation used."
-      },
-      "effective_cache_size": {
-        "setting": "5376MB",
-        "source": "command line",
-        "context": "user",
-        "vartype": "integer",
-        "category": "Query Tuning / Planner Cost Constants",
-        "unit": "8kB",
-        "setting_raw": "688128",
-        "short_desc": "Sets the planner's assumption about the total size of the data caches."
-      },
-      "effective_io_concurrency": {
-        "setting": "200",
-        "source": "command line",
-        "context": "user",
-        "vartype": "integer",
-        "category": "Resource Usage / I/O",
-        "short_desc": "Number of simultaneous requests that can be handled efficiently by the disk subsystem."
-      },
-      "hba_file": {
-        "setting": "/var/lib/postgresql/18/docker/pg_hba.conf",
-        "source": "override",
-        "context": "postmaster",
-        "vartype": "string",
-        "category": "File Locations",
-        "short_desc": "Sets the server's \"hba\" configuration file."
-      },
-      "huge_pages": {
-        "setting": "off",
-        "source": "command line",
-        "context": "postmaster",
-        "vartype": "enum",
-        "category": "Resource Usage / Memory",
-        "short_desc": "Use of huge pages on Linux or Windows."
-      },
-      "ident_file": {
-        "setting": "/var/lib/postgresql/18/docker/pg_ident.conf",
-        "source": "override",
-        "context": "postmaster",
-        "vartype": "string",
-        "category": "File Locations",
-        "short_desc": "Sets the server's \"ident\" configuration file."
-      },
-      "io_method": {
-        "setting": "io_uring",
-        "source": "command line",
-        "context": "postmaster",
-        "vartype": "enum",
-        "category": "Resource Usage / I/O",
-        "short_desc": "Selects the method for executing asynchronous I/O."
-      },
-      "jit": {
-        "setting": "off",
-        "source": "command line",
-        "context": "user",
-        "vartype": "bool",
-        "category": "Query Tuning / Other Planner Options",
-        "short_desc": "Allow JIT compilation."
-      },
-      "lc_messages": {
-        "setting": "en_US.utf8",
-        "source": "configuration file",
-        "context": "superuser",
-        "vartype": "string",
-        "category": "Client Connection Defaults / Locale and Formatting",
-        "short_desc": "Sets the language in which messages are displayed."
-      },
-      "lc_monetary": {
-        "setting": "en_US.utf8",
-        "source": "configuration file",
-        "context": "user",
-        "vartype": "string",
-        "category": "Client Connection Defaults / Locale and Formatting",
-        "short_desc": "Sets the locale for formatting monetary amounts."
-      },
-      "lc_numeric": {
-        "setting": "en_US.utf8",
-        "source": "configuration file",
-        "context": "user",
-        "vartype": "string",
-        "category": "Client Connection Defaults / Locale and Formatting",
-        "short_desc": "Sets the locale for formatting numbers."
-      },
-      "lc_time": {
-        "setting": "en_US.utf8",
-        "source": "configuration file",
-        "context": "user",
-        "vartype": "string",
-        "category": "Client Connection Defaults / Locale and Formatting",
-        "short_desc": "Sets the locale for formatting date and time values."
-      },
-      "listen_addresses": {
-        "setting": "*",
-        "source": "command line",
-        "context": "postmaster",
-        "vartype": "string",
-        "category": "Connections and Authentication / Connection Settings",
-        "short_desc": "Sets the host name or IP address(es) to listen to."
-      },
-      "log_timezone": {
-        "setting": "Etc/UTC",
-        "source": "configuration file",
-        "context": "sighup",
-        "vartype": "string",
-        "category": "Reporting and Logging / What to Log",
-        "short_desc": "Sets the time zone to use in log messages."
-      },
-      "maintenance_work_mem": {
-        "setting": "448MB",
-        "source": "command line",
-        "context": "user",
-        "vartype": "integer",
-        "category": "Resource Usage / Memory",
-        "unit": "kB",
-        "setting_raw": "458752",
-        "short_desc": "Sets the maximum memory to be used for maintenance operations."
-      },
-      "max_connections": {
-        "setting": "3122",
-        "source": "command line",
-        "context": "postmaster",
-        "vartype": "integer",
-        "category": "Connections and Authentication / Connection Settings",
-        "short_desc": "Sets the maximum number of concurrent connections."
-      },
-      "max_wal_size": {
-        "setting": "4GB",
-        "source": "command line",
-        "context": "sighup",
-        "vartype": "integer",
-        "category": "Write-Ahead Log / Checkpoints",
-        "unit": "MB",
-        "setting_raw": "4096",
-        "short_desc": "Sets the WAL size that triggers a checkpoint."
-      },
-      "min_wal_size": {
-        "setting": "1GB",
-        "source": "command line",
-        "context": "sighup",
-        "vartype": "integer",
-        "category": "Write-Ahead Log / Checkpoints",
-        "unit": "MB",
-        "setting_raw": "1024",
-        "short_desc": "Sets the minimum size to shrink the WAL to."
-      },
-      "random_page_cost": {
-        "setting": "1.1",
-        "source": "command line",
-        "context": "user",
-        "vartype": "real",
-        "category": "Query Tuning / Planner Cost Constants",
-        "short_desc": "Sets the planner's estimate of the cost of a nonsequentially fetched disk page."
-      },
-      "shared_buffers": {
-        "setting": "1792MB",
-        "source": "command line",
-        "context": "postmaster",
-        "vartype": "integer",
-        "category": "Resource Usage / Memory",
-        "unit": "8kB",
-        "setting_raw": "229376",
-        "short_desc": "Sets the number of shared memory buffers used by the server."
-      },
-      "synchronous_commit": {
-        "setting": "on",
-        "source": "command line",
-        "context": "user",
-        "vartype": "enum",
-        "category": "Write-Ahead Log / Settings",
-        "short_desc": "Sets the current transaction's synchronization level."
-      },
-      "TimeZone": {
-        "setting": "Etc/UTC",
-        "source": "configuration file",
-        "context": "user",
-        "vartype": "string",
-        "category": "Client Connection Defaults / Locale and Formatting",
-        "short_desc": "Sets the time zone for displaying and interpreting time stamps."
-      },
-      "transaction_deferrable": {
-        "setting": "off",
-        "source": "override",
-        "context": "user",
-        "vartype": "bool",
-        "category": "Client Connection Defaults / Statement Behavior",
-        "short_desc": "Whether to defer a read-only serializable transaction until it can be executed with no possible serialization failures."
-      },
-      "transaction_isolation": {
-        "setting": "read committed",
-        "source": "override",
-        "context": "user",
-        "vartype": "enum",
-        "category": "Client Connection Defaults / Statement Behavior",
-        "short_desc": "Sets the current transaction's isolation level."
-      },
-      "transaction_read_only": {
-        "setting": "off",
-        "source": "override",
-        "context": "user",
-        "vartype": "bool",
-        "category": "Client Connection Defaults / Statement Behavior",
-        "short_desc": "Sets the current transaction's read-only status."
-      },
-      "wal_buffers": {
-        "setting": "16MB",
-        "source": "command line",
-        "context": "postmaster",
-        "vartype": "integer",
-        "category": "Write-Ahead Log / Settings",
-        "unit": "8kB",
-        "setting_raw": "2048",
-        "short_desc": "Sets the number of disk-page buffers in shared memory for WAL."
-      },
-      "wal_compression": {
-        "setting": "lz4",
-        "source": "command line",
-        "context": "superuser",
-        "vartype": "enum",
-        "category": "Write-Ahead Log / Settings",
-        "short_desc": "Compresses full-page writes written in WAL file with specified method."
-      },
-      "work_mem": {
-        "setting": "9129kB",
-        "source": "command line",
-        "context": "user",
-        "vartype": "integer",
-        "category": "Resource Usage / Memory",
-        "unit": "kB",
-        "setting_raw": "9129",
-        "short_desc": "Sets the maximum memory to be used for query workspaces."
-      }
-    },
-    "extensions": [
-      {
-        "name": "plpgsql",
-        "version": "1.0"
-      }
-    ],
-    "role_settings": [
-      {
-        "role": "All",
-        "database": "pgbench",
-        "config": [
-          "jit=off",
-          "work_mem=64MB",
-          "max_parallel_workers_per_gather=0"
-        ]
-      }
-    ],
-    "requested_gucs": {
-      "max_connections": "3122",
-      "shared_buffers": "1792MB",
-      "effective_cache_size": "5376MB",
-      "maintenance_work_mem": "448MB",
-      "checkpoint_completion_target": "0.9",
-      "wal_buffers": "16MB",
-      "default_statistics_target": "100",
-      "random_page_cost": "1.1",
-      "effective_io_concurrency": "200",
-      "work_mem": "9129kB",
-      "huge_pages": "off",
-      "min_wal_size": "1GB",
-      "max_wal_size": "4GB",
-      "jit": "off",
-      "wal_compression": "lz4",
-      "io_method": "io_uring",
-      "synchronous_commit": "on"
-    }
+    "version": "PostgreSQL 18.7 (Debian 18.7-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
   },
-  "pg_image": "ghcr.io/sparecores/benchmark-postgres-server:main",
-  "benchmark_image": "ghcr.io/sparecores/benchmark-pgbench-postgres:main",
-  "workload_kind": "pgbench_ro",
+  "profile_hard_max_clients": 4,
+  "profile_max_clients": 4,
+  "profile_search": false,
+  "profile_vus": [
+    1,
+    2,
+    4
+  ],
+  "run_seconds": 300,
   "schema_gib": 0.17,
-  "pgtune_share_url": "https://pgtune.leopard.in.ua/?dbVersion=18&osType=linux&dbType=web&totalMemory=7&totalMemoryUnit=GB&cpuNum=2&hdType=ssd&dbSize=mid_ram",
-  "storage_gib": 64,
-  "storage_type": "pd-ssd"
+  "score": 107,
+  "score_unit": "tpm",
+  "settle_seconds": 60,
+  "sizes": [
+    {
+      "clients_capped_at_scale": false,
+      "concurrency_plan": [
+        1,
+        2,
+        4
+      ],
+      "cpu_scale": 1,
+      "dataset": {
+        "cdn_url": "https://cdn.sparecores.net/sc-inspector/pgbench-ro-cpu-v1.sql.zst",
+        "dataset": "pgbench-ro-cpu-v1.sql.zst",
+        "source": "cdn"
+      },
+      "latency_avg_ms": 2238.948,
+      "latency_ms": {
+        "avg": 2106.7476,
+        "p50": 1824.6095,
+        "p95": 3903.5603,
+        "p99": 3906.5217,
+        "samples": 10
+      },
+      "latency_stddev_ms": 1656.949,
+      "peak_concurrency": 4,
+      "profile": [
+        {
+          "anchor": true,
+          "concurrency": 1,
+          "initial_connection_ms": 3.655,
+          "jobs": 1,
+          "latency_avg_ms": 594.33,
+          "latency_ms": {
+            "avg": 718.327,
+            "p50": 949.687,
+            "p95": 965.0014,
+            "p99": 965.7243,
+            "samples": 7
+          },
+          "latency_stddev_ms": 406.802,
+          "run_seconds": 300.8,
+          "score": 101,
+          "tpm": 101,
+          "tpm_vs_final_peak_pct": 94.39,
+          "tx_failed": 0,
+          "tx_processed": 506,
+          "warmup_seconds": 120
+        },
+        {
+          "anchor": true,
+          "concurrency": 2,
+          "initial_connection_ms": 5.769,
+          "jobs": 2,
+          "latency_avg_ms": 1149.358,
+          "latency_ms": {
+            "avg": 742.8971,
+            "p50": 264.901,
+            "p95": 1928.6128,
+            "p99": 1953.441,
+            "samples": 9
+          },
+          "latency_stddev_ms": 815.802,
+          "run_seconds": 300.9,
+          "score": 104,
+          "tpm": 104,
+          "tpm_vs_final_peak_pct": 97.2,
+          "tx_failed": 0,
+          "tx_processed": 523,
+          "warmup_seconds": 60
+        },
+        {
+          "anchor": true,
+          "concurrency": 4,
+          "initial_connection_ms": 11.187,
+          "jobs": 4,
+          "latency_avg_ms": 2238.948,
+          "latency_ms": {
+            "avg": 2106.7476,
+            "p50": 1824.6095,
+            "p95": 3903.5603,
+            "p99": 3906.5217,
+            "samples": 10
+          },
+          "latency_stddev_ms": 1656.949,
+          "run_seconds": 301.4,
+          "score": 107,
+          "tpm": 107,
+          "tpm_vs_final_peak_pct": 100.0,
+          "tx_failed": 0,
+          "tx_processed": 538,
+          "warmup_seconds": 60
+        }
+      ],
+      "profile_max_clients": 4,
+      "profile_vus": [
+        1,
+        2,
+        4
+      ],
+      "score": 107,
+      "stop_reason": ""
+    }
+  ],
+  "storage_gib": 128,
+  "synchronous_commit": "on",
+  "topology": "single_vm",
+  "warmup_once": true,
+  "warmup_seconds": 120,
+  "workload": "pgbench_ro",
+  "workload_kind": "pgbench_ro"
 }
