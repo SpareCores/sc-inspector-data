@@ -1,0 +1,943 @@
+{
+  "schema_version": 1,
+  "fio_version": "fio-3.43",
+  "lsblk_version": "2.39.3",
+  "smartctl_version": "smartctl 7.4 2023-08-01 r5530 [x86_64-linux-6.12.114-flatcar] (local build)",
+  "nvme_cli_version": "nvme version 2.8 (git 2.8)",
+  "started_at": "2026-11-23T19:55:40+00:00",
+  "host": {
+    "kernel": "6.12.114-flatcar",
+    "arch": "x86_64",
+    "nproc": 24,
+    "mem_bytes": 202603696128
+  },
+  "config": {
+    "ioengine": "libaio",
+    "ramp_time_s": 2,
+    "runtime_s": 10,
+    "write_runtime_s": 30,
+    "fill_cap_s": 300,
+    "fill_budget_s": 300,
+    "ws_target_bytes": 0,
+    "rand_precondition_s": 120,
+    "purge": true,
+    "budget_s": 2400,
+    "log_avg_msec": 500,
+    "inflight_cap_bytes": 268435456,
+    "percentiles": [
+      1,
+      5,
+      10,
+      25,
+      50,
+      75,
+      90,
+      95,
+      99,
+      99.9,
+      99.99
+    ],
+    "estimated_s": 140
+  },
+  "inventory": {
+    "vda": {
+      "path": "/dev/vda",
+      "model": null,
+      "vendor": "0x1af4",
+      "serial": null,
+      "rev": null,
+      "size": 6184752906240,
+      "subsystems": "block:virtio:pci",
+      "tran": "virtio",
+      "rota": true,
+      "ro": false,
+      "log_sec": 512,
+      "phy_sec": 512,
+      "min_io": 512,
+      "opt_io": 0,
+      "mq": 24,
+      "rq_size": 256,
+      "sched": "none",
+      "disc_max": 2147483136,
+      "write_cache": "write back",
+      "max_sectors_kb": 1280,
+      "mountpoints": [
+        "/"
+      ],
+      "swap": false,
+      "holders": [
+        "dm-0"
+      ],
+      "mode": "read_only",
+      "mode_reason": "has holders: dm-0",
+      "unmounted": [],
+      "group": "g0"
+    }
+  },
+  "excluded": {
+    "loop0": {
+      "reason": "type=loop"
+    },
+    "loop1": {
+      "reason": "type=loop"
+    },
+    "loop2": {
+      "reason": "type=loop"
+    },
+    "loop3": {
+      "reason": "type=loop"
+    },
+    "loop4": {
+      "reason": "type=loop"
+    },
+    "loop5": {
+      "reason": "type=loop"
+    },
+    "sr0": {
+      "reason": "type=rom"
+    }
+  },
+  "groups": {
+    "g0": {
+      "key": {
+        "model": null,
+        "size": 6184752906240,
+        "subsystems": "block:virtio:pci"
+      },
+      "members": [
+        "vda"
+      ],
+      "representative": "vda",
+      "mode": "read_only"
+    }
+  },
+  "benchmarks": [
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "vda"
+      ],
+      "test": "randread_4k_qd1",
+      "rw": "randread",
+      "bs": 4096,
+      "rwmixread": null,
+      "numjobs": 1,
+      "iodepth": 1,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "vda": 6184752906240
+      },
+      "error": null,
+      "elapsed_s": 13.3,
+      "read": {
+        "iops": 11984.0016,
+        "bw_bytes": 49086470,
+        "io_bytes": 490913792,
+        "total_ios": 119852,
+        "runtime_ms": 10001,
+        "iops_interval": {
+          "min": 10160.0,
+          "p5": 10352.0,
+          "p50": 12290.0,
+          "p95": 13434.0,
+          "max": 13434.0,
+          "mean": 11993.45,
+          "tail_mean": 11236.1,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 41616384.0,
+          "p5": 42403840.0,
+          "p50": 50339840.0,
+          "p95": 55020544.0,
+          "max": 55025664.0,
+          "mean": 49125683.2,
+          "tail_mean": 46023168.0,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 44010,
+          "max": 18044093,
+          "mean": 83206.515736,
+          "stddev": 148798.28681,
+          "samples": 119852,
+          "percentiles": {
+            "1": 58624,
+            "5": 60160,
+            "10": 60672,
+            "25": 61184,
+            "50": 67072,
+            "75": 76288,
+            "90": 114176,
+            "95": 129536,
+            "99": 264192,
+            "99.9": 1990656,
+            "99.99": 5603328
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 1.31,
+        "sys": 14.24
+      },
+      "disk_util": {
+        "vda": {
+          "util": 87.047032,
+          "read_ios": 157659,
+          "write_ios": 300,
+          "in_queue": 12240
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "vda"
+      ],
+      "test": "randread_512_qd256",
+      "rw": "randread",
+      "bs": 512,
+      "rwmixread": null,
+      "numjobs": 4,
+      "iodepth": 64,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "vda": 6184752906240
+      },
+      "error": null,
+      "elapsed_s": 13.3,
+      "read": {
+        "iops": 138338.2758,
+        "bw_bytes": 70842148,
+        "io_bytes": 708510208,
+        "total_ios": 1383556,
+        "runtime_ms": 10002,
+        "iops_interval": {
+          "min": 135616.0,
+          "p5": 137212.0,
+          "p50": 138558.0,
+          "p95": 139904.0,
+          "max": 139998.0,
+          "mean": 138437.65,
+          "tail_mean": 138745.7,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 69435392.0,
+          "p5": 70252544.0,
+          "p50": 70941696.0,
+          "p95": 71630848.0,
+          "max": 71678976.0,
+          "mean": 70879641.6,
+          "tail_mean": 71037644.8,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 159072,
+          "max": 57600385,
+          "mean": 1845600.047775071,
+          "stddev": 850010.3198030042,
+          "samples": 1383796,
+          "percentiles": {
+            "1": 897024,
+            "5": 1368064,
+            "10": 1564672,
+            "25": 1794048,
+            "50": 1826816,
+            "75": 1875968,
+            "90": 1941504,
+            "95": 2039808,
+            "99": 3260416,
+            "99.9": 5603328,
+            "99.99": 43778048
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 6.4998439999999995,
+        "sys": 36.259052
+      },
+      "disk_util": {
+        "vda": {
+          "util": 99.283403,
+          "read_ios": 1785885,
+          "write_ios": 88,
+          "in_queue": 3240232
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "vda"
+      ],
+      "test": "randread_4k_qd256",
+      "rw": "randread",
+      "bs": 4096,
+      "rwmixread": null,
+      "numjobs": 4,
+      "iodepth": 64,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "vda": 6184752906240
+      },
+      "error": null,
+      "elapsed_s": 13.3,
+      "read": {
+        "iops": 138407.959744,
+        "bw_bytes": 567022202,
+        "io_bytes": 5671211008,
+        "total_ios": 1384321,
+        "runtime_ms": 10002,
+        "iops_interval": {
+          "min": 136644.0,
+          "p5": 137551.0,
+          "p50": 138509.0,
+          "p95": 140591.0,
+          "max": 140796.0,
+          "mean": 138535.55,
+          "tail_mean": 138644.8,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 559693824.0,
+          "p5": 563415040.0,
+          "p50": 567339008.0,
+          "p95": 575866880.0,
+          "max": 576700416.0,
+          "mean": 567431065.6,
+          "tail_mean": 567890841.6,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 174401,
+          "max": 60503118,
+          "mean": 1844613.3389529062,
+          "stddev": 1272898.3588575032,
+          "samples": 1384526,
+          "percentiles": {
+            "1": 864256,
+            "5": 937984,
+            "10": 1335296,
+            "25": 1400832,
+            "50": 1810432,
+            "75": 1875968,
+            "90": 2736128,
+            "95": 3096576,
+            "99": 3293184,
+            "99.9": 19791872,
+            "99.99": 44826624
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 6.419505,
+        "sys": 37.277255
+      },
+      "disk_util": {
+        "vda": {
+          "util": 100.0,
+          "read_ios": 1778394,
+          "write_ios": 49,
+          "in_queue": 3233761
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "vda"
+      ],
+      "test": "randread_16k_qd256",
+      "rw": "randread",
+      "bs": 16384,
+      "rwmixread": null,
+      "numjobs": 4,
+      "iodepth": 64,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "vda": 6184752906240
+      },
+      "error": null,
+      "elapsed_s": 13.3,
+      "read": {
+        "iops": 106072.623962,
+        "bw_bytes": 1738306663,
+        "io_bytes": 17386504192,
+        "total_ios": 1060936,
+        "runtime_ms": 10003,
+        "iops_interval": {
+          "min": 99487.0,
+          "p5": 100048.0,
+          "p50": 107318.0,
+          "p95": 107814.0,
+          "max": 107872.0,
+          "mean": 106162.3,
+          "tail_mean": 107101.3,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 1629054976.0,
+          "p5": 1639186432.0,
+          "p50": 1758298112.0,
+          "p95": 1766424576.0,
+          "max": 1767374848.0,
+          "mean": 1739325235.2,
+          "tail_mean": 1754757324.8,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 108591,
+          "max": 9835160,
+          "mean": 2408954.1605270933,
+          "stddev": 651697.0769978015,
+          "samples": 1061172,
+          "percentiles": {
+            "1": 452608,
+            "5": 1564672,
+            "10": 1794048,
+            "25": 2179072,
+            "50": 2375680,
+            "75": 2605056,
+            "90": 2899968,
+            "95": 3719168,
+            "99": 4423680,
+            "99.9": 6193152,
+            "99.99": 6586368
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 3.919594,
+        "sys": 38.096315000000004
+      },
+      "disk_util": {
+        "vda": {
+          "util": 100.0,
+          "read_ios": 1370799,
+          "write_ios": 30,
+          "in_queue": 3245350
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "vda"
+      ],
+      "test": "randread_64k_qd256",
+      "rw": "randread",
+      "bs": 65536,
+      "rwmixread": null,
+      "numjobs": 4,
+      "iodepth": 64,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "vda": 6184752906240
+      },
+      "error": null,
+      "elapsed_s": 13.3,
+      "read": {
+        "iops": 86297.579604,
+        "bw_bytes": 5657249352,
+        "io_bytes": 56584699904,
+        "total_ios": 863162,
+        "runtime_ms": 10003,
+        "iops_interval": {
+          "min": 85442.0,
+          "p5": 85509.0,
+          "p50": 86532.0,
+          "p95": 86879.0,
+          "max": 87094.0,
+          "mean": 86364.95,
+          "tail_mean": 86467.3,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 5599558656.0,
+          "p5": 5603990528.0,
+          "p50": 5671025664.0,
+          "p95": 5693764608.0,
+          "max": 5707883520.0,
+          "mean": 5660060467.2,
+          "tail_mean": 5666773606.4,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 271002,
+          "max": 98511624,
+          "mean": 2962040.9147364474,
+          "stddev": 2611517.0389873814,
+          "samples": 863290,
+          "percentiles": {
+            "1": 1400832,
+            "5": 1449984,
+            "10": 2113536,
+            "25": 2179072,
+            "50": 2244608,
+            "75": 4358144,
+            "90": 4489216,
+            "95": 4489216,
+            "99": 5275648,
+            "99.9": 44826624,
+            "99.99": 84410368
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 2.679685,
+        "sys": 34.555992
+      },
+      "disk_util": {
+        "vda": {
+          "util": 99.283513,
+          "read_ios": 1111938,
+          "write_ios": 29,
+          "in_queue": 3253354
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "vda"
+      ],
+      "test": "randread_256k_qd256",
+      "rw": "randread",
+      "bs": 262144,
+      "rwmixread": null,
+      "numjobs": 4,
+      "iodepth": 64,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "vda": 6184752906240
+      },
+      "error": null,
+      "elapsed_s": 13.3,
+      "read": {
+        "iops": 54571.414292,
+        "bw_bytes": 14312171554,
+        "io_bytes": 143193276416,
+        "total_ios": 545987,
+        "runtime_ms": 10005,
+        "iops_interval": {
+          "min": 54590.0,
+          "p5": 54614.0,
+          "p50": 54630.0,
+          "p95": 54664.0,
+          "max": 54668.0,
+          "mean": 54631.85,
+          "tail_mean": 54630.3,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 14310440960.0,
+          "p5": 14316732416.0,
+          "p50": 14320926720.0,
+          "p95": 14329839616.0,
+          "max": 14330888192.0,
+          "mean": 14321565593.6,
+          "tail_mean": 14321213747.2,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 833249,
+          "max": 14215967,
+          "mean": 4688881.289015946,
+          "stddev": 498045.6778339886,
+          "samples": 546236,
+          "percentiles": {
+            "1": 3981312,
+            "5": 4227072,
+            "10": 4358144,
+            "25": 4489216,
+            "50": 4620288,
+            "75": 4751360,
+            "90": 4947968,
+            "95": 5275648,
+            "99": 7045120,
+            "99.9": 8978432,
+            "99.99": 10682368
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 5.107956,
+        "sys": 46.60136
+      },
+      "disk_util": {
+        "vda": {
+          "util": 99.283347,
+          "read_ios": 703390,
+          "write_ios": 24,
+          "in_queue": 3289409
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "vda"
+      ],
+      "test": "randread_1m_qd256",
+      "rw": "randread",
+      "bs": 1048576,
+      "rwmixread": null,
+      "numjobs": 4,
+      "iodepth": 64,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "vda": 6184752906240
+      },
+      "error": null,
+      "elapsed_s": 13.3,
+      "read": {
+        "iops": 13619.264155,
+        "bw_bytes": 14307312850,
+        "io_bytes": 143341387776,
+        "total_ios": 136448,
+        "runtime_ms": 10019,
+        "iops_interval": {
+          "min": 13532.0,
+          "p5": 13542.0,
+          "p50": 13668.0,
+          "p95": 13674.0,
+          "max": 13676.0,
+          "mean": 13653.5,
+          "tail_mean": 13640.6,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 14191427584.0,
+          "p5": 14199816192.0,
+          "p50": 14331936768.0,
+          "p95": 14340325376.0,
+          "max": 14341742592.0,
+          "mean": 14318234214.4,
+          "tail_mean": 14304813056.0,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 5224745,
+          "max": 57381746,
+          "mean": 18777370.295559794,
+          "stddev": 2045191.1742597714,
+          "samples": 136700,
+          "percentiles": {
+            "1": 15269888,
+            "5": 15794176,
+            "10": 16187392,
+            "25": 17170432,
+            "50": 18743296,
+            "75": 20054016,
+            "90": 21102592,
+            "95": 21626880,
+            "99": 24510464,
+            "99.9": 31064064,
+            "99.99": 37486592
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 2.106267,
+        "sys": 21.871198999999997
+      },
+      "disk_util": {
+        "vda": {
+          "util": 99.283292,
+          "read_ios": 176446,
+          "write_ios": 30,
+          "in_queue": 3306275
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "vda"
+      ],
+      "test": "randread_4m_qd64",
+      "rw": "randread",
+      "bs": 4194304,
+      "rwmixread": null,
+      "numjobs": 4,
+      "iodepth": 16,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "vda": 6184752906240
+      },
+      "error": null,
+      "elapsed_s": 13.3,
+      "read": {
+        "iops": 3368.58929,
+        "bw_bytes": 14154010017,
+        "io_bytes": 141784252416,
+        "total_ios": 33744,
+        "runtime_ms": 10018,
+        "iops_interval": {
+          "min": 2614.0,
+          "p5": 3406.0,
+          "p50": 3414.0,
+          "p95": 3422.0,
+          "max": 3428.0,
+          "mean": 3375.3,
+          "tail_mean": 3415.6,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 10969070592.0,
+          "p5": 14294188032.0,
+          "p50": 14322830336.0,
+          "p95": 14364858368.0,
+          "max": 14378074112.0,
+          "mean": 14161576550.4,
+          "tail_mean": 14330810982.4,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 14296409,
+          "max": 255802430,
+          "mean": 18978545.832120243,
+          "stddev": 7396248.992364027,
+          "samples": 33804,
+          "percentiles": {
+            "1": 16580608,
+            "5": 17170432,
+            "10": 17432576,
+            "25": 17956864,
+            "50": 18481152,
+            "75": 19005440,
+            "90": 19791872,
+            "95": 21626880,
+            "99": 25559040,
+            "99.9": 35913728,
+            "99.99": 254803968
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 0.968422,
+        "sys": 10.682614000000001
+      },
+      "disk_util": {
+        "vda": {
+          "util": 99.290999,
+          "read_ios": 174024,
+          "write_ios": 25,
+          "in_queue": 3291176
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "vda"
+      ],
+      "test": "randread_16m_qd16",
+      "rw": "randread",
+      "bs": 16777216,
+      "rwmixread": null,
+      "numjobs": 4,
+      "iodepth": 4,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "vda": 6184752906240
+      },
+      "error": null,
+      "elapsed_s": 13.3,
+      "read": {
+        "iops": 851.214977,
+        "bw_bytes": 14301124554,
+        "io_bytes": 143193538560,
+        "total_ios": 8523,
+        "runtime_ms": 10016,
+        "iops_interval": {
+          "min": 830.0,
+          "p5": 848.0,
+          "p50": 854.0,
+          "p95": 856.0,
+          "max": 858.0,
+          "mean": 852.2,
+          "tail_mean": 853.0,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 13925089280.0,
+          "p5": 14227079168.0,
+          "p50": 14327742464.0,
+          "p95": 14375618560.0,
+          "max": 14402045952.0,
+          "mean": 14301123942.4,
+          "tail_mean": 14313836339.2,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 3131543,
+          "max": 42109260,
+          "mean": 18779010.044639517,
+          "stddev": 2329545.4218117585,
+          "samples": 8535,
+          "percentiles": {
+            "1": 13959168,
+            "5": 15925248,
+            "10": 16449536,
+            "25": 17694720,
+            "50": 18743296,
+            "75": 19267584,
+            "90": 21102592,
+            "95": 22413312,
+            "99": 27131904,
+            "99.9": 34865152,
+            "99.99": 42205184
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 0.31961700000000004,
+        "sys": 6.49239
+      },
+      "disk_util": {
+        "vda": {
+          "util": 99.283623,
+          "read_ios": 144812,
+          "write_ios": 21,
+          "in_queue": 2704245
+        }
+      }
+    },
+    {
+      "group": "g0",
+      "scope": "single",
+      "devices": [
+        "vda"
+      ],
+      "test": "seqread_1m_qd64",
+      "rw": "read",
+      "bs": 1048576,
+      "rwmixread": null,
+      "numjobs": 4,
+      "iodepth": 16,
+      "runtime_s": 10,
+      "ramp_time_s": 2,
+      "working_set_bytes": {
+        "vda": 6184752906240
+      },
+      "error": null,
+      "elapsed_s": 13.3,
+      "read": {
+        "iops": 13294.553455,
+        "bw_bytes": 13946638780,
+        "io_bytes": 139516182528,
+        "total_ios": 132993,
+        "runtime_ms": 10005,
+        "iops_interval": {
+          "min": 12036.0,
+          "p5": 12780.0,
+          "p50": 13594.0,
+          "p95": 13662.0,
+          "max": 13684.0,
+          "mean": 13306.75,
+          "tail_mean": 13198.8,
+          "samples": 20
+        },
+        "bw_bytes_interval": {
+          "min": 12620660736.0,
+          "p5": 13402438656.0,
+          "p50": 14254342144.0,
+          "p95": 14325645312.0,
+          "max": 14352250880.0,
+          "mean": 13953993984.0,
+          "tail_mean": 13840971264.0,
+          "samples": 20
+        },
+        "lat_ns": {
+          "min": 316704,
+          "max": 33534022,
+          "mean": 4811595.348957883,
+          "stddev": 2420193.722618921,
+          "samples": 133039,
+          "percentiles": {
+            "1": 1564672,
+            "5": 2342912,
+            "10": 2670592,
+            "25": 3391488,
+            "50": 4292608,
+            "75": 5144576,
+            "90": 8290304,
+            "95": 9371648,
+            "99": 13172736,
+            "99.9": 22413312,
+            "99.99": 33423360
+          }
+        }
+      },
+      "write": null,
+      "cpu": {
+        "usr": 1.239692,
+        "sys": 17.635482
+      },
+      "disk_util": {
+        "vda": {
+          "util": 99.283458,
+          "read_ios": 179821,
+          "write_ios": 42,
+          "in_queue": 853811
+        }
+      }
+    }
+  ],
+  "preconditioning": [],
+  "health": {
+    "vda": {
+      "before": {
+        "taken_at": "2026-11-23T19:55:40+00:00",
+        "smartctl": {
+          "error": "smartctl exit 1: /dev/vda: Unable to detect device type"
+        }
+      },
+      "after": {
+        "taken_at": "2026-11-23T19:57:53+00:00",
+        "smartctl": {
+          "error": "smartctl exit 1: /dev/vda: Unable to detect device type"
+        }
+      },
+      "delta": null
+    }
+  },
+  "skipped": [
+    {
+      "group": "g0",
+      "scope": "single",
+      "test": "write tests",
+      "reason": "read_only: has holders: dm-0"
+    }
+  ],
+  "finished_at": "2026-11-23T19:57:53+00:00"
+}
